@@ -418,7 +418,8 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                       if (nav && isNavigatorShare(nav)) {
                         await nav.share({ title, text, url });
                       } else {
-                        await copyText(url || `${location.origin}/products/${product.slug}`);
+                        const origin = typeof window !== 'undefined' ? window.location.origin : '';
+                        await copyText(url || `${origin}/products/${product.slug}`);
                       }
                     } catch {}
                   }}

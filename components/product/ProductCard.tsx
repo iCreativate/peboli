@@ -149,7 +149,7 @@ export function ProductCard({ product }: ProductCardProps) {
               onClick={async (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                const url = typeof window !== 'undefined' ? `${location.origin}/products/${product.slug}` : '';
+                const url = typeof window !== 'undefined' ? `${window.location.origin}/products/${product.slug}` : '';
                 const title = product.name;
                 const text = product.description;
                 try {
