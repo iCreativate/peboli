@@ -11,6 +11,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Peboli - Best deals. Zero hassle.",
   description: "Next-generation ecommerce marketplace. Best deals. Zero hassle.",
+  icons: {
+    icon: '/icon',
+  },
 };
 
 import { ThemeProvider } from "@/components/providers/ThemeProvider";

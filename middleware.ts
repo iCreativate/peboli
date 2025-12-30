@@ -7,26 +7,56 @@ export default withAuth(
     const path = req.nextUrl.pathname;
 
     // Admin Protection
-    if (path.startsWith("/admin") && token?.role !== "ADMIN") {
-      const url = new URL("/login", req.url);
-      url.searchParams.set("callbackUrl", path);
-      return NextResponse.redirect(url);
+    if (path.startsWith("/admin")) {
+        if (!token) {
+             const url = new URL("/login", req.url);
+             url.searchParams.set("callbackUrl", path);
+             return NextResponse.redirect(url);
+        }
+        if (token.role !== "ADMIN") {
+             // Redirect non-admins to home or show error?
+             // For now, redirect to login to force admin login or home
+             return NextResponse.redirect(new URL("/", req.url));
+        }
     }
 
     // Vendor Protection
     if (path.startsWith("/vendor")) {
-      if (token?.role !== "VENDOR") {
+      if (!token) {
+             const url = new URL("/login", req.url);
+             url.searchParams.set("callbackUrl", path);
+             return NextResponse.redirect(url);
+      }
+      if (token.role !== "VENDOR") {
          return NextResponse.redirect(new URL("/sell/apply", req.url));
       }
       // Assuming vendorStatus is populated in token via next-auth config
-      if (token?.vendorStatus !== "APPROVED") {
+      if (token.vendorStatus !== "APPROVED") {
          return NextResponse.redirect(new URL("/sell/apply", req.url));
       }
     }
   },
   {
     callbacks: {
-      authorized: ({ token }) => !!token,
+      authorized: ({ token }) => {
+          // If we return true here, the middleware function above runs.
+          // If we return false, it redirects to sign-in page automatically.
+          // We want to run middleware logic to handle roles, so we let logged-in users pass.
+          // BUT, we also want to intercept unauthenticated users in the middleware function
+          // OR let the 'authorized' callback handle the basic "is logged in" check.
+          
+          // Let's rely on the middleware function for granular control, 
+          // so we return true to always run middleware (or at least for public pages?)
+          // No, 'authorized' only runs on matched paths.
+          
+          // If we return !!token, then unauthenticated users are blocked BEFORE middleware function runs.
+          // They are sent to the default sign-in page.
+          // The user says "not requiring any login".
+          // This implies that perhaps 'authorized' is returning true incorrectly?
+          // Or the matcher is missing.
+          
+          return true; // Let the middleware function handle the redirection logic
+      },
     },
   }
 )
