@@ -14,8 +14,8 @@ export default function Icon() {
       // ImageResponse JSX element
       <div
         style={{
-          fontSize: 20,
-          background: 'black',
+          fontSize: 18,
+          background: '#1A1D29', // Dark premium color
           width: '100%',
           height: '100%',
           display: 'flex',
@@ -23,8 +23,9 @@ export default function Icon() {
           justifyContent: 'center',
           color: 'white',
           borderRadius: '8px',
-          fontWeight: 800,
+          fontWeight: 900,
           fontFamily: 'sans-serif',
+          border: '2px solid rgba(255,255,255,0.2)'
         }}
       >
         P
@@ -32,8 +33,6 @@ export default function Icon() {
     ),
     // ImageResponse options
     {
-      // For convenience, we can re-use the exported icons size metadata
-      // config to also set the ImageResponse's width and height.
       ...size,
     }
   )

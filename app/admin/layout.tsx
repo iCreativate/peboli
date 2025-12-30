@@ -1,8 +1,15 @@
-'use client';
-
+import { getServerSession } from 'next-auth';
+import { redirect } from 'next/navigation';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  const session = await getServerSession(authOptions);
+
+  if (!session || session.user.role !== 'ADMIN') {
+    redirect('/login?callbackUrl=/admin');
+  }
+
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
       <div className="hidden lg:block w-64 flex-shrink-0">
