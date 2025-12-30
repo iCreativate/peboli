@@ -5,8 +5,11 @@ import { AdminSidebar } from '@/components/admin/AdminSidebar';
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
+  
+  console.log('[Admin Layout] Checking session:', session?.user?.email, session?.user?.role);
 
   if (!session || session.user.role !== 'ADMIN') {
+    console.log('[Admin Layout] Redirecting to login');
     redirect('/login?callbackUrl=/admin');
   }
 

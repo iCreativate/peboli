@@ -40,6 +40,7 @@ export function Footer() {
               <p className="mt-3 text-sm text-white/70 leading-relaxed">
                 A premium marketplace experience built for fast discovery, trusted sellers, and great deals.
               </p>
+              <div className="mt-4 text-[10px] text-white/30 font-mono">v1.1.0</div>
             </div>
 
             <div className="md:col-span-8">
