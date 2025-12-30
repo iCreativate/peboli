@@ -1,0 +1,363 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  BUYER
+  VENDOR
+  ADMIN
+}
+
+enum VendorStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum BusinessType {
+  INDIVIDUAL
+  BUSINESS
+}
+
+enum Condition {
+  NEW
+  LIKE_NEW
+  REFURBISHED
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum VerificationTier {
+  BASIC
+  PREMIUM
+  ELITE
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String?
+  name      String
+  phone     String?
+  role      UserRole @default(BUYER)
+  avatar    String?
+  
+  // 2FA Fields
+  twoFactorSecret    String?
+  isTwoFactorEnabled Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  vendor   Vendor?
+  orders   Order[]
+  reviews  Review[]
+  notifications Notification[]
+  productChats ProductChat[]
+  chatParticipants ChatParticipant[]
+  chatMessages ChatMessage[]
+}
+
+model Vendor {
+  id               String           @id @default(cuid())
+  userId           String           @unique
+  user             User             @relation(fields: [userId], references: [id])
+  name             String
+  email            String           @unique
+  phone            String?
+  rating           Float            @default(0)
+  reviewCount      Int              @default(0)
+  positiveRating   Float            @default(0)
+  verificationTier VerificationTier @default(BASIC)
+  isVerified       Boolean          @default(false)
+  
+  status           VendorStatus     @default(PENDING)
+  rejectionReason  String?
+  businessType     BusinessType     @default(INDIVIDUAL)
+  
+  idDocument        String?
+  proofOfAddress    String?
+  businessDocuments String?
+  
+  walletBalance     Decimal          @default(0)
+  pendingBalance    Decimal          @default(0)
+  
+  walletTransactions WalletTransaction[]
+
+  isPhoneVerified   Boolean         @default(false)
+  isEmailVerified   Boolean         @default(false)
+
+  joinedAt         DateTime         @default(now())
+
+  products Product[]
+}
+
+model Category {
+  id           String     @id @default(cuid())
+  name         String
+  slug         String     @unique
+  icon         String?
+  image        String?
+  parentId     String?
+  parent       Category?  @relation("CategoryToCategory", fields: [parentId], references: [id])
+  children     Category[] @relation("CategoryToCategory")
+  productCount Int        @default(0)
+
+  products Product[]
+}
+
+model Product {
+  id                String    @id @default(cuid())
+  name              String
+  slug              String    @unique
+  brand             String
+  description       String
+  price             Decimal
+  compareAtPrice    Decimal?
+  savings           Decimal?
+  savingsPercentage Int?
+
+  // Boosting
+  isBoosted         Boolean   @default(false)
+  boostExpiresAt    DateTime?
+  boostLevel        String?   // 'hourly', 'daily', 'weekly', 'monthly'
+  boostReach        Int       @default(0)
+  boostClicks       Int       @default(0)
+  boostSpend        Decimal   @default(0)
+
+  images            ProductImage[]
+  categoryId        String
+  category          Category  @relation(fields: [categoryId], references: [id])
+  subcategory       String?
+  condition         Condition @default(NEW)
+  stock             Int       @default(0)
+  origin            String    @default("Local") // 'Local' or 'International'
+  standardDeliveryPrice Decimal?
+  expressDeliveryPrice Decimal?
+  sku               String    @unique
+  rating            Float     @default(0)
+  reviewCount       Int       @default(0)
+  soldCount         Int       @default(0)
+  vendorId          String
+  vendor            Vendor    @relation(fields: [vendorId], references: [id])
+  specifications    Json?
+  deliveryTime      String?
+  isFlashSale       Boolean   @default(false)
+  flashSaleEndsAt   DateTime?
+  isSplashDeal      Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  collections       Collection[]
+  orderItems OrderItem[]
+  reviews    Review[]
+  bulkDiscounts BulkDiscount[]
+  chats      ProductChat[]
+}
+
+model Collection {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  image       String?
+  isActive    Boolean   @default(true)
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  url       String
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model BulkDiscount {
+  id          String  @id @default(cuid())
+  productId   String
+  product     Product @relation(fields: [productId], references: [id])
+  minQuantity Int
+  price       Decimal
+  savings     Decimal
+}
+
+model Order {
+  id               String        @id @default(cuid())
+  orderNumber      String        @unique
+  userId           String
+  user             User          @relation(fields: [userId], references: [id])
+  subtotal         Decimal
+  delivery         Decimal
+  savings          Decimal
+  total            Decimal
+  status           OrderStatus   @default(PENDING)
+  paymentMethod    String
+  paymentStatus    PaymentStatus @default(PENDING)
+  deliveryMethod   String
+  estimatedDelivery DateTime?
+  trackingNumber   String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  items    OrderItem[]
+  address  Address     @relation(fields: [addressId], references: [id])
+  addressId String
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Decimal
+  total     Decimal
+  vendorId  String
+}
+
+model Address {
+  id         String  @id @default(cuid())
+  fullName   String
+  phone      String
+  line1      String
+  line2      String?
+  city       String
+  province   String
+  postalCode String
+  country    String
+  isDefault  Boolean @default(false)
+  
+  orders     Order[]
+}
+
+model Review {
+  id                 String   @id @default(cuid())
+  productId          String
+  product            Product  @relation(fields: [productId], references: [id])
+  userId             String
+  user               User     @relation(fields: [userId], references: [id])
+  userName           String
+  rating             Int
+  title              String?
+  comment            String
+  images             ReviewImage[]
+  isVerifiedPurchase Boolean  @default(false)
+  helpfulCount       Int      @default(0)
+  createdAt          DateTime @default(now())
+  
+  vendorResponse     Json?    // { comment: string, createdAt: Date }
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  title     String
+  message   String
+  type      String   // 'sale', 'stock', 'system'
+  link      String?  // Optional link to navigate to
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model ProductChat {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  message   String
+  createdAt DateTime @default(now())
+}
+
+model Chat {
+  id        String   @id @default(cuid())
+  orderId   String?  // Optional link to an order
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  participants ChatParticipant[]
+  messages     ChatMessage[]
+}
+
+model ChatParticipant {
+  id        String   @id @default(cuid())
+  chatId    String
+  chat      Chat     @relation(fields: [chatId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  chatId    String
+  chat      Chat     @relation(fields: [chatId], references: [id])
+  senderId  String
+  sender    User     @relation(fields: [senderId], references: [id])
+  content   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model ReviewImage {
+  id       String @id @default(cuid())
+  url      String
+  reviewId String
+  review   Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+}
+
+model FlashSale {
+  id           String   @id @default(cuid())
+  name         String
+  startTime    DateTime
+  endTime      DateTime
+  estimatedGMV Decimal?
+  status       String   @default("upcoming") // upcoming, active, ended
+}
+
+model WalletTransaction {
+  id          String            @id @default(cuid())
+  vendorId    String
+  vendor      Vendor            @relation(fields: [vendorId], references: [id])
+  amount      Decimal
+  type        TransactionType
+  status      TransactionStatus @default(PENDING)
+  description String?
+  referenceId String?           // e.g. Order ID or Payout ID
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+}
+
+enum TransactionType {
+  CREDIT // Money coming in (Sales)
+  DEBIT  // Money going out (Payouts, Refunds)
+}
+
+enum TransactionStatus {
+  PENDING   // Held in escrow or processing
+  COMPLETED // Available in wallet or paid out
+  FAILED
+  CANCELLED
+}

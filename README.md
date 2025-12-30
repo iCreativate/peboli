@@ -1,36 +1,141 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Peboli - Next-Generation Ecommerce Marketplace
 
-## Getting Started
+**Core Brand Promise: "Best deals. Zero hassle."**
 
-First, run the development server:
+A modern, full-featured ecommerce marketplace platform built with Next.js 14+, TypeScript, and Tailwind CSS.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🚀 Features
+
+### ✅ Implemented
+
+- **Homepage**
+  - Hero section with CTA
+  - Today's Splash Deals section with splash sale timers
+  - Category grid with 8 main categories
+  - Trust signals footer
+
+- **Product Pages**
+  - Image gallery with thumbnail navigation
+  - Detailed product information
+  - Pricing with savings badges
+  - Splash sale countdown timers
+  - Vendor information
+  - Product specifications
+  - Shipping & returns information
+
+- **Category Pages**
+  - Product grid with filtering
+  - Price range slider
+  - Brand filters
+  - Sort options (price, newest, bestselling, etc.)
+  - Active filter badges
+  - Responsive mobile/desktop layouts
+
+- **Design System**
+  - Peboli brand colors (Splash Blue, Coral Accent, Success Green)
+  - Inter font family (400-900 weights)
+  - Consistent component styling
+  - Micro-interactions with Framer Motion
+  - Mobile-first responsive design
+
+- **Navigation**
+  - Sticky header with search bar
+  - Category navigation
+  - Shopping cart icon with badge
+  - User account access
+
+### 🚧 In Progress / Planned
+
+- Checkout flow (guest checkout, delivery, payment)
+- Vendor dashboard (product upload, orders, analytics)
+- Admin dashboard (user management, vendor approvals)
+- Authentication system (buyers and vendors)
+- Database schema and API routes
+- Payment gateway integration
+- Search functionality with Algolia
+- Reviews and ratings system
+- Splash sales engine
+- Referral system
+
+## 🛠️ Tech Stack
+
+- **Framework**: Next.js 14+ (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4
+- **UI Components**: shadcn/ui
+- **Animations**: Framer Motion
+- **State Management**: Zustand
+- **Data Fetching**: React Query (TanStack Query)
+- **Icons**: Lucide React
+
+## 📁 Project Structure
+
+```
+peboli/
+├── app/                    # Next.js App Router pages
+│   ├── page.tsx           # Homepage
+│   ├── products/[slug]/   # Product detail pages
+│   ├── categories/[slug]/ # Category pages
+│   └── layout.tsx         # Root layout
+├── components/
+│   ├── layout/            # Header, Footer
+│   ├── home/              # Homepage sections
+│   ├── product/           # Product components
+│   ├── category/          # Category components
+│   ├── deals/             # Splash sale components
+│   └── ui/                # shadcn/ui components
+├── lib/
+│   ├── constants/         # App constants
+│   └── utils/             # Utility functions
+└── types/                 # TypeScript types
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🎨 Brand Colors
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Splash Blue**: `#0B1220` - Primary color, CTAs, links
+- **Coral Accent**: `#FF6B4A` - Deals, urgency, highlights
+- **Success Green**: `#00C48C` - Confirmations, savings badges
+- **Pure White**: `#FFFFFF` - Backgrounds
+- **Soft Gray**: `#F7F8FA` - Cards, sections
+- **Medium Gray**: `#8B95A5` - Secondary text
+- **Deep Charcoal**: `#1A1D29` - Headlines, primary text
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🚀 Getting Started
 
-## Learn More
+1. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+2. **Run development server**
+```bash
+npm run dev
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. **Open browser**
+   Navigate to [http://localhost:3000](http://localhost:3000)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📝 Development Notes
 
-## Deploy on Vercel
+- All components are built with TypeScript for type safety
+- Responsive design follows mobile-first approach
+- Components use shadcn/ui for consistent styling
+- Framer Motion provides smooth animations
+- Mock data is currently used; will be replaced with API calls
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🔜 Next Steps
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Set up PostgreSQL database schema
+2. Create API routes for products, orders, users
+3. Implement authentication (NextAuth.js or similar)
+4. Integrate payment gateway (PayGate/Paystack)
+5. Set up Algolia for search
+6. Build vendor dashboard
+7. Build admin dashboard
+8. Implement splash sales engine
+9. Add reviews and ratings system
+10. Set up deployment (Vercel + Railway/AWS)
+
+## 📄 License
+
+Private project - All rights reserved
