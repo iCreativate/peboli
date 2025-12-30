@@ -33,6 +33,10 @@ export default function VendorApplicationPage() {
   const [emailVerified, setEmailVerified] = useState(false);
   const [verifyingPhone, setVerifyingPhone] = useState(false);
   const [verifyingEmail, setVerifyingEmail] = useState(false);
+  const [emailCode, setEmailCode] = useState('');
+  const [phoneCode, setPhoneCode] = useState('');
+  const [showEmailCodeInput, setShowEmailCodeInput] = useState(false);
+  const [showPhoneCodeInput, setShowPhoneCodeInput] = useState(false);
 
   // Upload State
   const [uploading, setUploading] = useState<string | null>(null);
@@ -73,23 +77,107 @@ export default function VendorApplicationPage() {
   const verifyPhone = async () => {
     if (!formData.phone) return alert('Please enter a phone number');
     setVerifyingPhone(true);
-    // Simulate API call
-    setTimeout(() => {
-      setPhoneVerified(true);
+    
+    try {
+      const res = await fetch('/api/verify/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identifier: formData.phone, type: 'phone' }),
+      });
+      const data = await res.json();
+      
+      if (data.success) {
+        setShowPhoneCodeInput(true);
+        alert('Verification code sent to your phone.');
+      } else {
+        alert(data.error || 'Failed to send verification code');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('An error occurred');
+    } finally {
       setVerifyingPhone(false);
-      alert('Phone number verified successfully!');
-    }, 1500);
+    }
+  };
+
+  const confirmPhoneCode = async () => {
+    if (!phoneCode) return alert('Please enter the code');
+    setVerifyingPhone(true);
+
+    try {
+      const res = await fetch('/api/verify/check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identifier: formData.phone, code: phoneCode }),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        setPhoneVerified(true);
+        setShowPhoneCodeInput(false);
+        alert('Phone number verified successfully!');
+      } else {
+        alert(data.error || 'Invalid code');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('An error occurred');
+    } finally {
+      setVerifyingPhone(false);
+    }
   };
 
   const verifyEmail = async () => {
     if (!formData.email) return alert('Please enter an email address');
     setVerifyingEmail(true);
-    // Simulate API call
-    setTimeout(() => {
-      setEmailVerified(true);
+    
+    try {
+      const res = await fetch('/api/verify/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identifier: formData.email, type: 'email' }),
+      });
+      const data = await res.json();
+      
+      if (data.success) {
+        setShowEmailCodeInput(true);
+        alert('Verification code sent to your email.');
+      } else {
+        alert(data.error || 'Failed to send verification code');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('An error occurred');
+    } finally {
       setVerifyingEmail(false);
-      alert(`Verification email sent to ${formData.email}. (Simulated: Verified)`);
-    }, 1500);
+    }
+  };
+
+  const confirmEmailCode = async () => {
+    if (!emailCode) return alert('Please enter the code');
+    setVerifyingEmail(true);
+
+    try {
+      const res = await fetch('/api/verify/check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identifier: formData.email, code: emailCode }),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        setEmailVerified(true);
+        setShowEmailCodeInput(false);
+        alert('Email verified successfully!');
+      } else {
+        alert(data.error || 'Invalid code');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('An error occurred');
+    } finally {
+      setVerifyingEmail(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -228,25 +316,45 @@ export default function VendorApplicationPage() {
                         onChange={handleInputChange}
                         placeholder="you@example.com"
                         required
-                        disabled={emailVerified}
+                        disabled={emailVerified || showEmailCodeInput}
                         className="h-11"
                       />
-                      <Button 
-                        type="button"
-                        onClick={verifyEmail}
-                        disabled={emailVerified || verifyingEmail || !formData.email}
-                        className={`min-w-[100px] h-11 ${emailVerified ? 'bg-green-600 hover:bg-green-700' : ''}`}
-                      >
-                        {verifyingEmail ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : emailVerified ? (
-                          <span className="flex items-center gap-1"><CheckCircle className="h-4 w-4" /> Verified</span>
-                        ) : (
-                          'Verify'
-                        )}
-                      </Button>
+                      {!showEmailCodeInput && (
+                        <Button 
+                          type="button"
+                          onClick={verifyEmail}
+                          disabled={emailVerified || verifyingEmail || !formData.email}
+                          className={`min-w-[100px] h-11 ${emailVerified ? 'bg-green-600 hover:bg-green-700' : ''}`}
+                        >
+                          {verifyingEmail ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : emailVerified ? (
+                            <span className="flex items-center gap-1"><CheckCircle className="h-4 w-4" /> Verified</span>
+                          ) : (
+                            'Verify'
+                          )}
+                        </Button>
+                      )}
                     </div>
-                    {!emailVerified && <p className="text-xs text-gray-500 mt-1">We'll send a verification link to this email.</p>}
+                    {showEmailCodeInput && (
+                      <div className="flex gap-2 mt-2">
+                         <Input 
+                            value={emailCode}
+                            onChange={(e) => setEmailCode(e.target.value)}
+                            placeholder="Enter 6-digit code"
+                            className="h-11"
+                          />
+                          <Button 
+                            type="button"
+                            onClick={confirmEmailCode}
+                            disabled={verifyingEmail}
+                            className="min-w-[100px] h-11"
+                          >
+                             {verifyingEmail ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Confirm'}
+                          </Button>
+                      </div>
+                    )}
+                    {!emailVerified && !showEmailCodeInput && <p className="text-xs text-gray-500 mt-1">We'll send a verification link to this email.</p>}
                   </div>
 
                   {/* Phone Verification */}
@@ -260,25 +368,45 @@ export default function VendorApplicationPage() {
                         onChange={handleInputChange}
                         placeholder="+27 12 345 6789"
                         required
-                        disabled={phoneVerified}
+                        disabled={phoneVerified || showPhoneCodeInput}
                         className="h-11"
                       />
-                      <Button 
-                        type="button"
-                        onClick={verifyPhone}
-                        disabled={phoneVerified || verifyingPhone || !formData.phone}
-                        className={`min-w-[100px] h-11 ${phoneVerified ? 'bg-green-600 hover:bg-green-700' : ''}`}
-                      >
-                        {verifyingPhone ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : phoneVerified ? (
-                          <span className="flex items-center gap-1"><CheckCircle className="h-4 w-4" /> Verified</span>
-                        ) : (
-                          'Verify'
-                        )}
-                      </Button>
+                      {!showPhoneCodeInput && (
+                        <Button 
+                          type="button"
+                          onClick={verifyPhone}
+                          disabled={phoneVerified || verifyingPhone || !formData.phone}
+                          className={`min-w-[100px] h-11 ${phoneVerified ? 'bg-green-600 hover:bg-green-700' : ''}`}
+                        >
+                          {verifyingPhone ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : phoneVerified ? (
+                            <span className="flex items-center gap-1"><CheckCircle className="h-4 w-4" /> Verified</span>
+                          ) : (
+                            'Verify'
+                          )}
+                        </Button>
+                      )}
                     </div>
-                    {!phoneVerified && <p className="text-xs text-gray-500 mt-1">We'll verify this number via SMS.</p>}
+                    {showPhoneCodeInput && (
+                      <div className="flex gap-2 mt-2">
+                         <Input 
+                            value={phoneCode}
+                            onChange={(e) => setPhoneCode(e.target.value)}
+                            placeholder="Enter 6-digit code"
+                            className="h-11"
+                          />
+                          <Button 
+                            type="button"
+                            onClick={confirmPhoneCode}
+                            disabled={verifyingPhone}
+                            className="min-w-[100px] h-11"
+                          >
+                             {verifyingPhone ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Confirm'}
+                          </Button>
+                      </div>
+                    )}
+                    {!phoneVerified && !showPhoneCodeInput && <p className="text-xs text-gray-500 mt-1">We'll verify this number via SMS.</p>}
                   </div>
                 </div>
               </div>

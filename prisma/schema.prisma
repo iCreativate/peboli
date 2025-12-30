@@ -350,6 +350,14 @@ model WalletTransaction {
   updatedAt   DateTime          @updatedAt
 }
 
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
 enum TransactionType {
   CREDIT // Money coming in (Sales)
   DEBIT  // Money going out (Payouts, Refunds)
