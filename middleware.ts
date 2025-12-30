@@ -8,7 +8,9 @@ export default withAuth(
 
     // Admin Protection
     if (path.startsWith("/admin") && token?.role !== "ADMIN") {
-      return NextResponse.redirect(new URL("/", req.url));
+      const url = new URL("/login", req.url);
+      url.searchParams.set("callbackUrl", path);
+      return NextResponse.redirect(url);
     }
 
     // Vendor Protection

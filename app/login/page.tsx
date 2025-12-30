@@ -2,8 +2,9 @@
 
 import { useMemo, useState, type FormEvent } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { Eye, EyeOff, X, Chrome, Facebook, Lock, Mail, Loader2 } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Eye, EyeOff, X, Chrome, Facebook, Lock, Mail, Loader2, ShieldCheck } from 'lucide-react';
+import { signIn } from 'next-auth/react';
 import { TakealotHeader } from '@/components/layout/TakealotHeader';
 import { Footer } from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
@@ -13,6 +14,8 @@ import { useAuthStore } from '@/lib/stores/auth';
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl') || '/account';
   const login = useAuthStore((s) => s.login);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -21,9 +24,14 @@ export default function LoginPage() {
   const [socialLoading, setSocialLoading] = useState<'google' | 'facebook' | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // 2FA State
+  const [twoFactorStep, setTwoFactorStep] = useState(false);
+  const [twoFactorCode, setTwoFactorCode] = useState('');
+
   const canSubmit = useMemo(() => {
+    if (twoFactorStep) return twoFactorCode.length === 6;
     return email.trim().length > 0 && password.trim().length > 0;
-  }, [email, password]);
+  }, [email, password, twoFactorStep, twoFactorCode]);
 
   const handleSocialLogin = async (provider: 'google' | 'facebook') => {
     if (submitting || socialLoading) return;
@@ -53,19 +61,33 @@ export default function LoginPage() {
     setSubmitting(true);
     setError(null);
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+      const result = await signIn('credentials', {
+        redirect: false,
+        email,
+        password,
+        code: twoFactorStep ? twoFactorCode : undefined
       });
-      const data = await res.json();
 
-      if (!res.ok) {
-        throw new Error(data.error || 'Login failed');
+      if (result?.error) {
+        if (result.error === '2FA_REQUIRED') {
+            setTwoFactorStep(true);
+            // Don't stop loading? No, we need to let user input code.
+            return;
+        }
+        throw new Error(result.error);
       }
 
-      login(data.user);
-      router.push('/account');
+      // Fetch session to update client store
+      const sessionRes = await fetch('/api/auth/session');
+      const sessionData = await sessionRes.json();
+      
+      if (sessionData?.user) {
+        login(sessionData.user);
+        router.push(callbackUrl);
+        router.refresh();
+      } else {
+        throw new Error('Failed to retrieve session');
+      }
     } catch (err: any) {
         setError(err.message || 'Something went wrong');
     } finally {
@@ -143,68 +165,109 @@ export default function LoginPage() {
                 </div>
 
                 <form onSubmit={onSubmit} className="space-y-4">
-                  <div>
-                    <label className="text-sm font-semibold text-[#1A1D29]">Email address</label>
-                    <div className="mt-2 relative">
-                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8B95A5]" />
-                      <Input
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        type="email"
-                        placeholder="you@example.com"
-                        className="h-11 rounded-xl pl-10 bg-white"
-                        autoComplete="email"
-                      />
-                    </div>
-                  </div>
+                  {error && (
+                      <div className="bg-red-50 text-red-600 text-sm p-3 rounded-lg">
+                          {error}
+                      </div>
+                  )}
 
-                  <div>
-                    <label className="text-sm font-semibold text-[#1A1D29]">Password</label>
-                    <div className="mt-2 relative">
-                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8B95A5]" />
-                      <Input
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        type={showPassword ? 'text' : 'password'}
-                        placeholder="••••••••"
-                        className="h-11 rounded-xl pl-10 pr-10 bg-white"
-                        autoComplete="current-password"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword((s) => !s)}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 h-9 w-9 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center"
-                        aria-label={showPassword ? 'Hide password' : 'Show password'}
-                      >
-                        {showPassword ? (
-                          <EyeOff className="h-4 w-4 text-[#8B95A5]" />
-                        ) : (
-                          <Eye className="h-4 w-4 text-[#8B95A5]" />
-                        )}
-                      </button>
+                  {!twoFactorStep ? (
+                    <>
+                      <div>
+                        <label className="text-sm font-semibold text-[#1A1D29]">Email address</label>
+                        <div className="mt-2 relative">
+                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8B95A5]" />
+                          <Input
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            type="email"
+                            placeholder="you@example.com"
+                            className="h-11 rounded-xl pl-10 bg-white"
+                            autoComplete="email"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="text-sm font-semibold text-[#1A1D29]">Password</label>
+                        <div className="mt-2 relative">
+                          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8B95A5]" />
+                          <Input
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            type={showPassword ? 'text' : 'password'}
+                            placeholder="••••••••"
+                            className="h-11 rounded-xl pl-10 pr-10 bg-white"
+                            autoComplete="current-password"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword((s) => !s)}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 h-9 w-9 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center"
+                            aria-label={showPassword ? 'Hide password' : 'Show password'}
+                          >
+                            {showPassword ? (
+                              <EyeOff className="h-4 w-4 text-[#8B95A5]" />
+                            ) : (
+                              <Eye className="h-4 w-4 text-[#8B95A5]" />
+                            )}
+                          </button>
+                        </div>
+                        <div className="mt-2 flex items-center justify-between">
+                          <span className="text-xs text-[#8B95A5]">Forgot password? (coming soon)</span>
+                          <Link href="/help" className="text-xs font-semibold text-[#0B1220] hover:underline">
+                            Need help
+                          </Link>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+                      <label className="text-sm font-semibold text-[#1A1D29]">Two-Factor Authentication Code</label>
+                      <div className="mt-2 relative">
+                        <ShieldCheck className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8B95A5]" />
+                        <Input
+                          value={twoFactorCode}
+                          onChange={(e) => setTwoFactorCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                          type="text"
+                          placeholder="123456"
+                          className="h-11 rounded-xl pl-10 bg-white text-center tracking-[0.5em] font-mono text-lg"
+                          autoFocus
+                          maxLength={6}
+                        />
+                      </div>
+                      <p className="mt-2 text-xs text-[#8B95A5] text-center">
+                        Enter the 6-digit code from your authenticator app.
+                      </p>
                     </div>
-                    <div className="mt-2 flex items-center justify-between">
-                      <span className="text-xs text-[#8B95A5]">Forgot password? (coming soon)</span>
-                      <Link href="/help" className="text-xs font-semibold text-[#0B1220] hover:underline">
-                        Need help
-                      </Link>
-                    </div>
-                  </div>
+                  )}
 
                   <Button
                     type="submit"
                     disabled={!canSubmit || submitting}
                     className="w-full h-11 rounded-xl premium-gradient text-white font-bold"
                   >
-                    {submitting ? 'Signing in…' : 'Login'}
+                    {submitting ? 'Verifying...' : (twoFactorStep ? 'Verify Code' : 'Login')}
                   </Button>
 
-                  <div className="text-center text-sm text-[#8B95A5]">
-                    New to PEBOLI?{' '}
-                    <Link href="/register" className="font-bold text-[#0B1220] hover:underline">
-                      Register
-                    </Link>
-                  </div>
+                  {twoFactorStep && (
+                    <button 
+                      type="button" 
+                      onClick={() => { setTwoFactorStep(false); setSubmitting(false); setError(null); }}
+                      className="w-full text-sm text-[#8B95A5] hover:text-[#1A1D29] mt-2"
+                    >
+                      Back to Login
+                    </button>
+                  )}
+
+                  {!twoFactorStep && (
+                    <div className="text-center text-sm text-[#8B95A5]">
+                      New to PEBOLI?{' '}
+                      <Link href="/register" className="font-bold text-[#0B1220] hover:underline">
+                        Register
+                      </Link>
+                    </div>
+                  )}
                 </form>
               </div>
             </div>

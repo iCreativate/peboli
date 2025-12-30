@@ -3,6 +3,7 @@
 import { useMemo, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff, Chrome, Facebook, Mail, Loader2, ArrowRight, ShieldCheck } from 'lucide-react';
+import { signIn } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Modal } from '@/components/ui/modal';
@@ -23,7 +24,6 @@ export function LoginModal() {
   // 2FA State
   const [twoFactorStep, setTwoFactorStep] = useState(false);
   const [twoFactorCode, setTwoFactorCode] = useState('');
-  const [tempUserId, setTempUserId] = useState<string | null>(null);
 
   const canSubmit = useMemo(() => {
     if (twoFactorStep) return twoFactorCode.length === 6;
@@ -61,45 +61,36 @@ export function LoginModal() {
     setError(null);
 
     try {
-      if (twoFactorStep && tempUserId) {
-        // Step 2: Verify 2FA
-        const res = await fetch('/api/auth/2fa/validate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: tempUserId, token: twoFactorCode }),
-        });
-        const data = await res.json();
+      const result = await signIn('credentials', {
+        redirect: false,
+        email,
+        password,
+        code: twoFactorStep ? twoFactorCode : undefined
+      });
 
-        if (!res.ok) {
-          throw new Error(data.error || 'Invalid 2FA code');
+      if (result?.error) {
+        if (result.error === "2FA_REQUIRED") {
+           setTwoFactorStep(true);
+           // Stop submitting loading state so user can enter code
+           // Actually, we want to keep submitting? No, we need to let user interact.
+           return; 
         }
+        throw new Error(result.error);
+      }
 
-        login(data.user);
+      // Success - Sync with client store
+      const sessionRes = await fetch('/api/auth/session');
+      const sessionData = await sessionRes.json();
+
+      if (sessionData?.user) {
+        login(sessionData.user);
         closeLogin();
         router.push('/account');
-
+        router.refresh();
       } else {
-        // Step 1: Login with Email/Password
-        const res = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password }),
-        });
-        const data = await res.json();
-
-        if (!res.ok) {
-          throw new Error(data.error || 'Login failed');
-        }
-
-        if (data.require2fa) {
-          setTwoFactorStep(true);
-          setTempUserId(data.userId);
-        } else {
-          login(data.user);
-          closeLogin();
-          router.push('/account');
-        }
+         throw new Error('Failed to retrieve session');
       }
+
     } catch (err: any) {
       setError(err.message || 'Something went wrong');
     } finally {
