@@ -410,7 +410,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   size="icon"
                   className="h-14 w-14 rounded-xl border-gray-200 hover:border-[#0B1220] hover:bg-[#0B1220]/5 transition-all duration-200"
                   onClick={async () => {
-                    const url = typeof window !== 'undefined' ? window.location.href : '';
+                    const url = typeof window !== 'undefined' && window.location ? window.location.href : '';
                     const title = product.name;
                     const text = product.description;
                     try {
@@ -418,7 +418,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                       if (nav && isNavigatorShare(nav)) {
                         await nav.share({ title, text, url });
                       } else {
-                        const origin = typeof window !== 'undefined' ? window.location.origin : '';
+                        const origin = typeof window !== 'undefined' && window.location ? window.location.origin : '';
                         await copyText(url || `${origin}/products/${product.slug}`);
                       }
                     } catch {}

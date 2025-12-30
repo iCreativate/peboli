@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { ArrowLeft, ChevronDown, ChevronUp, Truck, MapPin, Calendar, AlertCircle } from 'lucide-react';
 import { TakealotHeader } from '@/components/layout/TakealotHeader';
 import { Footer } from '@/components/layout/Footer';
@@ -35,16 +36,24 @@ const FAQS = [
 ];
 
 export default function DeliveryHelpPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <DeliveryHelpContent />
+    </Suspense>
+  );
+}
+
+function DeliveryHelpContent() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const searchParams = useSearchParams();
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const faqParam = params.get('faq');
+    const faqParam = searchParams.get('faq');
     
     if (faqParam === 'address') {
       setOpenFaq(2); // Index of "Can I change my delivery address?"
     }
-  }, []);
+  }, [searchParams]);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">

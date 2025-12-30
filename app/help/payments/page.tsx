@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { ArrowLeft, ChevronDown, CreditCard, Ticket, ShieldCheck, AlertCircle } from 'lucide-react';
 import { TakealotHeader } from '@/components/layout/TakealotHeader';
 import { Footer } from '@/components/layout/Footer';
@@ -35,18 +36,26 @@ const FAQS = [
 ];
 
 export default function PaymentsHelpPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PaymentsHelpContent />
+    </Suspense>
+  );
+}
+
+function PaymentsHelpContent() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const searchParams = useSearchParams();
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const faqParam = params.get('faq');
+    const faqParam = searchParams.get('faq');
     
     if (faqParam === 'options') {
       setOpenFaq(0); // Index of "What payment methods do you accept?"
     } else if (faqParam === 'coupon') {
       setOpenFaq(2); // Index of "How do I use a coupon code?"
     }
-  }, []);
+  }, [searchParams]);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
