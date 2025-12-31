@@ -186,18 +186,18 @@ export function PeboliDeals() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-                {group.map((product, index) => (
-                  <motion.div
-                    key={product.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: categoryIndex * 0.06 + index * 0.03 }}
-                  >
-                    <ProductCard product={product} />
-                  </motion.div>
-                ))}
-              </div>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6">
+        {group.map((product, index) => (
+          <motion.div
+            key={product.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: categoryIndex * 0.06 + index * 0.03 }}
+          >
+            <ProductCard product={product} />
+          </motion.div>
+        ))}
+      </div>
             </div>
           ))}
 

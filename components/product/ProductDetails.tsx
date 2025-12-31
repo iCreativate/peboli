@@ -194,7 +194,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         </div>
       </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 mb-16">
           {/* Image Gallery */}
           <div>
             <div className="relative aspect-square mb-6 rounded-2xl overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 premium-shadow-lg">
@@ -260,12 +260,12 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               </Link>
             </div>
 
-            <h1 className="text-3xl font-black text-[#1A1D29] mb-4">
+            <h1 className="text-2xl md:text-3xl font-black text-[#1A1D29] mb-4">
               {product.name}
             </h1>
 
             {/* Rating */}
-            <div className="flex items-center gap-3 mb-6">
+            <div className="flex items-center gap-3 mb-6 flex-wrap">
               <div className="flex items-center gap-1">
                 {[...Array(5)].map((_, i) => (
                   <Star
@@ -287,13 +287,13 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             <Separator className="mb-6" />
 
             {/* Price Section */}
-            <div className="bg-gradient-to-br from-[#0B1220]/6 via-[#FF6B4A]/5 to-[#00C48C]/5 rounded-2xl p-8 mb-8 border border-gray-100 premium-shadow">
-              <div className="flex items-baseline gap-4 mb-3">
-                <span className="text-5xl font-black text-[#1A1D29] tracking-tight">
+            <div className="bg-gradient-to-br from-[#0B1220]/6 via-[#FF6B4A]/5 to-[#00C48C]/5 rounded-2xl p-4 md:p-8 mb-8 border border-gray-100 premium-shadow">
+              <div className="flex items-baseline gap-4 mb-3 flex-wrap">
+                <span className="text-3xl md:text-4xl lg:text-5xl font-black text-[#1A1D29] tracking-tight">
                   {formatPrice(product.price)}
                 </span>
                 {product.compareAtPrice && (
-                  <span className="text-2xl text-[#8B95A5] line-through font-semibold">
+                  <span className="text-lg md:text-xl lg:text-2xl text-[#8B95A5] line-through font-semibold">
                     {formatPrice(product.compareAtPrice)}
                   </span>
                 )}

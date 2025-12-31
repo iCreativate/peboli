@@ -11,14 +11,14 @@ export default async function Home() {
       <TakealotHeader />
       <main className="flex-1 flex flex-col">
         {/* Hero Section with Sidebar */}
-        <div className="flex relative">
-          {/* Left Sidebar */}
-          <div className="flex-shrink-0 relative z-40">
+        <div className="flex flex-col lg:flex-row relative">
+          {/* Left Sidebar - Hidden on mobile/tablet */}
+          <div className="hidden lg:block flex-shrink-0 relative z-40">
             <DepartmentSidebar />
           </div>
           
           {/* Hero Carousel */}
-          <div className="flex-1 relative z-0">
+          <div className="flex-1 relative z-0 w-full">
             <HeroCarousel />
           </div>
         </div>
