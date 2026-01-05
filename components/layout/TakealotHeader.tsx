@@ -101,12 +101,24 @@ export function TakealotHeader() {
             <div className="flex items-center gap-4">
               <div className="hidden md:flex items-center gap-4">
                 {user ? (
-                  <button 
-                    onClick={handleLogout}
-                    className="text-gray-700 hover:text-[#0B1220] transition-colors font-medium"
-                  >
-                    Logout
-                  </button>
+                  <>
+                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-200">
+                      <User className="h-4 w-4 text-gray-600" />
+                      <span className="text-sm font-medium text-gray-700">{user.name || user.email}</span>
+                    </div>
+                    <Link href="/orders" className="text-gray-700 hover:text-[#0B1220] transition-colors">
+                      Orders
+                    </Link>
+                    <Link href="/account" className="text-gray-700 hover:text-[#0B1220] transition-colors font-medium">
+                      My Account
+                    </Link>
+                    <button 
+                      onClick={handleLogout}
+                      className="text-gray-700 hover:text-[#0B1220] transition-colors font-medium"
+                    >
+                      Logout
+                    </button>
+                  </>
                 ) : (
                   <>
                     <button 
@@ -121,14 +133,14 @@ export function TakealotHeader() {
                     >
                       Register
                     </button>
+                    <Link href="/orders" className="text-gray-700 hover:text-[#0B1220] transition-colors">
+                      Orders
+                    </Link>
+                    <Link href="/account" className="text-gray-700 hover:text-[#0B1220] transition-colors">
+                      My Account
+                    </Link>
                   </>
                 )}
-                <Link href="/orders" className="text-gray-700 hover:text-[#0B1220] transition-colors">
-                  Orders
-                </Link>
-                <Link href="/account" className="text-gray-700 hover:text-[#0B1220] transition-colors">
-                  My Account
-                </Link>
               </div>
 
               {/* Icons visible on both mobile and desktop */}

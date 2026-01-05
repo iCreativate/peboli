@@ -120,11 +120,25 @@ export default function AccountPage() {
             <div className="p-6 md:p-10 premium-gradient">
               <div className="max-w-3xl">
                 <div className="text-white/80 text-sm font-semibold">My Account</div>
-                <h1 className="mt-1 text-3xl md:text-4xl font-black text-white tracking-tight">Welcome back</h1>
+                <h1 className="mt-1 text-3xl md:text-4xl font-black text-white tracking-tight">
+                  Welcome back, {user?.name || user?.email?.split('@')[0] || 'User'}
+                </h1>
                 <p className="mt-3 text-white/75 max-w-2xl">
                   Manage orders, returns, and account settings. This dashboard is inspired by marketplace best
                   practices, with a cleaner premium experience.
                 </p>
+                {user && (
+                  <div className="mt-4 flex items-center gap-4 text-white/90">
+                    <div className="text-sm">
+                      <span className="font-semibold">Email:</span> {user.email}
+                    </div>
+                    {user.role && (
+                      <div className="text-sm">
+                        <span className="font-semibold">Role:</span> {user.role}
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 <div className="mt-6 flex flex-wrap gap-3">
                   {QUICK_ACTIONS.map((a) => (
@@ -164,30 +178,6 @@ export default function AccountPage() {
                 ))}
               </div>
 
-              <div className="mt-10 rounded-2xl border border-gray-100 bg-gradient-to-br from-[#0B1220]/6 via-transparent to-[#FF6B4A]/5 p-6">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                  <div>
-                    <div className="font-bold text-[#1A1D29]">Need to sign in?</div>
-                    <div className="mt-1 text-sm text-[#8B95A5]">
-                      Authentication is UI-only for now. Use the premium login page.
-                    </div>
-                  </div>
-                  <div className="flex gap-3">
-                    <button
-                      onClick={openLogin}
-                      className="inline-flex items-center justify-center rounded-xl premium-gradient px-5 py-2.5 text-sm font-semibold text-white"
-                    >
-                      Login
-                    </button>
-                    <button
-                      onClick={openRegister}
-                      className="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-[#1A1D29] hover:bg-gray-50 transition-colors"
-                    >
-                      Register
-                    </button>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>

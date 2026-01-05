@@ -20,44 +20,7 @@ type OrderItem = {
   products: string[];
 };
 
-const ORDERS: OrderItem[] = [
-  {
-    id: 'PB-20481',
-    date: '12 Dec 2025',
-    status: 'Delivered',
-    total: 'R 1,899',
-    items: 2,
-    delivery: 'Delivered to Sandton, Johannesburg',
-    products: ['Sony PlayStation 5 Console', 'DualSense Controller']
-  },
-  {
-    id: 'PB-19807',
-    date: '03 Dec 2025',
-    status: 'Shipped',
-    total: 'R 3,499',
-    items: 1,
-    delivery: 'On the way to Cape Town',
-    products: ['Samsung 65" QLED 4K TV']
-  },
-  {
-    id: 'PB-17622',
-    date: '19 Nov 2025',
-    status: 'Processing',
-    total: 'R 899',
-    items: 1,
-    delivery: 'Preparing for dispatch',
-    products: ['Nespresso Vertuo Next']
-  },
-  {
-    id: 'PB-16500',
-    date: '10 Nov 2025',
-    status: 'Cancelled',
-    total: 'R 450',
-    items: 3,
-    delivery: 'Cancelled by user',
-    products: ['HDMI Cable', 'Power Strip', 'Cable Organizer']
-  },
-];
+// Orders will be fetched from API
 
 const STATUS_STYLE: Record<OrderItem['status'], string> = {
   Processing: 'bg-[#0B1220]/10 text-[#0B1220] border-[#0B1220]/15',
@@ -77,6 +40,8 @@ export default function OrdersPage() {
   const [activeTab, setActiveTab] = useState('all');
   const [selectedOrder, setSelectedOrder] = useState<OrderItem | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [orders, setOrders] = useState<OrderItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const { openLogin } = useUIStore();
   const { user } = useAuthStore();
   const [isMounted, setIsMounted] = useState(false);
@@ -84,6 +49,48 @@ export default function OrdersPage() {
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (user?.id) {
+      fetchOrders();
+    } else {
+      setLoading(false);
+    }
+  }, [user]);
+
+  const fetchOrders = async () => {
+    if (!user?.id) return;
+    
+    setLoading(true);
+    try {
+      const response = await fetch('/api/orders');
+      if (response.ok) {
+        const data = await response.json();
+        // Transform API data to match OrderItem type
+        const transformedOrders: OrderItem[] = data.map((order: any) => ({
+          id: order.orderNumber,
+          date: new Date(order.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+          status: order.status === 'DELIVERED' ? 'Delivered' : 
+                  order.status === 'SHIPPED' ? 'Shipped' : 
+                  order.status === 'CANCELLED' ? 'Cancelled' : 'Processing',
+          total: `R ${Number(order.total).toLocaleString()}`,
+          items: order.items?.length || 0,
+          delivery: order.address ? 
+            `${order.deliveryMethod || 'Standard'} to ${order.address.city}, ${order.address.province}` : 
+            'Delivery address not available',
+          products: order.items?.map((item: any) => item.product?.name || 'Product').slice(0, 3) || []
+        }));
+        setOrders(transformedOrders);
+      } else {
+        setOrders([]);
+      }
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+      setOrders([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (!isMounted) return null;
 
@@ -106,7 +113,7 @@ export default function OrdersPage() {
     );
   }
 
-  const filteredOrders = ORDERS.filter(order => {
+  const filteredOrders = orders.filter(order => {
     if (activeTab === 'all') return true;
     if (activeTab === 'open') return ['Processing', 'Shipped'].includes(order.status);
     if (activeTab === 'cancelled') return order.status === 'Cancelled';
@@ -177,8 +184,16 @@ export default function OrdersPage() {
             </div>
 
             <div className="p-6 md:p-10 min-h-[400px] bg-gray-50/50">
-              <div className="grid grid-cols-1 gap-4">
-                {filteredOrders.length > 0 ? (
+              {loading ? (
+                <div className="text-center py-20">
+                  <div className="h-16 w-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Package className="h-8 w-8 text-gray-400 animate-pulse" />
+                  </div>
+                  <h3 className="text-xl font-bold text-[#1A1D29]">Loading orders...</h3>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-4">
+                  {filteredOrders.length > 0 ? (
                   filteredOrders.map((o) => (
                     <div key={o.id} className="animate-in fade-in slide-in-from-bottom-2 duration-500 rounded-2xl border border-gray-100 bg-white p-6 premium-shadow hover:border-blue-200 transition-colors">
                       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
@@ -250,22 +265,8 @@ export default function OrdersPage() {
                     </Link>
                   </div>
                 )}
-              </div>
-
-              <div className="mt-10 rounded-2xl border border-gray-100 bg-gradient-to-br from-[#0B1220]/6 via-transparent to-[#00C48C]/8 p-6">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                  <div>
-                    <div className="font-bold text-[#1A1D29]">Want faster checkout?</div>
-                    <div className="mt-1 text-sm text-[#8B95A5]">Sign in to save details and track orders automatically.</div>
-                  </div>
-                  <button
-                    onClick={openLogin}
-                    className="inline-flex items-center justify-center rounded-xl premium-gradient px-5 py-2.5 text-sm font-semibold text-white"
-                  >
-                    Login
-                  </button>
                 </div>
-              </div>
+              )}
 
               <div className="mt-8">
                 <Link href="/account" className="inline-flex items-center gap-2 text-sm font-semibold text-[#0B1220] hover:underline">
@@ -300,13 +301,17 @@ export default function OrdersPage() {
               </button>
             </div>
             
-            <div className="p-8">
+              <div className="p-8">
               <div className="flex justify-between mb-8">
                 <div>
                   <p className="text-xs font-bold text-gray-400 uppercase mb-1">Billed To</p>
-                  <p className="font-bold text-[#1A1D29]">John Doe</p>
-                  <p className="text-sm text-gray-500">123 Main Street</p>
-                  <p className="text-sm text-gray-500">Johannesburg, 2000</p>
+                  <p className="font-bold text-[#1A1D29]">{user?.name || 'User'}</p>
+                  <p className="text-sm text-gray-500">{user?.email || ''}</p>
+                  {selectedOrder && (
+                    <>
+                      <p className="text-sm text-gray-500 mt-1">Order #{selectedOrder.id}</p>
+                    </>
+                  )}
                 </div>
                 <div className="text-right">
                    <p className="text-xs font-bold text-gray-400 uppercase mb-1">Date Issued</p>
