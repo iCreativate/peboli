@@ -118,7 +118,9 @@ export const authOptions = {
     signIn: '/login',
     error: '/login',
   },
-  secret: process.env.NEXTAUTH_SECRET || crypto.randomBytes(32).toString('hex')
+  secret: process.env.NEXTAUTH_SECRET || crypto.randomBytes(32).toString('hex'),
+  // Explicitly set the URL for production
+  url: process.env.NEXTAUTH_URL,
 };
 
 const handler = NextAuth(authOptions as any);
