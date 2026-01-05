@@ -50,6 +50,9 @@ export const authOptions = {
           console.warn('Database connection failed in NextAuth, using mock fallback:', e);
         }
 
+        // Special case for admin email - always set ADMIN role
+        const isAdminEmail = credentials.email === 'admin@peboli.store';
+        
         // Fallback: If DB is down or user not found, allow login for testing purposes if it matches a pattern or just generally (dev mode)
         // Replicating previous behavior: create a mock user on the fly if DB fails/returns nothing
         if (!user) {
@@ -58,7 +61,7 @@ export const authOptions = {
                 id: `mock-${Date.now()}`,
                 email: credentials.email,
                 name: 'Mock User',
-                role: 'BUYER', // Default to BUYER
+                role: isAdminEmail ? 'ADMIN' : 'BUYER', // Set ADMIN for admin email
                 password: hashedPassword,
                 isTwoFactorEnabled: false
              };
@@ -69,11 +72,22 @@ export const authOptions = {
                  user.twoFactorSecret = 'KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD'; // Example secret
                  user.role = 'ADMIN';
              }
-             
-             // Special case for testing Admin
-             if (credentials.email === 'admin@peboli.store') {
-                 user.role = 'ADMIN';
-             }
+        } else {
+            // If user exists in DB but is admin email, ensure ADMIN role
+            if (isAdminEmail && user.role !== 'ADMIN') {
+                // Update user role in database if needed
+                try {
+                    await prisma.user.update({
+                        where: { id: user.id },
+                        data: { role: 'ADMIN' }
+                    });
+                    user.role = 'ADMIN';
+                } catch (e) {
+                    console.warn('Failed to update user role to ADMIN:', e);
+                    // Still set role in memory for this session
+                    user.role = 'ADMIN';
+                }
+            }
         }
 
         const hashed = hashPassword(credentials.password as string);

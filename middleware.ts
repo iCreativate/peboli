@@ -13,8 +13,11 @@ export default withAuth(
              url.searchParams.set("callbackUrl", path);
              return NextResponse.redirect(url);
         }
-        if (token.role !== "ADMIN") {
+        // Check role - handle both string and case variations
+        const userRole = token.role as string;
+        if (!userRole || userRole.toUpperCase() !== 'ADMIN') {
              // Redirect non-admins to unauthorized page to avoid redirect loops
+             console.log('[Middleware] Admin access denied:', { role: userRole, path });
              return NextResponse.redirect(new URL("/admin/unauthorized", req.url));
         }
     }
