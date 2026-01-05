@@ -13,73 +13,6 @@ const TABS = [
   { id: 'guide', label: 'Status Guide' },
 ];
 
-const MOCK_ACTIVE_ORDERS = [
-  {
-    id: 'PB-20481',
-    date: '12 Dec 2025',
-    status: 'Out for Delivery',
-    items: ['Sony PlayStation 5 Console', 'DualSense Controller'],
-    eta: 'Today, 14:00 - 17:00',
-    progress: 80,
-    steps: [
-      { status: 'Order Placed', date: '12 Dec, 08:30', completed: true },
-      { status: 'Payment Confirmed', date: '12 Dec, 08:35', completed: true },
-      { status: 'Packed', date: '12 Dec, 14:00', completed: true },
-      { status: 'Shipped', date: '13 Dec, 09:00', completed: true },
-      { status: 'Out for Delivery', date: 'Today, 07:30', completed: true },
-      { status: 'Delivered', date: 'Pending', completed: false },
-    ]
-  },
-  {
-    id: 'PB-19807',
-    date: '10 Dec 2025',
-    status: 'Shipped',
-    items: ['Samsung 65" QLED 4K TV'],
-    eta: 'Tomorrow, 09:00 - 13:00',
-    progress: 60,
-    steps: [
-      { status: 'Order Placed', date: '10 Dec, 10:15', completed: true },
-      { status: 'Payment Confirmed', date: '10 Dec, 10:20', completed: true },
-      { status: 'Packed', date: '11 Dec, 11:00', completed: true },
-      { status: 'Shipped', date: '11 Dec, 16:00', completed: true },
-      { status: 'Out for Delivery', date: 'Pending', completed: false },
-      { status: 'Delivered', date: 'Pending', completed: false },
-    ]
-  }
-];
-
-const MOCK_TRACKING_DATA: Record<string, typeof MOCK_ACTIVE_ORDERS[0]> = {
-  'TRK-99887766': {
-    id: 'TRK-99887766',
-    date: '15 Dec 2025',
-    status: 'In Transit',
-    items: ['Apple MacBook Pro 14"', 'Magic Mouse'],
-    eta: 'Today, 10:00 - 12:00',
-    progress: 70,
-    steps: [
-      { status: 'Picked Up', date: '15 Dec, 09:00', completed: true },
-      { status: 'Arrived at Facility', date: '15 Dec, 14:00', completed: true },
-      { status: 'Departed Facility', date: '15 Dec, 20:00', completed: true },
-      { status: 'In Transit', date: 'Today, 06:00', completed: true },
-      { status: 'Out for Delivery', date: 'Pending', completed: false },
-      { status: 'Delivered', date: 'Pending', completed: false },
-    ]
-  },
-  'TRK-11223344': {
-    id: 'TRK-11223344',
-    date: '14 Dec 2025',
-    status: 'Delivered',
-    items: ['Nike Air Max 90'],
-    eta: 'Delivered',
-    progress: 100,
-    steps: [
-      { status: 'Picked Up', date: '14 Dec, 10:00', completed: true },
-      { status: 'In Transit', date: '14 Dec, 15:00', completed: true },
-      { status: 'Out for Delivery', date: '15 Dec, 08:00', completed: true },
-      { status: 'Delivered', date: '15 Dec, 11:30', completed: true },
-    ]
-  }
-};
 
 const STATUS_GUIDE = [
   {
@@ -108,14 +41,89 @@ const STATUS_GUIDE = [
   },
 ];
 
+type OrderTracking = {
+  id: string;
+  date: string;
+  status: string;
+  items: string[];
+  eta: string;
+  progress: number;
+  steps: Array<{ status: string; date: string; completed: boolean }>;
+};
+
 export default function TrackOrderPage() {
   const [activeTab, setActiveTab] = useState('order');
   const [searchQuery, setSearchQuery] = useState('');
   const [trackingNumber, setTrackingNumber] = useState('');
-  const [trackingResult, setTrackingResult] = useState<typeof MOCK_ACTIVE_ORDERS[0] | null>(null);
+  const [trackingResult, setTrackingResult] = useState<OrderTracking | null>(null);
   const [trackingError, setTrackingError] = useState('');
+  const [activeOrders, setActiveOrders] = useState<OrderTracking[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleTrackPackage = () => {
+  useEffect(() => {
+    fetchActiveOrders();
+  }, []);
+
+  const fetchActiveOrders = async () => {
+    try {
+      const res = await fetch('/api/orders');
+      if (res.ok) {
+        const orders = await res.json();
+        // Transform orders to tracking format
+        const transformed = orders
+          .filter((o: any) => o.status !== 'DELIVERED' && o.status !== 'CANCELLED')
+          .map((order: any) => ({
+            id: order.orderNumber,
+            date: new Date(order.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+            status: order.status,
+            items: order.items?.map((item: any) => item.product?.name || 'Product') || [],
+            eta: order.estimatedDelivery || 'Pending',
+            progress: calculateProgress(order.status),
+            steps: getOrderSteps(order.status, order.createdAt)
+          }));
+        setActiveOrders(transformed);
+      }
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const calculateProgress = (status: string): number => {
+    const statusMap: Record<string, number> = {
+      'PROCESSING': 20,
+      'PACKED': 40,
+      'SHIPPED': 60,
+      'IN_TRANSIT': 70,
+      'OUT_FOR_DELIVERY': 90,
+      'DELIVERED': 100
+    };
+    return statusMap[status] || 0;
+  };
+
+  const getOrderSteps = (status: string, createdAt: string) => {
+    const baseDate = new Date(createdAt);
+    const steps = [
+      { status: 'Order Placed', date: baseDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }), completed: true },
+      { status: 'Payment Confirmed', date: new Date(baseDate.getTime() + 5 * 60000).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }), completed: true },
+      { status: 'Packed', date: 'Pending', completed: false },
+      { status: 'Shipped', date: 'Pending', completed: false },
+      { status: 'Out for Delivery', date: 'Pending', completed: false },
+      { status: 'Delivered', date: 'Pending', completed: false },
+    ];
+    
+    const statusOrder = ['PROCESSING', 'PACKED', 'SHIPPED', 'IN_TRANSIT', 'OUT_FOR_DELIVERY', 'DELIVERED'];
+    const currentIndex = statusOrder.indexOf(status);
+    
+    return steps.map((step, idx) => ({
+      ...step,
+      completed: idx <= currentIndex,
+      date: idx <= currentIndex ? step.date : 'Pending'
+    }));
+  };
+
+  const handleTrackPackage = async () => {
     setTrackingError('');
     setTrackingResult(null);
 
@@ -124,11 +132,24 @@ export default function TrackOrderPage() {
       return;
     }
 
-    const result = MOCK_TRACKING_DATA[trackingNumber.trim()];
-    if (result) {
-      setTrackingResult(result);
-    } else {
-      setTrackingError('Tracking number not found. Please check and try again.');
+    try {
+      const res = await fetch(`/api/orders/track?trackingNumber=${trackingNumber.trim()}`);
+      if (res.ok) {
+        const order = await res.json();
+        setTrackingResult({
+          id: order.orderNumber,
+          date: new Date(order.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+          status: order.status,
+          items: order.items?.map((item: any) => item.product?.name || 'Product') || [],
+          eta: order.estimatedDelivery || 'Pending',
+          progress: calculateProgress(order.status),
+          steps: getOrderSteps(order.status, order.createdAt)
+        });
+      } else {
+        setTrackingError('Tracking number not found. Please check and try again.');
+      }
+    } catch (error) {
+      setTrackingError('Error tracking package. Please try again.');
     }
   };
 
@@ -190,8 +211,13 @@ export default function TrackOrderPage() {
                   </div>
 
                   <h3 className="font-bold text-[#1A1D29] mb-4">Recent Orders</h3>
-                  <div className="grid gap-6">
-                    {MOCK_ACTIVE_ORDERS.map((order) => (
+                  {loading ? (
+                    <div className="text-center py-8 text-gray-500">Loading orders...</div>
+                  ) : activeOrders.length === 0 ? (
+                    <div className="text-center py-8 text-gray-500">No active orders to track</div>
+                  ) : (
+                    <div className="grid gap-6">
+                      {activeOrders.map((order) => (
                       <div key={order.id} className="border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
                         <div className="bg-gray-50 p-4 border-b border-gray-100 flex flex-col md:flex-row justify-between md:items-center gap-2">
                           <div>
@@ -259,8 +285,9 @@ export default function TrackOrderPage() {
 
                         </div>
                       </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
 

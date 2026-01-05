@@ -44,7 +44,7 @@ const TILES: DashboardTile[] = [
   {
     title: 'Personal Details',
     description: 'Update name, email, and phone number.',
-    href: '/account',
+    href: '/account/details',
     icon: <User className="h-5 w-5" />,
   },
   {
@@ -55,14 +55,14 @@ const TILES: DashboardTile[] = [
   },
   {
     title: 'Addresses',
-    description: 'Manage delivery addresses and pickup preferences (coming soon).',
-    href: '/account',
+    description: 'Manage delivery addresses and pickup preferences.',
+    href: '/account/addresses',
     icon: <MapPin className="h-5 w-5" />,
   },
   {
     title: 'My lists',
     description: 'Saved items and wishlists.',
-    href: '/account',
+    href: '/account/lists',
     icon: <Heart className="h-5 w-5" />,
   },
   {

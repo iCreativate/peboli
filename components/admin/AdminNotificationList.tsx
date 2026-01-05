@@ -18,34 +18,6 @@ interface Notification {
   createdAt: string;
 }
 
-const MOCK_NOTIFICATIONS: Notification[] = [
-  {
-    id: 'mock-1',
-    title: 'New Order #ORD-2024-001',
-    message: 'A new order has been placed by John Doe for R 4,500.00',
-    type: 'sale',
-    isRead: false,
-    link: '/admin/orders/mock-1',
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 'mock-2',
-    title: 'Low Stock Alert: Gaming Monitor',
-    message: 'Stock level for "UltraGear 27inch" has fallen below 5 units.',
-    type: 'stock',
-    isRead: false,
-    link: '/admin/products/monitor-123',
-    createdAt: new Date(Date.now() - 3600000).toISOString() // 1 hour ago
-  },
-  {
-    id: 'mock-3',
-    title: 'System Maintenance Scheduled',
-    message: 'Scheduled maintenance will occur on Sunday at 02:00 AM.',
-    type: 'system',
-    isRead: true,
-    createdAt: new Date(Date.now() - 86400000).toISOString() // 1 day ago
-  }
-];
 
 export function AdminNotificationList() {
   const { data: session, status } = useSession();
@@ -60,8 +32,7 @@ export function AdminNotificationList() {
     if (status === 'authenticated' && userId) {
       fetchNotifications(userId);
     } else if (status === 'unauthenticated') {
-      // Show mock data for preview even if unauthenticated/loading
-      setNotifications(MOCK_NOTIFICATIONS);
+      setNotifications([]);
       setLoading(false);
     }
   }, [session, status]);
@@ -69,19 +40,21 @@ export function AdminNotificationList() {
   const fetchNotifications = async (userId?: string) => {
     try {
       const id = userId || (session?.user as any)?.id;
-      if (!id) return;
+      if (!id) {
+        setLoading(false);
+        return;
+      }
 
       const res = await fetch(`/api/notifications?userId=${id}`);
       if (res.ok) {
         const data = await res.json();
-        // Use mock data if no real notifications exist, for demonstration
-        setNotifications(data.length > 0 ? data : MOCK_NOTIFICATIONS);
+        setNotifications(data || []);
       } else {
-         setNotifications(MOCK_NOTIFICATIONS);
+        setNotifications([]);
       }
     } catch (error) {
       console.error('Error fetching notifications:', error);
-      setNotifications(MOCK_NOTIFICATIONS);
+      setNotifications([]);
     } finally {
       setLoading(false);
     }
