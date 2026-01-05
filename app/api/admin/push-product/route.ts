@@ -90,10 +90,10 @@ export async function POST(request: Request) {
       if (!vendor) {
         // Create a default user and vendor if none exists
         const user = await prisma.user.upsert({
-             where: { email: 'admin@peboli.com' },
+             where: { email: 'admin@peboli.store' },
              update: {},
              create: {
-                 email: 'admin@peboli.com',
+                 email: 'admin@peboli.store',
                  name: 'Peboli Admin',
                  role: 'VENDOR'
              }
@@ -103,7 +103,7 @@ export async function POST(request: Request) {
           data: {
             userId: user.id,
             name: 'Peboli Official',
-            email: 'admin@peboli.com',
+            email: 'admin@peboli.store',
             isVerified: true,
             verificationTier: 'ELITE',
             rating: 5.0,

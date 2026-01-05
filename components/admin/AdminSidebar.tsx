@@ -75,7 +75,7 @@ export function AdminSidebar({ className, onClose }: { className?: string; onClo
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold text-gray-900 truncate">Super Admin</p>
-            <p className="text-xs text-gray-500 truncate">admin@peboli.com</p>
+            <p className="text-xs text-gray-500 truncate">admin@peboli.store</p>
           </div>
         </div>
         <button className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 w-full transition-colors">

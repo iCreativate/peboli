@@ -71,7 +71,7 @@ export const authOptions = {
              }
              
              // Special case for testing Admin
-             if (credentials.email === 'admin@peboli.com') {
+             if (credentials.email === 'admin@peboli.store') {
                  user.role = 'ADMIN';
              }
         }
