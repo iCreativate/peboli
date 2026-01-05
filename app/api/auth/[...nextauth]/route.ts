@@ -1,5 +1,7 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import GoogleProvider from 'next-auth/providers/google';
+import FacebookProvider from 'next-auth/providers/facebook';
 import { prisma } from '@/lib/prisma';
 import crypto from 'crypto';
 import { authenticator } from 'otplib';
@@ -13,6 +15,21 @@ function hashPassword(password: string): string {
 
 export const authOptions = {
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID || '',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+      authorization: {
+        params: {
+          prompt: 'consent',
+          access_type: 'offline',
+          response_type: 'code',
+        },
+      },
+    }),
+    FacebookProvider({
+      clientId: process.env.FACEBOOK_CLIENT_ID || '',
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET || '',
+    }),
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
@@ -97,11 +114,62 @@ export const authOptions = {
   ],
   session: { strategy: 'jwt' as const },
   callbacks: {
-    async jwt({ token, user }: any) {
+    async signIn({ user, account, profile }: any) {
+      // Handle OAuth sign-in (Google/Facebook)
+      if (account?.provider === 'google' || account?.provider === 'facebook') {
+        if (!user.email) {
+          return false; // Require email for OAuth users
+        }
+
+        try {
+          // Check if user exists
+          let dbUser = await prisma.user.findUnique({
+            where: { email: user.email },
+          });
+
+          // Create user if they don't exist
+          if (!dbUser) {
+            dbUser = await prisma.user.create({
+              data: {
+                email: user.email,
+                name: user.name || 'User',
+                role: 'BUYER',
+                // OAuth users don't have passwords
+                password: null,
+              },
+            });
+          }
+
+          // Update user info if needed
+          if (user.name && dbUser.name !== user.name) {
+            await prisma.user.update({
+              where: { id: dbUser.id },
+              data: { name: user.name },
+            });
+          }
+
+          // Attach user data to the user object
+          user.id = dbUser.id;
+          user.role = dbUser.role || 'BUYER'; // Ensure role is set
+          user.vendorStatus = dbUser.vendor?.status;
+
+          return true;
+        } catch (error) {
+          console.error('Error in OAuth sign-in:', error);
+          // Allow sign-in even if DB fails (fallback mode)
+          return true;
+        }
+      }
+
+      // For credentials provider, the authorize function handles user validation
+      return true;
+    },
+    async jwt({ token, user, account }: any) {
       if (user) {
         token.id = user.id;
         token.role = user.role;
         token.vendorStatus = user.vendorStatus;
+        token.provider = account?.provider; // Track auth provider
       }
       return token;
     },
@@ -110,6 +178,7 @@ export const authOptions = {
         (session.user as any).id = token.id;
         (session.user as any).role = token.role;
         (session.user as any).vendorStatus = token.vendorStatus;
+        (session.user as any).provider = token.provider;
       }
       return session;
     },

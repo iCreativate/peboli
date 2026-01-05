@@ -33,19 +33,34 @@ export function LoginForm() {
   const handleSocialLogin = async (provider: 'google' | 'facebook') => {
     if (submitting || socialLoading) return;
     setSocialLoading(provider);
+    setError(null);
+    
     try {
-      await new Promise((r) => setTimeout(r, 800));
-      
-      // Simulate successful social login
-      const mockUser = {
-        id: `${provider}-${Date.now()}`,
-        name: provider === 'google' ? 'Google User' : 'Facebook User',
-        email: `user@${provider}.com`,
-        role: 'BUYER',
-      };
-      
-      login(mockUser);
-      router.push('/account');
+      // Use NextAuth's signIn for OAuth
+      const result = await signIn(provider, {
+        redirect: false,
+        callbackUrl: callbackUrl,
+      });
+
+      if (result?.error) {
+        throw new Error(result.error);
+      }
+
+      if (result?.ok) {
+        // Fetch session to update client store
+        const sessionRes = await fetch('/api/auth/session');
+        const sessionData = await sessionRes.json();
+        
+        if (sessionData?.user) {
+          login(sessionData.user);
+          router.push(callbackUrl);
+          router.refresh();
+        } else {
+          throw new Error('Failed to retrieve session');
+        }
+      }
+    } catch (err: any) {
+      setError(err.message || `Failed to sign in with ${provider}`);
     } finally {
       setSocialLoading(null);
     }

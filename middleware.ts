@@ -7,16 +7,15 @@ export default withAuth(
     const path = req.nextUrl.pathname;
 
     // Admin Protection
-    if (path.startsWith("/admin")) {
+    if (path.startsWith("/admin") && !path.startsWith("/admin/unauthorized")) {
         if (!token) {
              const url = new URL("/login", req.url);
              url.searchParams.set("callbackUrl", path);
              return NextResponse.redirect(url);
         }
         if (token.role !== "ADMIN") {
-             // Redirect non-admins to home or show error?
-             // For now, redirect to login to force admin login or home
-             return NextResponse.redirect(new URL("/", req.url));
+             // Redirect non-admins to unauthorized page to avoid redirect loops
+             return NextResponse.redirect(new URL("/admin/unauthorized", req.url));
         }
     }
 

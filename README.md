@@ -107,12 +107,33 @@ peboli/
    npm install
    ```
 
-2. **Run development server**
-```bash
-npm run dev
+2. **Set up environment variables**
+   Create a `.env.local` file in the root directory with the following variables:
+   ```env
+   # NextAuth Configuration
+   NEXTAUTH_URL=http://localhost:3000
+   NEXTAUTH_SECRET=your-secret-key-here
+
+   # Database
+   DATABASE_URL=your-postgresql-connection-string
+
+   # OAuth Providers (Optional - for Google/Facebook login)
+   GOOGLE_CLIENT_ID=your-google-client-id
+   GOOGLE_CLIENT_SECRET=your-google-client-secret
+   FACEBOOK_CLIENT_ID=your-facebook-app-id
+   FACEBOOK_CLIENT_SECRET=your-facebook-app-secret
    ```
 
-3. **Open browser**
+   **To get OAuth credentials:**
+   - **Google**: Go to [Google Cloud Console](https://console.cloud.google.com/), create a project, enable Google+ API, and create OAuth 2.0 credentials. Add authorized redirect URI: `http://localhost:3000/api/auth/callback/google`
+   - **Facebook**: Go to [Facebook Developers](https://developers.facebook.com/), create an app, add Facebook Login product, and get App ID and App Secret. Add valid OAuth redirect URI: `http://localhost:3000/api/auth/callback/facebook`
+
+3. **Run development server**
+   ```bash
+   npm run dev
+   ```
+
+4. **Open browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
 
 ## 📝 Development Notes

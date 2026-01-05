@@ -6,11 +6,18 @@ import { AdminLayoutClient } from '@/components/admin/AdminLayoutClient';
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
   
-  console.log('[Admin Layout] Checking session:', session?.user?.email, session?.user?.role);
-
-  if (!session || session.user.role !== 'ADMIN') {
-    console.log('[Admin Layout] Redirecting to login');
+  // Check if user is authenticated
+  if (!session) {
     redirect('/login?callbackUrl=/admin');
+  }
+
+  // Check if user has ADMIN role - use type assertion to access role
+  const userRole = (session.user as any)?.role;
+  
+  if (!userRole || userRole !== 'ADMIN') {
+    // Redirect to unauthorized page instead of login to avoid redirect loops
+    // This prevents redirect loops when user is logged in but not admin
+    redirect('/admin/unauthorized');
   }
 
   return <AdminLayoutClient>{children}</AdminLayoutClient>;
