@@ -7,6 +7,8 @@ const nextConfig: NextConfig = {
   // experimental: {
   //   isrMemoryCacheSize: 0,
   // },
+  // Render.com configuration
+  output: 'standalone',
 };
 
 export default nextConfig;
