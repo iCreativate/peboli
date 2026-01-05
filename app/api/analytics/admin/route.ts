@@ -7,8 +7,13 @@ export async function GET() {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session || session.user.role !== 'ADMIN') {
+    if (!session || !session.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const userRole = (session.user as any)?.role;
+    if (!userRole || userRole !== 'ADMIN') {
+      return NextResponse.json({ error: 'Unauthorized - Admin access required' }, { status: 401 });
     }
 
     // 1. Total Users

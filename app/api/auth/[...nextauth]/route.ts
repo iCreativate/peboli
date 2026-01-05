@@ -90,8 +90,20 @@ export const authOptions = {
             }
         }
 
-        const hashed = hashPassword(credentials.password as string);
-        if (user.password !== hashed) return null;
+        // Check password - allow login if user has no password (OAuth users) or password matches
+        if (user.password) {
+            const hashed = hashPassword(credentials.password as string);
+            if (user.password !== hashed) return null;
+        } else {
+            // OAuth users don't have passwords - for admin email, allow password login to set password
+            if (isAdminEmail) {
+                // Allow login and optionally set password
+                // For now, just allow login without password check for admin email
+            } else {
+                // Non-admin OAuth users need to use OAuth to login
+                return null;
+            }
+        }
 
         // 2FA Check
         if (user.isTwoFactorEnabled) {
@@ -181,9 +193,16 @@ export const authOptions = {
     async jwt({ token, user, account }: any) {
       if (user) {
         token.id = user.id;
-        token.role = user.role;
+        token.role = user.role || 'BUYER'; // Ensure role is always set
         token.vendorStatus = user.vendorStatus;
         token.provider = account?.provider; // Track auth provider
+        
+        // Log for debugging
+        console.log('[JWT Callback] Setting token:', {
+          userId: user.id,
+          email: user.email,
+          role: token.role
+        });
       }
       return token;
     },
