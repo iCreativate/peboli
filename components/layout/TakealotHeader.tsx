@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Search, ShoppingCart, User, Heart, ChevronDown, Menu, X } from 'lucide-react';
+import { Search, ShoppingCart, User, Heart, ChevronDown, Menu, X, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useCartStore } from '@/lib/stores/cart';
@@ -106,6 +106,15 @@ export function TakealotHeader() {
                       <User className="h-4 w-4 text-gray-600" />
                       <span className="text-sm font-medium text-gray-700">{user.name || user.email}</span>
                     </div>
+                    {user.email === 'admin@peboli.store' && (
+                      <Link 
+                        href="/admin" 
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 border border-red-200 text-red-700 hover:bg-red-100 transition-colors font-medium"
+                      >
+                        <Shield className="h-4 w-4" />
+                        Admin
+                      </Link>
+                    )}
                     <Link href="/orders" className="text-gray-700 hover:text-[#0B1220] transition-colors">
                       Orders
                     </Link>
@@ -189,6 +198,16 @@ export function TakealotHeader() {
                     <User className="h-5 w-5 text-gray-500" />
                     <span className="font-medium">{user.name || user.email}</span>
                   </div>
+                  {user.email === 'admin@peboli.store' && (
+                    <Link 
+                      href="/admin" 
+                      className="flex items-center gap-2 text-red-700 bg-red-50 py-2 px-3 rounded-lg font-medium mb-2" 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <Shield className="h-4 w-4" />
+                      Admin Dashboard
+                    </Link>
+                  )}
                   <Link href="/account" className="text-gray-700 py-2" onClick={() => setIsMobileMenuOpen(false)}>
                     My Account
                   </Link>
