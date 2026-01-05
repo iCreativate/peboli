@@ -151,6 +151,7 @@ export const authOptions = {
           // Check if user exists
           let dbUser = await prisma.user.findUnique({
             where: { email: user.email },
+            include: { vendor: true },
           });
 
           // Create user if they don't exist
@@ -163,6 +164,7 @@ export const authOptions = {
                 // OAuth users don't have passwords
                 password: null,
               },
+              include: { vendor: true },
             });
           }
 
