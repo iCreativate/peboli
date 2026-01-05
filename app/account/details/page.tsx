@@ -100,11 +100,11 @@ export default function PersonalDetailsPage() {
       
       if (res.ok) {
         // Update auth store
-        useAuthStore.getState().setUser({
+        const { login } = useAuthStore.getState();
+        login({
           ...user!,
           name: formData.name,
           email: formData.email,
-          phone: formData.phone,
         });
         
         alert('Profile updated successfully!');
