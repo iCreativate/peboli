@@ -6,23 +6,17 @@ export default withAuth(
     const token = req.nextauth.token;
     const path = req.nextUrl.pathname;
 
-    // Admin Protection
+    // Admin Protection - Simplified: Check email instead of role
     if (path.startsWith("/admin") && !path.startsWith("/admin/unauthorized") && !path.startsWith("/admin/debug")) {
         if (!token) {
              const url = new URL("/login", req.url);
              url.searchParams.set("callbackUrl", path);
              return NextResponse.redirect(url);
         }
-        // Check role - handle both string and case variations
-        const userRole = token.role as string;
-        if (!userRole || userRole.toUpperCase() !== 'ADMIN') {
-             // Redirect non-admins to unauthorized page to avoid redirect loops
-             console.log('[Middleware] Admin access denied:', { 
-               role: userRole, 
-               path,
-               tokenId: token.id,
-               tokenEmail: (token as any).email
-             });
+        // Simplified: Check if email is admin@peboli.store
+        const userEmail = (token as any).email || (token as any).name;
+        if (!userEmail || userEmail !== 'admin@peboli.store') {
+             // Redirect non-admins to unauthorized page
              return NextResponse.redirect(new URL("/admin/unauthorized", req.url));
         }
     }

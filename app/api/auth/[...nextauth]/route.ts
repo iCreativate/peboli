@@ -193,16 +193,10 @@ export const authOptions = {
     async jwt({ token, user, account }: any) {
       if (user) {
         token.id = user.id;
+        token.email = user.email; // Store email in token for simplified admin check
         token.role = user.role || 'BUYER'; // Ensure role is always set
         token.vendorStatus = user.vendorStatus;
         token.provider = account?.provider; // Track auth provider
-        
-        // Log for debugging
-        console.log('[JWT Callback] Setting token:', {
-          userId: user.id,
-          email: user.email,
-          role: token.role
-        });
       }
       return token;
     },
