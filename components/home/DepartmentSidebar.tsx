@@ -122,8 +122,15 @@ export function DepartmentSidebar() {
   }, []);
 
   const adminDepartments = useAdminStore((s) => s.departments);
+  const [mounted, setMounted] = useState(false);
+  
+  // Wait for client-side hydration
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  
   const categories =
-    adminDepartments && adminDepartments.length > 0
+    (mounted && adminDepartments && adminDepartments.length > 0)
       ? adminDepartments
       : [
           'Appliances',

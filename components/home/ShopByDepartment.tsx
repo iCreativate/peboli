@@ -1,11 +1,30 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { MAIN_CATEGORIES } from '@/lib/constants/categories';
 import { motion } from 'framer-motion';
+import { useAdminStore } from '@/lib/stores/admin';
 
 export function ShopByDepartment() {
-  const departments = MAIN_CATEGORIES;
+  const adminDepartments = useAdminStore((s) => s.departments);
+  const [mounted, setMounted] = useState(false);
+  
+  // Wait for client-side hydration
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  
+  // Use admin departments if available, otherwise fall back to MAIN_CATEGORIES
+  const departments = (mounted && adminDepartments && adminDepartments.length > 0)
+    ? adminDepartments.map((dept) => ({
+        id: dept.slug,
+        name: dept.name,
+        slug: dept.slug,
+        icon: '📦', // Default icon, could be enhanced later
+        productCount: 0, // Could be calculated from products
+      }))
+    : MAIN_CATEGORIES;
 
   return (
     <section className="py-10 md:py-12 bg-white border-b border-gray-100">
