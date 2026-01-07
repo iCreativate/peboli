@@ -158,11 +158,14 @@ export const useAdminStore = create<AdminState>()(
       addDepartment: (dept) =>
         set((state) => ({ departments: [...state.departments, dept] })),
       updateDepartment: (slug, updates) =>
-        set((state) => ({
-          departments: state.departments.map((d) =>
-            d.slug === slug ? { ...d, ...updates } : d
-          ),
-        })),
+        set((state) => {
+          const deptIndex = state.departments.findIndex((d) => d.slug === slug);
+          if (deptIndex === -1) return state;
+          const updated = { ...state.departments[deptIndex], ...updates };
+          const newDepartments = [...state.departments];
+          newDepartments[deptIndex] = updated;
+          return { departments: newDepartments };
+        }),
       deleteDepartment: (slug) =>
         set((state) => ({
           departments: state.departments.filter((d) => d.slug !== slug),
@@ -182,9 +185,14 @@ export const useAdminStore = create<AdminState>()(
 
       addCollection: (col) => set((state) => ({ collections: [...state.collections, col] })),
       updateCollection: (id, updates) =>
-        set((state) => ({
-          collections: state.collections.map((c) => (c.id === id ? { ...c, ...updates } : c)),
-        })),
+        set((state) => {
+          const colIndex = state.collections.findIndex((c) => c.id === id);
+          if (colIndex === -1) return state;
+          const updated = { ...state.collections[colIndex], ...updates };
+          const newCollections = [...state.collections];
+          newCollections[colIndex] = updated;
+          return { collections: newCollections };
+        }),
       deleteCollection: (id) =>
         set((state) => ({ collections: state.collections.filter((c) => c.id !== id) })),
       moveCollection: (id, direction) =>
@@ -212,7 +220,7 @@ export const useAdminStore = create<AdminState>()(
     }),
     {
       name: 'peboli_admin',
-      version: 6,
+      version: 7,
       migrate: (persistedState: unknown) => {
         if (!persistedState || typeof persistedState !== 'object') {
           return persistedState;

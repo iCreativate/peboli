@@ -173,13 +173,7 @@ export default function WishlistPage() {
 
                     <div className="mt-3">
                       <div className="text-xs font-bold uppercase tracking-wide text-[#8B95A5]">Price</div>
-                      <input
-                        value={String(item.price)}
-                        onChange={(e) => updateItem(item.id, { price: Number(e.target.value || 0) })}
-                        className="mt-2 w-full h-11 rounded-xl border border-gray-200 bg-white px-4 text-sm outline-none focus:ring-2 focus:ring-[#0B1220]/20 focus:border-[#0B1220]"
-                        inputMode="numeric"
-                      />
-                      <div className="mt-2 text-sm font-bold text-[#1A1D29]">{formatZar(item.price)}</div>
+                      <div className="mt-2 text-lg font-bold text-[#1A1D29]">{formatZar(item.price)}</div>
                     </div>
 
                     <div className="mt-4 flex items-center justify-between">
