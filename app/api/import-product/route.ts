@@ -350,11 +350,31 @@ export async function GET(request: Request) {
     const html = await res.text();
     console.log('[Import Product] Fetched HTML, length:', html.length);
 
+  // Extract title from multiple sources
   const ogTitle = extractMeta(html, 'og:title') || extractMeta(html, 'twitter:title');
-  const ogDesc = extractMeta(html, 'og:description') || extractMeta(html, 'description');
-  const ogPrice = extractMeta(html, 'product:price:amount') || extractMeta(html, 'og:price:amount');
-  const ogCurrency = extractMeta(html, 'product:price:currency') || extractMeta(html, 'og:price:currency');
-  const ogBrand = extractMeta(html, 'product:brand') || extractMeta(html, 'og:brand') || extractMeta(html, 'brand');
+  const pageTitle = html.match(/<title[^>]*>([^<]+)<\/title>/i)?.[1]?.trim();
+  
+  // Extract description from multiple sources
+  const ogDesc = extractMeta(html, 'og:description') || extractMeta(html, 'twitter:description') || extractMeta(html, 'description');
+  
+  // Extract price from multiple meta tag formats
+  const ogPrice = extractMeta(html, 'product:price:amount') || 
+                  extractMeta(html, 'og:price:amount') ||
+                  extractMeta(html, 'product:price') ||
+                  extractMeta(html, 'price');
+  
+  // Extract currency from multiple meta tag formats
+  const ogCurrency = extractMeta(html, 'product:price:currency') || 
+                     extractMeta(html, 'og:price:currency') ||
+                     extractMeta(html, 'product:currency') ||
+                     extractMeta(html, 'currency');
+  
+  // Extract brand from multiple sources
+  const ogBrand = extractMeta(html, 'product:brand') || 
+                  extractMeta(html, 'og:brand') || 
+                  extractMeta(html, 'brand') ||
+                  extractMeta(html, 'twitter:data1');
+  
   const ogSiteName = extractMeta(html, 'og:site_name');
 
   const ogImages = extractAllOgImages(html);
@@ -452,11 +472,33 @@ export async function GET(request: Request) {
     }
   }
 
+  // Try to extract price from HTML if not found in structured data
+  let fallbackPrice: number | undefined;
+  if (!jsonPrice && !metaPrice) {
+    // Look for price patterns in HTML (common e-commerce formats)
+    const pricePatterns = [
+      /(?:price|cost|amount)[\s:]*[R$]?\s*(\d+[.,]\d{2})/i,
+      /[R$]\s*(\d+[.,]\d{2})/,
+      /(\d+[.,]\d{2})\s*(?:ZAR|USD|R|rand)/i,
+    ];
+    for (const pattern of pricePatterns) {
+      const match = html.match(pattern);
+      if (match?.[1]) {
+        const cleaned = match[1].replace(',', '.');
+        const num = Number(cleaned);
+        if (Number.isFinite(num) && num > 0) {
+          fallbackPrice = num;
+          break;
+        }
+      }
+    }
+  }
+
   const payload: ImportedProduct = {
-    title: jsonTitle || ogTitle || undefined,
+    title: jsonTitle || ogTitle || pageTitle || undefined,
     description: jsonDesc || ogDesc || undefined,
     images,
-    price: jsonPrice ?? metaPrice,
+    price: jsonPrice ?? metaPrice ?? fallbackPrice,
     compareAtPrice: jsonCompareAt,
     currency: jsonCurrency || (typeof ogCurrency === 'string' ? ogCurrency : undefined),
     brand: finalBrand,
