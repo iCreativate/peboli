@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { writeFile } from 'fs/promises';
+import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 
 function extFromContentType(ct?: string | null) {
@@ -58,11 +58,16 @@ export async function POST(request: Request) {
         const ext = byCt || byUrl || '.jpg';
         const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}${ext}`;
         const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+        
+        // Ensure upload directory exists
+        await mkdir(uploadDir, { recursive: true });
+        
         const filepath = path.join(uploadDir, filename);
         await writeFile(filepath, buf);
         results.push({ source, url: `/uploads/${filename}` });
       } catch (e: any) {
-        results.push({ source, error: 'Download failed' });
+        console.error('Error downloading image:', source, e.message || e);
+        results.push({ source, error: e.message || 'Download failed' });
       }
     }
 
