@@ -29,7 +29,10 @@ export function DepartmentSettings() {
   };
 
   const handleSave = () => {
-    // Zustand persist saves automatically, but we'll show feedback
+    // Force persist by accessing the store
+    const store = useAdminStore.getState();
+    // Trigger a re-render by updating a dummy state
+    useAdminStore.setState({ departments: [...store.departments] });
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };

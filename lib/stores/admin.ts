@@ -164,7 +164,8 @@ export const useAdminStore = create<AdminState>()(
           const updated = { ...state.departments[deptIndex], ...updates };
           const newDepartments = [...state.departments];
           newDepartments[deptIndex] = updated;
-          return { departments: newDepartments };
+          // Force state update
+          return { ...state, departments: newDepartments };
         }),
       deleteDepartment: (slug) =>
         set((state) => ({
@@ -173,14 +174,14 @@ export const useAdminStore = create<AdminState>()(
       moveDepartment: (slug, direction) =>
         set((state) => {
           const idx = state.departments.findIndex((d) => d.slug === slug);
-          if (idx === -1) return {};
+          if (idx === -1) return state;
           const newDepts = [...state.departments];
           if (direction === 'up' && idx > 0) {
             [newDepts[idx], newDepts[idx - 1]] = [newDepts[idx - 1], newDepts[idx]];
           } else if (direction === 'down' && idx < newDepts.length - 1) {
             [newDepts[idx], newDepts[idx + 1]] = [newDepts[idx + 1], newDepts[idx]];
           }
-          return { departments: newDepts };
+          return { ...state, departments: newDepts };
         }),
 
       addCollection: (col) => set((state) => ({ collections: [...state.collections, col] })),
@@ -191,21 +192,22 @@ export const useAdminStore = create<AdminState>()(
           const updated = { ...state.collections[colIndex], ...updates };
           const newCollections = [...state.collections];
           newCollections[colIndex] = updated;
-          return { collections: newCollections };
+          // Force state update
+          return { ...state, collections: newCollections };
         }),
       deleteCollection: (id) =>
         set((state) => ({ collections: state.collections.filter((c) => c.id !== id) })),
       moveCollection: (id, direction) =>
         set((state) => {
           const idx = state.collections.findIndex((c) => c.id === id);
-          if (idx === -1) return {};
+          if (idx === -1) return state;
           const newCols = [...state.collections];
           if (direction === 'up' && idx > 0) {
             [newCols[idx], newCols[idx - 1]] = [newCols[idx - 1], newCols[idx]];
           } else if (direction === 'down' && idx < newCols.length - 1) {
             [newCols[idx], newCols[idx + 1]] = [newCols[idx + 1], newCols[idx]];
           }
-          return { collections: newCols };
+          return { ...state, collections: newCols };
         }),
 
       addBrand: (b) => set((state) => ({ brands: [...state.brands, b] })),
@@ -221,6 +223,18 @@ export const useAdminStore = create<AdminState>()(
     {
       name: 'peboli_admin',
       version: 7,
+      storage: typeof window !== 'undefined' ? {
+        getItem: (name) => {
+          const str = localStorage.getItem(name);
+          return str ? JSON.parse(str) : null;
+        },
+        setItem: (name, value) => {
+          localStorage.setItem(name, JSON.stringify(value));
+        },
+        removeItem: (name) => {
+          localStorage.removeItem(name);
+        },
+      } : undefined,
       migrate: (persistedState: unknown) => {
         if (!persistedState || typeof persistedState !== 'object') {
           return persistedState;
