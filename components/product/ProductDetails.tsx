@@ -204,6 +204,14 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 fill
                 className="object-cover"
                 priority
+                unoptimized={product.images[selectedImage]?.includes('blob.vercel-storage.com')}
+                onError={(e) => {
+                  // Fallback to placeholder if image fails to load
+                  const target = e.target as HTMLImageElement;
+                  if (target.src !== '/products/placeholder.svg') {
+                    target.src = '/products/placeholder.svg';
+                  }
+                }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent pointer-events-none"></div>
               {product.images.length > 1 && (
@@ -242,6 +250,14 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                     src={image}
                     alt={`${product.name} view ${index + 1}`}
                     fill
+                    unoptimized={image?.includes('blob.vercel-storage.com')}
+                    onError={(e) => {
+                      // Fallback to placeholder if image fails to load
+                      const target = e.target as HTMLImageElement;
+                      if (target.src !== '/products/placeholder.svg') {
+                        target.src = '/products/placeholder.svg';
+                      }
+                    }}
                     className="object-cover"
                   />
                 </button>

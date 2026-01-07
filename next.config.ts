@@ -9,6 +9,25 @@ const nextConfig: NextConfig = {
   // },
   // Render.com configuration
   output: 'standalone',
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '*.public.blob.vercel-storage.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.vercel-storage.com',
+        pathname: '/**',
+      },
+      // Allow common image hosting domains
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
+  },
 };
 
 export default nextConfig;
