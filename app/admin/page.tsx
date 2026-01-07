@@ -254,6 +254,67 @@ export default function AdminDashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* Social Media Section */}
+      <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="font-bold text-gray-900">Social Media</h3>
+            <p className="text-sm text-gray-500 mt-1">Manage your social media profiles</p>
+          </div>
+          <Link
+            href="/admin/settings"
+            className="text-sm font-medium text-blue-600 hover:text-blue-700"
+          >
+            Manage →
+          </Link>
+        </div>
+        
+        {loadingSocial ? (
+          <div className="text-center py-8 text-gray-500">Loading...</div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {socialPlatforms.map((platform) => {
+              const Icon = platform.icon;
+              const url = socialMedia[platform.id];
+              
+              return (
+                <div
+                  key={platform.id}
+                  className={`p-4 rounded-xl border-2 transition-all ${
+                    url
+                      ? 'border-gray-200 bg-gray-50 hover:border-blue-300 hover:bg-blue-50'
+                      : 'border-gray-100 bg-gray-50/50'
+                  }`}
+                >
+                  {url ? (
+                    <a
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex flex-col items-center gap-2 group"
+                    >
+                      <Icon className={`h-6 w-6 ${platform.color} group-hover:scale-110 transition-transform`} />
+                      <span className="text-xs font-medium text-gray-700 truncate w-full text-center">
+                        {platform.name}
+                      </span>
+                      <ExternalLink className="h-3 w-3 text-gray-400 group-hover:text-blue-600" />
+                    </a>
+                  ) : (
+                    <div className="flex flex-col items-center gap-2">
+                      <Icon className={`h-6 w-6 ${platform.color} opacity-50`} />
+                      <span className="text-xs font-medium text-gray-400 text-center">
+                        {platform.name}
+                      </span>
+                      <span className="text-[10px] text-gray-400 text-center">Not set</span>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
