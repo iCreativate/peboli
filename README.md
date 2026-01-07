@@ -125,11 +125,24 @@ peboli/
    GOOGLE_CLIENT_SECRET=your-google-client-secret
    FACEBOOK_CLIENT_ID=your-facebook-app-id
    FACEBOOK_CLIENT_SECRET=your-facebook-app-secret
+
+   # Vercel Blob Storage (Required for image uploads)
+   BLOB_READ_WRITE_TOKEN=your-vercel-blob-token
    ```
 
    **To get OAuth credentials:**
    - **Google**: Go to [Google Cloud Console](https://console.cloud.google.com/), create a project, enable Google+ API, and create OAuth 2.0 credentials. Add authorized redirect URI: `http://localhost:3000/api/auth/callback/google`
    - **Facebook**: Go to [Facebook Developers](https://developers.facebook.com/), create an app, add Facebook Login product, and get App ID and App Secret. Add valid OAuth redirect URI: `http://localhost:3000/api/auth/callback/facebook`
+
+   **To set up Vercel Blob Storage (for image uploads):**
+   1. Go to your project in the [Vercel Dashboard](https://vercel.com/dashboard)
+   2. Navigate to the **Storage** tab
+   3. Click **Create Database** or **Add Storage**
+   4. Select **Blob** and click **Continue**
+   5. Give your Blob store a name (e.g., "peboli-images") and click **Create**
+   6. Vercel will automatically create the `BLOB_READ_WRITE_TOKEN` environment variable
+   7. For local development, run `vercel env pull` to download environment variables to your `.env.local` file
+   8. **Important**: Make sure the token is set for all environments (Production, Preview, Development) in Vercel Dashboard > Settings > Environment Variables
 
 3. **Run development server**
    ```bash
