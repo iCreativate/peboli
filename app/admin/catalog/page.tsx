@@ -115,19 +115,28 @@ export default function AdminCatalogPage() {
     setImportError(null);
     setImported(null);
     try {
+      console.log('[Import] Fetching product from URL:', u);
       const res = await fetch(`/api/import-product?url=${encodeURIComponent(u)}`, { cache: 'no-store' });
       const data = (await res.json()) as unknown;
+      
       if (!res.ok) {
         const err = (data as { error?: string })?.error;
-        setImportError(err || 'Import failed');
+        console.error('[Import] API error:', err, res.status);
+        setImportError(err || `Import failed (${res.status})`);
         return;
       }
 
       const imgs = (data as { images?: unknown })?.images;
       if (!Array.isArray(imgs)) {
-        setImportError('Import returned an unexpected response');
+        console.error('[Import] Invalid response - images not array:', data);
+        setImportError('Import returned an unexpected response. The website may not have product data.');
         return;
       }
+
+      console.log('[Import] Successfully imported product:', {
+        title: (data as ImportedProduct).title,
+        imagesCount: imgs.length,
+      });
 
       setImported(data as ImportedProduct);
       
@@ -145,6 +154,7 @@ export default function AdminCatalogPage() {
       if (importedData.images?.length) {
         setDownloadLoading(true);
         try {
+           console.log('[Import] Downloading images...');
            const dres = await fetch('/api/download-images', {
              method: 'POST',
              headers: { 'Content-Type': 'application/json' },
@@ -152,15 +162,21 @@ export default function AdminCatalogPage() {
            });
            const ddata = await dres.json();
            if (dres.ok && ddata.urls?.length) {
+             console.log('[Import] Downloaded images:', ddata.urls.length);
              setImported(prev => prev ? ({ ...prev, images: ddata.urls }) : null);
              if (ddata.urls[0]) setDraftImage(ddata.urls[0]);
+           } else {
+             console.warn('[Import] Image download failed or returned no URLs');
            }
-        } catch (e) { console.error(e); }
+        } catch (e) { 
+          console.error('[Import] Image download error:', e);
+        }
         finally { setDownloadLoading(false); }
       }
 
-    } catch {
-      setImportError('Import failed. This site may block automated requests.');
+    } catch (e: any) {
+      console.error('[Import] Unexpected error:', e);
+      setImportError(e.message || 'Import failed. This site may block automated requests.');
     } finally {
       setImportLoading(false);
     }

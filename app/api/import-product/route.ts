@@ -280,52 +280,69 @@ function breadcrumbCategorySlug(breadcrumb: any) {
 }
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const url = searchParams.get('url');
-
-  if (!url) {
-    return NextResponse.json({ error: 'Missing url' }, { status: 400 });
-  }
-
-  let target: URL;
   try {
-    target = new URL(url);
-  } catch {
-    return NextResponse.json({ error: 'Invalid url' }, { status: 400 });
-  }
+    const { searchParams } = new URL(request.url);
+    const url = searchParams.get('url');
 
-  // Important: many big ecommerce sites will block bots/scrapers.
-  // We try a normal fetch with a browser-like user agent, but it may still fail.
-  const res = await fetch(target.toString(), {
-    headers: {
-      'User-Agent':
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-      'Accept-Language': 'en-US,en;q=0.9',
-      'Accept-Encoding': 'gzip, deflate, br',
-      'Cache-Control': 'no-cache',
-      'Pragma': 'no-cache',
-      'Sec-Ch-Ua': '"Chromium";v="122", "Not(A:Brand";v="24", "Google Chrome";v="122"',
-      'Sec-Ch-Ua-Mobile': '?0',
-      'Sec-Ch-Ua-Platform': '"macOS"',
-      'Sec-Fetch-Dest': 'document',
-      'Sec-Fetch-Mode': 'navigate',
-      'Sec-Fetch-Site': 'none',
-      'Sec-Fetch-User': '?1',
-      'Upgrade-Insecure-Requests': '1',
-    },
-    // Avoid caching stale results during dev.
-    cache: 'no-store',
-  });
+    if (!url) {
+      return NextResponse.json({ error: 'Missing url' }, { status: 400 });
+    }
 
-  if (!res.ok) {
-    return NextResponse.json(
-      { error: `Failed to fetch page (${res.status})`, status: res.status },
-      { status: 502 }
-    );
-  }
+    let target: URL;
+    try {
+      target = new URL(url);
+    } catch (e) {
+      console.error('[Import Product] Invalid URL:', url, e);
+      return NextResponse.json({ error: 'Invalid url' }, { status: 400 });
+    }
 
-  const html = await res.text();
+    console.log('[Import Product] Fetching URL:', target.toString());
+
+    // Important: many big ecommerce sites will block bots/scrapers.
+    // We try a normal fetch with a browser-like user agent, but it may still fail.
+    let res: Response;
+    try {
+      res = await fetch(target.toString(), {
+        headers: {
+          'User-Agent':
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+          'Accept-Language': 'en-US,en;q=0.9',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache',
+          'Sec-Ch-Ua': '"Chromium";v="122", "Not(A:Brand";v="24", "Google Chrome";v="122"',
+          'Sec-Ch-Ua-Mobile': '?0',
+          'Sec-Ch-Ua-Platform': '"macOS"',
+          'Sec-Fetch-Dest': 'document',
+          'Sec-Fetch-Mode': 'navigate',
+          'Sec-Fetch-Site': 'none',
+          'Sec-Fetch-User': '?1',
+          'Upgrade-Insecure-Requests': '1',
+        },
+        // Avoid caching stale results during dev.
+        cache: 'no-store',
+        // Add timeout
+        signal: AbortSignal.timeout(30000), // 30 seconds
+      });
+    } catch (e: any) {
+      console.error('[Import Product] Fetch error:', e.message || e);
+      if (e.name === 'AbortError' || e.name === 'TimeoutError') {
+        return NextResponse.json({ error: 'Request timeout. The website may be too slow or blocking requests.' }, { status: 504 });
+      }
+      return NextResponse.json({ error: `Failed to fetch: ${e.message || 'Network error'}` }, { status: 502 });
+    }
+
+    if (!res.ok) {
+      console.error('[Import Product] HTTP error:', res.status, res.statusText);
+      return NextResponse.json(
+        { error: `Failed to fetch page (${res.status} ${res.statusText})`, status: res.status },
+        { status: 502 }
+      );
+    }
+
+    const html = await res.text();
+    console.log('[Import Product] Fetched HTML, length:', html.length);
 
   const ogTitle = extractMeta(html, 'og:title') || extractMeta(html, 'twitter:title');
   const ogDesc = extractMeta(html, 'og:description') || extractMeta(html, 'description');
@@ -409,5 +426,18 @@ export async function GET(request: Request) {
     };
   }
 
-  return NextResponse.json(out);
+    console.log('[Import Product] Returning product data:', {
+      title: out.title,
+      imagesCount: out.images.length,
+      price: out.price,
+      brand: out.brand,
+    });
+    return NextResponse.json(out);
+  } catch (error: any) {
+    console.error('[Import Product] Unexpected error:', error);
+    return NextResponse.json(
+      { error: error.message || 'An unexpected error occurred while importing the product' },
+      { status: 500 }
+    );
+  }
 }
