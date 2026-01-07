@@ -12,9 +12,17 @@ import {
   Clock,
   CheckCircle2,
   AlertCircle,
-  Calendar
+  Calendar,
+  Facebook,
+  Twitter,
+  Instagram,
+  Youtube,
+  Linkedin,
+  TikTok,
+  ExternalLink
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 const TABS = ['Today', '7 Days', '30 Days', '12 Months'];
 
@@ -28,6 +36,8 @@ export default function AdminDashboardPage() {
     recentOrders: [] as any[],
     monthlyRevenue: Array(12).fill(0)
   });
+  const [socialMedia, setSocialMedia] = useState<Record<string, string>>({});
+  const [loadingSocial, setLoadingSocial] = useState(true);
 
   useEffect(() => {
     fetch('/api/analytics/admin')
@@ -36,7 +46,26 @@ export default function AdminDashboardPage() {
         if (!data.error) setStats(data);
       })
       .catch(console.error);
+
+    fetch('/api/admin/social-media')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.socialMedia) {
+          setSocialMedia(data.socialMedia);
+        }
+      })
+      .catch(console.error)
+      .finally(() => setLoadingSocial(false));
   }, []);
+
+  const socialPlatforms = [
+    { id: 'facebook', name: 'Facebook', icon: Facebook, color: 'text-blue-600' },
+    { id: 'twitter', name: 'Twitter/X', icon: Twitter, color: 'text-blue-400' },
+    { id: 'instagram', name: 'Instagram', icon: Instagram, color: 'text-pink-600' },
+    { id: 'youtube', name: 'YouTube', icon: Youtube, color: 'text-red-600' },
+    { id: 'linkedin', name: 'LinkedIn', icon: Linkedin, color: 'text-blue-700' },
+    { id: 'tiktok', name: 'TikTok', icon: TikTok, color: 'text-black' },
+  ];
 
   return (
     <div className="space-y-8">

@@ -7,6 +7,8 @@ import { CatalogSettings } from '@/components/admin/settings/CatalogSettings';
 import { PromotionSettings } from '@/components/admin/settings/PromotionSettings';
 import { TeamSettings } from '@/components/admin/settings/TeamSettings';
 import { SystemSettings } from '@/components/admin/settings/SystemSettings';
+import { SecuritySettings } from '@/components/admin/settings/SecuritySettings';
+import { SocialMediaSettings } from '@/components/admin/settings/SocialMediaSettings';
 
 import { CollectionSettings } from '@/components/admin/settings/CollectionSettings';
 import { ThemeSettings } from '@/components/admin/settings/ThemeSettings';
@@ -19,6 +21,8 @@ const TABS = [
   'Promotions',
   'Team',
   'Theme',
+  'Social Media',
+  'Security',
   'System'
 ];
 
@@ -65,6 +69,8 @@ export default function AdminSettingsPage() {
         {activeTab === 'Promotions' && <PromotionSettings />}
         {activeTab === 'Team' && <TeamSettings />}
         {activeTab === 'Theme' && <ThemeSettings />}
+        {activeTab === 'Social Media' && <SocialMediaSettings />}
+        {activeTab === 'Security' && <SecuritySettings />}
         {activeTab === 'System' && <SystemSettings />}
       </div>
     </div>
