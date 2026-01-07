@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useAdminStore } from '@/lib/stores/admin';
 import Link from 'next/link';
+import { Save, Check } from 'lucide-react';
 
 export function DepartmentSettings() {
   const departments = useAdminStore((s) => s.departments);
@@ -14,6 +15,7 @@ export function DepartmentSettings() {
   const moveDepartment = useAdminStore((s) => s.moveDepartment);
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
+  const [saved, setSaved] = useState(false);
 
   const onAdd = () => {
     const n = name.trim();
@@ -23,13 +25,39 @@ export function DepartmentSettings() {
     addDepartment({ name: n, slug: s });
     setName('');
     setSlug('');
+    handleSave();
+  };
+
+  const handleSave = () => {
+    // Zustand persist saves automatically, but we'll show feedback
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
   };
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-gray-900 tracking-tight">Shop by Department</h2>
-        <p className="mt-1 text-sm text-gray-500">Manage the sidebar department list.</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-bold text-gray-900 tracking-tight">Shop by Department</h2>
+          <p className="mt-1 text-sm text-gray-500">Manage the sidebar department list.</p>
+        </div>
+        <Button
+          onClick={handleSave}
+          className="bg-[#0B1220] hover:bg-[#0B1220]/90 text-white"
+          disabled={saved}
+        >
+          {saved ? (
+            <>
+              <Check className="h-4 w-4 mr-2" />
+              Saved!
+            </>
+          ) : (
+            <>
+              <Save className="h-4 w-4 mr-2" />
+              Save Changes
+            </>
+          )}
+        </Button>
       </div>
 
       <div className="rounded-2xl border border-gray-100 bg-white premium-shadow p-6">
@@ -43,7 +71,10 @@ export function DepartmentSettings() {
                   <Input
                     className="mt-2 h-10 rounded-xl"
                     value={d.name}
-                    onChange={(e) => updateDepartment(d.slug, { name: e.target.value })}
+                    onChange={(e) => {
+                      updateDepartment(d.slug, { name: e.target.value });
+                      setSaved(false);
+                    }}
                   />
                 </div>
                 <div>
@@ -51,14 +82,41 @@ export function DepartmentSettings() {
                   <Input
                     className="mt-2 h-10 rounded-xl"
                     value={d.slug}
-                    onChange={(e) => updateDepartment(d.slug, { slug: e.target.value.toLowerCase().replace(/\s+/g, '-').replace(/&/g, 'and').replace(/,+/g, '') })}
+                    onChange={(e) => {
+                      updateDepartment(d.slug, { slug: e.target.value.toLowerCase().replace(/\s+/g, '-').replace(/&/g, 'and').replace(/,+/g, '') });
+                      setSaved(false);
+                    }}
                   />
                 </div>
               </div>
               <div className="mt-3 flex items-center gap-2">
-                <Button variant="outline" onClick={() => moveDepartment(d.slug, 'up')}>Move up</Button>
-                <Button variant="outline" onClick={() => moveDepartment(d.slug, 'down')}>Move down</Button>
-                <Button variant="destructive" onClick={() => deleteDepartment(d.slug)}>Delete</Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    moveDepartment(d.slug, 'up');
+                    setSaved(false);
+                  }}
+                >
+                  Move up
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    moveDepartment(d.slug, 'down');
+                    setSaved(false);
+                  }}
+                >
+                  Move down
+                </Button>
+                <Button 
+                  variant="destructive" 
+                  onClick={() => {
+                    deleteDepartment(d.slug);
+                    handleSave();
+                  }}
+                >
+                  Delete
+                </Button>
                 <Link href={`/categories/${d.slug}`} className="text-sm text-[#0B1220] hover:underline">Preview</Link>
               </div>
               <div className="mt-2 text-xs text-[#8B95A5]">Position: {idx + 1}</div>

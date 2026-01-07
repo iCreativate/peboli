@@ -11,7 +11,9 @@ import {
   ArrowUp, 
   ArrowDown, 
   ExternalLink, 
-  Palette 
+  Palette,
+  Save,
+  Check
 } from 'lucide-react';
 
 export function CollectionSettings() {
@@ -24,6 +26,7 @@ export function CollectionSettings() {
   const [name, setName] = useState('');
   const [href, setHref] = useState('');
   const [color, setColor] = useState('');
+  const [saved, setSaved] = useState(false);
 
   const onAdd = () => {
     const n = name.trim();
@@ -34,13 +37,39 @@ export function CollectionSettings() {
     setName('');
     setHref('');
     setColor('');
+    handleSave();
+  };
+
+  const handleSave = () => {
+    // Zustand persist saves automatically, but we'll show feedback
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
   };
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-gray-900 tracking-tight">Featured Collections</h2>
-        <p className="mt-1 text-sm text-gray-500">Manage the quick navigation links and featured collections.</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-bold text-gray-900 tracking-tight">Featured Collections</h2>
+          <p className="mt-1 text-sm text-gray-500">Manage the quick navigation links and featured collections.</p>
+        </div>
+        <Button
+          onClick={handleSave}
+          className="bg-[#0B1220] hover:bg-[#0B1220]/90 text-white"
+          disabled={saved}
+        >
+          {saved ? (
+            <>
+              <Check className="h-4 w-4 mr-2" />
+              Saved!
+            </>
+          ) : (
+            <>
+              <Save className="h-4 w-4 mr-2" />
+              Save Changes
+            </>
+          )}
+        </Button>
       </div>
 
       {/* Add New Collection */}
@@ -114,7 +143,10 @@ export function CollectionSettings() {
                     <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Name</label>
                     <Input
                       value={c.name}
-                      onChange={(e) => updateCollection(c.id, { name: e.target.value })}
+                      onChange={(e) => {
+                        updateCollection(c.id, { name: e.target.value });
+                        setSaved(false);
+                      }}
                       className="h-9"
                     />
                   </div>
@@ -123,7 +155,10 @@ export function CollectionSettings() {
                     <div className="flex gap-2">
                       <Input
                         value={c.href}
-                        onChange={(e) => updateCollection(c.id, { href: e.target.value })}
+                        onChange={(e) => {
+                          updateCollection(c.id, { href: e.target.value });
+                          setSaved(false);
+                        }}
                         className="h-9"
                       />
                       <Link 
@@ -141,7 +176,10 @@ export function CollectionSettings() {
                       <div className="relative flex-1">
                         <Input
                           value={c.color || ''}
-                          onChange={(e) => updateCollection(c.id, { color: e.target.value })}
+                          onChange={(e) => {
+                            updateCollection(c.id, { color: e.target.value });
+                            setSaved(false);
+                          }}
                           className="h-9 pl-9"
                           placeholder="#000000"
                         />
@@ -162,7 +200,10 @@ export function CollectionSettings() {
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      onClick={() => moveCollection(c.id, 'up')}
+                      onClick={() => {
+                        moveCollection(c.id, 'up');
+                        setSaved(false);
+                      }}
                       disabled={idx === 0}
                       className="h-8 w-8 p-0"
                     >
@@ -171,7 +212,10 @@ export function CollectionSettings() {
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      onClick={() => moveCollection(c.id, 'down')}
+                      onClick={() => {
+                        moveCollection(c.id, 'down');
+                        setSaved(false);
+                      }}
                       disabled={idx === collections.length - 1}
                       className="h-8 w-8 p-0"
                     >
@@ -181,7 +225,10 @@ export function CollectionSettings() {
                     <Button 
                       variant="ghost" 
                       size="sm" 
-                      onClick={() => deleteCollection(c.id)}
+                      onClick={() => {
+                        deleteCollection(c.id);
+                        handleSave();
+                      }}
                       className="h-8 text-red-600 hover:text-red-700 hover:bg-red-50"
                     >
                       <Trash2 className="h-4 w-4 mr-2" />
