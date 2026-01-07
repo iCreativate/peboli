@@ -2,8 +2,20 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { cookies } from 'next/headers';
+import { readFile } from 'fs/promises';
+import { join } from 'path';
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
+const ADMIN_PASSWORD_FILE = join(process.cwd(), 'data', 'admin-password.txt');
+const DEFAULT_PASSWORD = 'admin123';
+
+async function getCurrentPassword(): Promise<string> {
+  try {
+    const password = await readFile(ADMIN_PASSWORD_FILE, 'utf-8');
+    return password.trim() || process.env.ADMIN_PASSWORD || DEFAULT_PASSWORD;
+  } catch {
+    return process.env.ADMIN_PASSWORD || DEFAULT_PASSWORD;
+  }
+}
 
 export async function POST(request: Request) {
   try {
@@ -26,8 +38,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Password defaults to 'admin123' if not configured
-
     // Get password from request
     const { password } = await request.json();
 
@@ -38,8 +48,11 @@ export async function POST(request: Request) {
       );
     }
 
+    // Get current password (from file or env or default)
+    const currentPassword = await getCurrentPassword();
+
     // Verify password
-    if (password !== ADMIN_PASSWORD) {
+    if (password !== currentPassword) {
       return NextResponse.json(
         { error: 'Invalid password.', success: false },
         { status: 401 }
