@@ -47,31 +47,9 @@ export function LoginForm() {
       }
 
       if (result?.ok) {
-      // Fetch session to update client store
-      const sessionRes = await fetch('/api/auth/session');
-      const sessionData = await sessionRes.json();
-      
-      if (sessionData?.user) {
-        login(sessionData.user);
-        
-        // If logging in as admin and going to admin area, check if password is verified
-        if (sessionData.user.email === 'admin@peboli.store' && callbackUrl.startsWith('/admin')) {
-          // Check if admin password is verified
-          const passwordCheck = await fetch('/api/admin/verify-password');
-          const passwordData = await passwordCheck.json();
-          
-          if (!passwordData.verified) {
-            // Redirect to password page instead
-            window.location.href = `/admin/password?callbackUrl=${encodeURIComponent(callbackUrl)}`;
-            return;
-          }
-        }
-        
-        // Use window.location for full page reload to ensure session is available
-        window.location.href = callbackUrl;
-      } else {
-        throw new Error('Failed to retrieve session');
-      }
+      // Use window.location for full page reload to ensure session is available
+      // This ensures cookies and session are properly set before redirect
+      window.location.href = callbackUrl;
       }
     } catch (err: any) {
       setError(err.message || `Failed to sign in with ${provider}`);
@@ -103,32 +81,10 @@ export function LoginForm() {
         throw new Error(result.error);
       }
 
-      // Fetch session to update client store
-      const sessionRes = await fetch('/api/auth/session');
-      const sessionData = await sessionRes.json();
-      
-      if (sessionData?.user) {
-        login(sessionData.user);
-        
-        // If logging in as admin and going to admin area, check if password is verified
-        if (sessionData.user.email === 'admin@peboli.store' && callbackUrl.startsWith('/admin')) {
-          // Check if admin password is verified
-          const passwordCheck = await fetch('/api/admin/verify-password');
-          const passwordData = await passwordCheck.json();
-          
-          if (!passwordData.verified) {
-            // Redirect to password page instead
-            router.push(`/admin/password?callbackUrl=${encodeURIComponent(callbackUrl)}`);
-            router.refresh();
-            return;
-          }
-        }
-        
-        router.push(callbackUrl);
-        router.refresh();
-      } else {
-        throw new Error('Failed to retrieve session');
-      }
+      // If login was successful, use window.location for full page reload
+      // This ensures the session cookie is properly set and available
+      // The admin layout will handle password verification check
+      window.location.href = callbackUrl;
     } catch (err: any) {
         setError(err.message || 'Something went wrong');
     } finally {
