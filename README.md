@@ -117,6 +117,9 @@ peboli/
    # Database
    DATABASE_URL=your-postgresql-connection-string
 
+   # Admin Security
+   ADMIN_PASSWORD=your-secure-admin-password
+
    # OAuth Providers (Optional - for Google/Facebook login)
    GOOGLE_CLIENT_ID=your-google-client-id
    GOOGLE_CLIENT_SECRET=your-google-client-secret
