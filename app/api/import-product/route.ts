@@ -349,6 +349,35 @@ export async function GET(request: Request) {
 
     const html = await res.text();
     console.log('[Import Product] Fetched HTML, length:', html.length);
+    
+    // Check if we got valid HTML
+    if (!html || html.length < 100) {
+      console.error('[Import Product] HTML too short or empty:', html);
+      return NextResponse.json(
+        { error: 'Received empty or invalid HTML response. The website may be blocking requests or require JavaScript.' },
+        { status: 502 }
+      );
+    }
+    
+    // Check for common error pages
+    const lowerHtml = html.toLowerCase();
+    if (lowerHtml.includes('access denied') || 
+        lowerHtml.includes('forbidden') || 
+        lowerHtml.includes('blocked') ||
+        lowerHtml.includes('cloudflare') && lowerHtml.includes('checking your browser')) {
+      console.error('[Import Product] Detected blocking/error page');
+      return NextResponse.json(
+        { error: 'Website is blocking automated requests. Try a different URL or the site may require JavaScript to load content.' },
+        { status: 403 }
+      );
+    }
+    
+    // Log a sample of the HTML for debugging (first 1000 chars)
+    if (html.length < 1000) {
+      console.log('[Import Product] Full HTML:', html);
+    } else {
+      console.log('[Import Product] HTML sample (first 1000 chars):', html.substring(0, 1000));
+    }
 
   // Extract title from multiple sources
   const ogTitle = extractMeta(html, 'og:title') || extractMeta(html, 'twitter:title');
@@ -527,16 +556,27 @@ export async function GET(request: Request) {
     };
   }
 
+    // Ensure images is always an array
+    if (!Array.isArray(out.images)) {
+      out.images = [];
+    }
+    
     console.log('[Import Product] Returning product data:', {
       title: out.title,
+      description: out.description ? `${out.description.substring(0, 50)}...` : undefined,
       imagesCount: out.images.length,
       price: out.price,
+      compareAtPrice: out.compareAtPrice,
+      currency: out.currency,
       brand: out.brand,
       category: out.category,
       sku: out.sku,
       availability: out.availability,
       stock: out.stock,
+      hasData: !!(out.title || out.brand || out.price),
     });
+    
+    // Return the data even if some fields are missing
     return NextResponse.json(out);
   } catch (error: any) {
     console.error('[Import Product] Unexpected error:', error);

@@ -117,28 +117,53 @@ export default function AdminCatalogPage() {
     try {
       console.log('[Import] Fetching product from URL:', u);
       const res = await fetch(`/api/import-product?url=${encodeURIComponent(u)}`, { cache: 'no-store' });
-      const data = (await res.json()) as unknown;
+      
+      let data: unknown;
+      try {
+        data = await res.json();
+      } catch (parseError) {
+        console.error('[Import] Failed to parse JSON response:', parseError);
+        const text = await res.text();
+        console.error('[Import] Response text:', text.substring(0, 500));
+        setImportError(`Server returned invalid response. Status: ${res.status}`);
+        return;
+      }
       
       if (!res.ok) {
         const err = (data as { error?: string })?.error;
-        console.error('[Import] API error:', err, res.status);
-        setImportError(err || `Import failed (${res.status})`);
+        console.error('[Import] API error:', err, res.status, data);
+        setImportError(err || `Import failed (${res.status}). Check browser console for details.`);
         return;
       }
 
-      const imgs = (data as { images?: unknown })?.images;
+      // Make images optional - allow import even without images
+      const importedData = data as ImportedProduct;
+      const imgs = importedData?.images;
+      
+      // If no images array, create an empty one
       if (!Array.isArray(imgs)) {
-        console.error('[Import] Invalid response - images not array:', data);
-        setImportError('Import returned an unexpected response. The website may not have product data.');
+        console.warn('[Import] No images array found, creating empty array. Data:', importedData);
+        if (importedData) {
+          importedData.images = [];
+        }
+      }
+
+      // Check if we got any useful data at all
+      if (!importedData || (!importedData.title && !importedData.brand && !importedData.price)) {
+        console.error('[Import] No product data extracted:', importedData);
+        setImportError('No product information found. The website may not have structured product data or may be blocking automated requests.');
         return;
       }
 
       console.log('[Import] Successfully imported product:', {
-        title: (data as ImportedProduct).title,
-        imagesCount: imgs.length,
+        title: importedData.title,
+        brand: importedData.brand,
+        price: importedData.price,
+        imagesCount: Array.isArray(imgs) ? imgs.length : 0,
+        fullData: importedData,
       });
 
-      setImported(data as ImportedProduct);
+      setImported(importedData);
       
       // Auto-fill draft fields from import
       const importedData = data as ImportedProduct;
