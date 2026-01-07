@@ -308,28 +308,44 @@ export async function GET(request: Request) {
     // We try a normal fetch with a browser-like user agent, but it may still fail.
     let res: Response;
     try {
+      // Use more realistic browser headers to avoid detection
+      const headers: HeadersInit = {
+        'User-Agent':
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Accept-Encoding': 'gzip, deflate, br, zstd',
+        'Cache-Control': 'max-age=0',
+        'Sec-Ch-Ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        'Sec-Ch-Ua-Mobile': '?0',
+        'Sec-Ch-Ua-Platform': '"macOS"',
+        'Sec-Fetch-Dest': 'document',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'none',
+        'Sec-Fetch-User': '?1',
+        'Upgrade-Insecure-Requests': '1',
+        'Connection': 'keep-alive',
+        'DNT': '1',
+      };
+      
+      // Add referer if we can determine it (helps some sites)
+      try {
+        const urlObj = new URL(target.toString());
+        if (urlObj.hostname) {
+          headers['Referer'] = `${urlObj.protocol}//${urlObj.hostname}/`;
+        }
+      } catch {
+        // Ignore referer errors
+      }
+      
       res = await fetch(target.toString(), {
-        headers: {
-          'User-Agent':
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-          'Accept-Language': 'en-US,en;q=0.9',
-          'Accept-Encoding': 'gzip, deflate, br',
-          'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache',
-          'Sec-Ch-Ua': '"Chromium";v="122", "Not(A:Brand";v="24", "Google Chrome";v="122"',
-          'Sec-Ch-Ua-Mobile': '?0',
-          'Sec-Ch-Ua-Platform': '"macOS"',
-          'Sec-Fetch-Dest': 'document',
-          'Sec-Fetch-Mode': 'navigate',
-          'Sec-Fetch-Site': 'none',
-          'Sec-Fetch-User': '?1',
-          'Upgrade-Insecure-Requests': '1',
-        },
+        headers,
         // Avoid caching stale results during dev.
         cache: 'no-store',
         // Add timeout
         signal: AbortSignal.timeout(30000), // 30 seconds
+        // Add redirect handling
+        redirect: 'follow',
       });
     } catch (e: any) {
       console.error('[Import Product] Fetch error:', e.message || e);
@@ -359,13 +375,19 @@ export async function GET(request: Request) {
       );
     }
     
-    // Check for common error pages
+    // Check for common error/blocking pages (but be less aggressive)
     const lowerHtml = html.toLowerCase();
-    if (lowerHtml.includes('access denied') || 
-        lowerHtml.includes('forbidden') || 
-        lowerHtml.includes('blocked') ||
-        lowerHtml.includes('cloudflare') && lowerHtml.includes('checking your browser')) {
-      console.error('[Import Product] Detected blocking/error page');
+    const isBlocked = (
+      (lowerHtml.includes('access denied') && lowerHtml.includes('403')) ||
+      (lowerHtml.includes('forbidden') && lowerHtml.includes('403')) ||
+      (lowerHtml.includes('cloudflare') && (lowerHtml.includes('checking your browser') || lowerHtml.includes('please wait'))) ||
+      (lowerHtml.includes('captcha') && (lowerHtml.includes('verify') || lowerHtml.includes('robot'))) ||
+      (lowerHtml.includes('bot') && lowerHtml.includes('blocked')) ||
+      (res.status === 403 && html.length < 5000) // Short 403 response likely means blocking
+    );
+    
+    if (isBlocked) {
+      console.error('[Import Product] Detected blocking/error page. HTML sample:', html.substring(0, 500));
       return NextResponse.json(
         { error: 'Website is blocking automated requests. Try a different URL or the site may require JavaScript to load content.' },
         { status: 403 }
