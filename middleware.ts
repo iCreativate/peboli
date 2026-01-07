@@ -7,7 +7,7 @@ export default withAuth(
     const path = req.nextUrl.pathname;
 
     // Admin Protection - Simplified: Check email instead of role
-    if (path.startsWith("/admin") && !path.startsWith("/admin/unauthorized") && !path.startsWith("/admin/debug")) {
+    if (path.startsWith("/admin") && !path.startsWith("/admin/unauthorized") && !path.startsWith("/admin/debug") && !path.startsWith("/admin/password")) {
         if (!token) {
              const url = new URL("/login", req.url);
              url.searchParams.set("callbackUrl", path);
