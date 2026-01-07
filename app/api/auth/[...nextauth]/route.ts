@@ -208,6 +208,10 @@ export const authOptions = {
         (session.user as any).role = token.role;
         (session.user as any).vendorStatus = token.vendorStatus;
         (session.user as any).provider = token.provider;
+        // Ensure email is available (should already be there, but make sure)
+        if (token.email) {
+          session.user.email = token.email;
+        }
       }
       return session;
     },
