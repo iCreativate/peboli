@@ -7,7 +7,7 @@ import {
   Instagram, 
   Youtube, 
   Linkedin, 
-  TikTok,
+  Music,
   Save,
   ExternalLink
 } from 'lucide-react';
@@ -28,7 +28,7 @@ const PLATFORMS: SocialMediaPlatform[] = [
   { id: 'instagram', name: 'Instagram', icon: Instagram, placeholder: 'https://instagram.com/peboli', color: 'text-pink-600' },
   { id: 'youtube', name: 'YouTube', icon: Youtube, placeholder: 'https://youtube.com/@peboli', color: 'text-red-600' },
   { id: 'linkedin', name: 'LinkedIn', icon: Linkedin, placeholder: 'https://linkedin.com/company/peboli', color: 'text-blue-700' },
-  { id: 'tiktok', name: 'TikTok', icon: TikTok, placeholder: 'https://tiktok.com/@peboli', color: 'text-black' },
+  { id: 'tiktok', name: 'TikTok', icon: Music, placeholder: 'https://tiktok.com/@peboli', color: 'text-black' },
 ];
 
 export function SocialMediaSettings() {

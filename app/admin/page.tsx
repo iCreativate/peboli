@@ -18,7 +18,7 @@ import {
   Instagram,
   Youtube,
   Linkedin,
-  TikTok,
+  Music,
   ExternalLink
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -64,7 +64,7 @@ export default function AdminDashboardPage() {
     { id: 'instagram', name: 'Instagram', icon: Instagram, color: 'text-pink-600' },
     { id: 'youtube', name: 'YouTube', icon: Youtube, color: 'text-red-600' },
     { id: 'linkedin', name: 'LinkedIn', icon: Linkedin, color: 'text-blue-700' },
-    { id: 'tiktok', name: 'TikTok', icon: TikTok, color: 'text-black' },
+    { id: 'tiktok', name: 'TikTok', icon: Music, color: 'text-black' },
   ];
 
   return (
