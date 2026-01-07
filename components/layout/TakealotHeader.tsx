@@ -31,6 +31,7 @@ export function TakealotHeader() {
     setMounted(true);
   }, []);
 
+  // Use admin departments if available, otherwise fall back to defaults
   const categories =
     (mounted && adminDepartments && adminDepartments.length > 0)
       ? adminDepartments
@@ -323,7 +324,7 @@ export function TakealotHeader() {
       <div className="border-b border-gray-100 bg-white/80 backdrop-blur-md sticky top-0 z-40 shadow-sm">
         <div className="container mx-auto px-4">
           <div className="flex items-center gap-8 overflow-x-auto py-3 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-            {collections.map((c) => (
+            {(mounted ? (collections && collections.length > 0 ? collections : []) : []).map((c) => (
               <Link
                 key={c.id}
                 href={c.href}
