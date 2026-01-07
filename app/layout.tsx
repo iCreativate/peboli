@@ -20,6 +20,7 @@ import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { AuthProvider } from "@/components/providers/AuthProvider";
 import { LoginModal } from "@/components/auth/LoginModal";
 import { RegisterModal } from "@/components/auth/RegisterModal";
+import { ErrorHandler } from "@/components/providers/ErrorHandler";
 
 export default function RootLayout({
   children,
@@ -31,6 +32,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} font-sans antialiased`}
       >
+        <ErrorHandler />
         <AuthProvider>
           <ThemeProvider>
             {children}
