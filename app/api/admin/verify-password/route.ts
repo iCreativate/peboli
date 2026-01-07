@@ -61,13 +61,17 @@ export async function POST(request: Request) {
 
     // Set admin password verified cookie (expires in 24 hours)
     const cookieStore = await cookies();
-    cookieStore.set('admin_password_verified', 'true', {
+    const response = NextResponse.json({ success: true });
+    
+    response.cookies.set('admin_password_verified', 'true', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 60 * 60 * 24, // 24 hours
-      path: '/admin',
+      path: '/',
     });
+    
+    return response;
 
     return NextResponse.json({ success: true });
   } catch (error) {

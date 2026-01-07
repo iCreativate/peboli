@@ -36,8 +36,9 @@ export default function AdminPasswordPage() {
 
       if (res.ok && data.success) {
         // Redirect to the admin page or the callback URL
+        // Use window.location for full page reload to ensure cookie is available
         const callbackUrl = searchParams.get('callbackUrl') || '/admin';
-        router.push(callbackUrl);
+        window.location.href = callbackUrl;
       } else {
         setError(data.error || 'Invalid password. Please try again.');
         setPassword('');
