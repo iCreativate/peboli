@@ -28,6 +28,24 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Configure Content Security Policy headers
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            // Allow unsafe-eval only in development for Next.js and third-party libraries
+            // In production, this should be removed for better security
+            value: process.env.NODE_ENV === 'development'
+              ? "script-src 'self' 'unsafe-eval' 'unsafe-inline' https:; object-src 'none'; base-uri 'self';"
+              : "script-src 'self' 'unsafe-inline' https:; object-src 'none'; base-uri 'self';",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
