@@ -6,22 +6,19 @@ export default withAuth(
     const token = req.nextauth.token;
     const path = req.nextUrl.pathname;
 
-    // Admin Protection - Simplified: Check email instead of role
+    // Admin Protection - Check email instead of role
     if (path.startsWith("/admin") && !path.startsWith("/admin/unauthorized") && !path.startsWith("/admin/debug") && !path.startsWith("/admin/password")) {
         if (!token) {
              const url = new URL("/login", req.url);
              url.searchParams.set("callbackUrl", path);
              return NextResponse.redirect(url);
         }
-        // Simplified: Check if email is admin@peboli.store
+        // Check if email is admin@peboli.store
         const userEmail = (token as any)?.email;
         if (!userEmail || userEmail !== 'admin@peboli.store') {
              // Redirect non-admins to unauthorized page
              return NextResponse.redirect(new URL("/admin/unauthorized", req.url));
         }
-        
-        // Note: Password verification is checked in admin layout, not middleware
-        // This allows the password page to be accessible
     }
 
     // Vendor Protection
