@@ -14,11 +14,14 @@ export default withAuth(
              return NextResponse.redirect(url);
         }
         // Simplified: Check if email is admin@peboli.store
-        const userEmail = (token as any).email || (token as any).name;
+        const userEmail = (token as any)?.email;
         if (!userEmail || userEmail !== 'admin@peboli.store') {
              // Redirect non-admins to unauthorized page
              return NextResponse.redirect(new URL("/admin/unauthorized", req.url));
         }
+        
+        // Note: Password verification is checked in admin layout, not middleware
+        // This allows the password page to be accessible
     }
 
     // Vendor Protection
