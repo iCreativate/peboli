@@ -81,6 +81,18 @@ export function LoginForm() {
         throw new Error(result.error);
       }
 
+      // Wait a moment for the session cookie to be set
+      // Then verify session is available before redirecting
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Verify session is available
+      const sessionCheck = await fetch('/api/auth/session');
+      const sessionData = await sessionCheck.json();
+      
+      if (!sessionData?.user) {
+        throw new Error('Session not available. Please try again.');
+      }
+
       // If login was successful, use window.location for full page reload
       // This ensures the session cookie is properly set and available
       // The admin layout will handle password verification check
