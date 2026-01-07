@@ -166,7 +166,6 @@ export default function AdminCatalogPage() {
       setImported(importedData);
       
       // Auto-fill draft fields from import
-      const importedData = data as ImportedProduct;
       if (importedData.title) setDraftName(importedData.title);
       if (importedData.brand) setDraftBrand(importedData.brand);
       if (importedData.category) setDraftCategory(importedData.category);
