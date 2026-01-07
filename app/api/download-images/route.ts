@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
+import { put } from '@vercel/blob';
 import path from 'path';
 
 function extFromContentType(ct?: string | null) {
@@ -56,15 +56,15 @@ export async function POST(request: Request) {
         const byCt = extFromContentType(ct);
         const byUrl = extFromUrl(source);
         const ext = byCt || byUrl || '.jpg';
-        const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}${ext}`;
-        const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+        const filename = `uploads/${Date.now()}-${Math.random().toString(36).slice(2, 8)}${ext}`;
         
-        // Ensure upload directory exists
-        await mkdir(uploadDir, { recursive: true });
+        // Upload to Vercel Blob Storage
+        const blob = await put(filename, buf, {
+          access: 'public',
+          contentType: ct || 'image/jpeg',
+        });
         
-        const filepath = path.join(uploadDir, filename);
-        await writeFile(filepath, buf);
-        results.push({ source, url: `/uploads/${filename}` });
+        results.push({ source, url: blob.url });
       } catch (e: any) {
         console.error('Error downloading image:', source, e.message || e);
         results.push({ source, error: e.message || 'Download failed' });
