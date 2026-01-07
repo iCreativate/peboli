@@ -9,6 +9,12 @@ type ImportedProduct = {
   compareAtPrice?: number;
   brand?: string;
   category?: string;
+  sku?: string;
+  availability?: string;
+  stock?: number;
+  condition?: string;
+  mpn?: string; // Manufacturer Part Number
+  gtin?: string; // Global Trade Item Number (UPC, EAN, ISBN)
 };
 
 const uniq = (arr: string[]) => Array.from(new Set(arr));
@@ -368,20 +374,54 @@ export async function GET(request: Request) {
   let jsonCompareAt: number | undefined;
   let jsonBrand: string | undefined;
   let jsonCategory: string | undefined;
+  let jsonSku: string | undefined;
+  let jsonAvailability: string | undefined;
+  let jsonMpn: string | undefined;
+  let jsonGtin: string | undefined;
+  let jsonCondition: string | undefined;
 
   if (productNodes[0]) {
-    jsonTitle = typeof productNodes[0].name === 'string' ? productNodes[0].name : undefined;
-    jsonDesc = typeof productNodes[0].description === 'string' ? productNodes[0].description : undefined;
-    jsonImages = normalizeImages(productNodes[0].image, target.toString());
+    const product = productNodes[0];
+    jsonTitle = typeof product.name === 'string' ? product.name : undefined;
+    jsonDesc = typeof product.description === 'string' ? product.description : undefined;
+    jsonImages = normalizeImages(product.image, target.toString());
 
-    const p = extractPriceCurrency(productNodes[0]);
+    const p = extractPriceCurrency(product);
     jsonPrice = p.price;
     jsonCurrency = p.currency;
     jsonCompareAt = (p as any).compareAtPrice;
 
-    jsonBrand = extractBrand(productNodes[0]);
-    jsonCategory = normalizeCategorySlug(productNodes[0].category);
+    jsonBrand = extractBrand(product);
+    jsonCategory = normalizeCategorySlug(product.category);
+    
+    // Extract additional fields
+    jsonSku = typeof product.sku === 'string' ? product.sku : undefined;
+    jsonMpn = typeof product.mpn === 'string' ? product.mpn : undefined;
+    jsonGtin = typeof product.gtin === 'string' ? product.gtin : 
+               typeof product.gtin13 === 'string' ? product.gtin13 :
+               typeof product.gtin8 === 'string' ? product.gtin8 :
+               typeof product.isbn === 'string' ? product.isbn : undefined;
+    
+    // Extract availability
+    const offers = product?.offers;
+    const firstOffer = Array.isArray(offers) ? offers[0] : offers;
+    jsonAvailability = typeof firstOffer?.availability === 'string' ? firstOffer.availability :
+                      typeof product.offers?.availability === 'string' ? product.offers.availability :
+                      typeof product.availability === 'string' ? product.availability : undefined;
+    
+    // Extract condition
+    jsonCondition = typeof firstOffer?.itemCondition === 'string' ? firstOffer.itemCondition :
+                   typeof product.condition === 'string' ? product.condition : undefined;
   }
+  
+  // Also try to extract SKU from meta tags
+  const metaSku = extractMeta(html, 'product:retailer_item_id') || 
+                  extractMeta(html, 'product:sku') ||
+                  extractMeta(html, 'sku');
+  
+  // Extract availability from meta tags
+  const metaAvailability = extractMeta(html, 'product:availability') ||
+                           extractMeta(html, 'availability');
 
   const categoryFromBreadcrumb = breadcrumbNodes[0] ? breadcrumbCategorySlug(breadcrumbNodes[0]) : undefined;
   const categoryFromUrl = normalizeCategorySlug(target.pathname.split('/').filter(Boolean).slice(0, 4).reverse().find((seg) => seg.length > 2));
@@ -398,6 +438,19 @@ export async function GET(request: Request) {
   ).slice(0, 12);
 
   const finalBrand = jsonBrand || ogBrand || (ogSiteName || undefined);
+  const finalSku = jsonSku || metaSku || undefined;
+  const finalAvailability = jsonAvailability || metaAvailability || undefined;
+  
+  // Try to infer stock from availability
+  let inferredStock: number | undefined;
+  if (finalAvailability) {
+    const availLower = finalAvailability.toLowerCase();
+    if (availLower.includes('in stock') || availLower.includes('instock') || availLower === 'instock') {
+      inferredStock = 100; // Default to 100 if in stock
+    } else if (availLower.includes('out of stock') || availLower.includes('outofstock') || availLower === 'outofstock') {
+      inferredStock = 0;
+    }
+  }
 
   const payload: ImportedProduct = {
     title: jsonTitle || ogTitle || undefined,
@@ -408,6 +461,12 @@ export async function GET(request: Request) {
     currency: jsonCurrency || (typeof ogCurrency === 'string' ? ogCurrency : undefined),
     brand: finalBrand,
     category,
+    sku: finalSku,
+    availability: finalAvailability,
+    stock: inferredStock,
+    condition: jsonCondition || 'new',
+    mpn: jsonMpn,
+    gtin: jsonGtin,
   };
 
   let out = payload;
@@ -431,6 +490,10 @@ export async function GET(request: Request) {
       imagesCount: out.images.length,
       price: out.price,
       brand: out.brand,
+      category: out.category,
+      sku: out.sku,
+      availability: out.availability,
+      stock: out.stock,
     });
     return NextResponse.json(out);
   } catch (error: any) {
