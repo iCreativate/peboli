@@ -375,23 +375,17 @@ export async function GET(request: Request) {
       );
     }
     
-    // Check for common error/blocking pages (but be less aggressive)
+    // Check for common error/blocking pages (but don't block immediately - try extraction first)
     const lowerHtml = html.toLowerCase();
-    const isBlocked = (
-      (lowerHtml.includes('access denied') && lowerHtml.includes('403')) ||
-      (lowerHtml.includes('forbidden') && lowerHtml.includes('403')) ||
+    const isLikelyBlocked = (
       (lowerHtml.includes('cloudflare') && (lowerHtml.includes('checking your browser') || lowerHtml.includes('please wait'))) ||
       (lowerHtml.includes('captcha') && (lowerHtml.includes('verify') || lowerHtml.includes('robot'))) ||
-      (lowerHtml.includes('bot') && lowerHtml.includes('blocked')) ||
-      (res.status === 403 && html.length < 5000) // Short 403 response likely means blocking
+      (res.status === 403 && html.length < 1000) // Very short 403 response likely means blocking
     );
     
-    if (isBlocked) {
-      console.error('[Import Product] Detected blocking/error page. HTML sample:', html.substring(0, 500));
-      return NextResponse.json(
-        { error: 'Website is blocking automated requests. Try a different URL or the site may require JavaScript to load content.' },
-        { status: 403 }
-      );
+    // Log warning but continue - we'll check again after extraction
+    if (isLikelyBlocked) {
+      console.warn('[Import Product] Possible blocking detected, but continuing extraction. HTML sample:', html.substring(0, 500));
     }
     
     // Log a sample of the HTML for debugging (first 1000 chars)
@@ -583,6 +577,30 @@ export async function GET(request: Request) {
       out.images = [];
     }
     
+    // Check if we got meaningful data
+    const hasData = !!(out.title || out.brand || out.price);
+    
+    // If we detected blocking AND got no data, return error
+    if (isLikelyBlocked && !hasData) {
+      console.error('[Import Product] Blocking detected and no data extracted');
+      return NextResponse.json(
+        { 
+          error: 'Website is blocking automated requests. Try a different URL or the site may require JavaScript to load content.',
+          warning: 'The website may use Cloudflare protection or require JavaScript to display product information.'
+        },
+        { status: 403 }
+      );
+    }
+    
+    // If no data but no clear blocking, return warning but still return empty data
+    if (!hasData) {
+      console.warn('[Import Product] No product data extracted. HTML length:', html.length);
+      return NextResponse.json({
+        ...out,
+        warning: 'No product information found. The website may require JavaScript to load content, or the page structure is not recognized.',
+      });
+    }
+    
     console.log('[Import Product] Returning product data:', {
       title: out.title,
       description: out.description ? `${out.description.substring(0, 50)}...` : undefined,
@@ -595,7 +613,7 @@ export async function GET(request: Request) {
       sku: out.sku,
       availability: out.availability,
       stock: out.stock,
-      hasData: !!(out.title || out.brand || out.price),
+      hasData,
     });
     
     // Return the data even if some fields are missing
