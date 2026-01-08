@@ -885,10 +885,10 @@ export default function BankingPage() {
             
             <div className="space-y-4">
               <div>
-                <label htmlFor="add-modal-bankName" className="text-sm font-semibold text-[#1A1D29] mb-1 block">Bank Name</label>
+                <label htmlFor="edit-modal-bankName" className="text-sm font-semibold text-[#1A1D29] mb-1 block">Bank Name</label>
                 <Input
-                  id="add-modal-bankName"
-                  name="add-modal-bankName"
+                  id="edit-modal-bankName"
+                  name="edit-modal-bankName"
                   placeholder="e.g. Standard Bank, FNB, ABSA"
                   value={accountForm.bankName}
                   onChange={(e) => setAccountForm({ ...accountForm, bankName: e.target.value })}
@@ -897,10 +897,10 @@ export default function BankingPage() {
               </div>
               
               <div>
-                <label htmlFor="add-modal-accountNumber" className="text-sm font-semibold text-[#1A1D29] mb-1 block">Account Number</label>
+                <label htmlFor="edit-modal-accountNumber" className="text-sm font-semibold text-[#1A1D29] mb-1 block">Account Number</label>
                 <Input
-                  id="add-modal-accountNumber"
-                  name="add-modal-accountNumber"
+                  id="edit-modal-accountNumber"
+                  name="edit-modal-accountNumber"
                   type="text"
                   placeholder="Enter account number"
                   value={accountForm.accountNumber}
@@ -910,10 +910,10 @@ export default function BankingPage() {
               </div>
               
               <div>
-                <label htmlFor="add-modal-accountHolderName" className="text-sm font-semibold text-[#1A1D29] mb-1 block">Account Holder Name</label>
+                <label htmlFor="edit-modal-accountHolderName" className="text-sm font-semibold text-[#1A1D29] mb-1 block">Account Holder Name</label>
                 <Input
-                  id="add-modal-accountHolderName"
-                  name="add-modal-accountHolderName"
+                  id="edit-modal-accountHolderName"
+                  name="edit-modal-accountHolderName"
                   placeholder="Account holder's full name"
                   value={accountForm.accountHolderName}
                   onChange={(e) => setAccountForm({ ...accountForm, accountHolderName: e.target.value })}
@@ -923,10 +923,10 @@ export default function BankingPage() {
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="add-modal-accountType" className="text-sm font-semibold text-[#1A1D29] mb-1 block">Account Type</label>
+                  <label htmlFor="edit-modal-accountType" className="text-sm font-semibold text-[#1A1D29] mb-1 block">Account Type</label>
                   <select
-                    id="add-modal-accountType"
-                    name="add-modal-accountType"
+                    id="edit-modal-accountType"
+                    name="edit-modal-accountType"
                     value={accountForm.accountType}
                     onChange={(e) => setAccountForm({ ...accountForm, accountType: e.target.value as 'checking' | 'savings' })}
                     className="h-10 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-[#1A1D29] focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -937,10 +937,10 @@ export default function BankingPage() {
                 </div>
                 
                 <div>
-                  <label htmlFor="add-modal-branchCode" className="text-sm font-semibold text-[#1A1D29] mb-1 block">Branch Code</label>
+                  <label htmlFor="edit-modal-branchCode" className="text-sm font-semibold text-[#1A1D29] mb-1 block">Branch Code</label>
                   <Input
-                    id="add-modal-branchCode"
-                    name="add-modal-branchCode"
+                    id="edit-modal-branchCode"
+                    name="edit-modal-branchCode"
                     placeholder="e.g. 051001"
                     value={accountForm.branchCode}
                     onChange={(e) => setAccountForm({ ...accountForm, branchCode: e.target.value })}
@@ -950,10 +950,10 @@ export default function BankingPage() {
               </div>
               
               <div>
-                <label htmlFor="add-modal-currency" className="text-sm font-semibold text-[#1A1D29] mb-1 block">Currency</label>
+                <label htmlFor="edit-modal-currency" className="text-sm font-semibold text-[#1A1D29] mb-1 block">Currency</label>
                 <select
-                  id="add-modal-currency"
-                  name="add-modal-currency"
+                  id="edit-modal-currency"
+                  name="edit-modal-currency"
                   value={accountForm.currency}
                   onChange={(e) => setAccountForm({ ...accountForm, currency: e.target.value })}
                   className="h-10 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-[#1A1D29] focus:outline-none focus:ring-2 focus:ring-blue-500"
