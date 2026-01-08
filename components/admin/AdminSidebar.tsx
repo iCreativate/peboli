@@ -11,7 +11,8 @@ import {
   ShieldCheck, 
   LogOut,
   Bell,
-  Package 
+  Package,
+  CreditCard
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -22,6 +23,7 @@ const LINKS = [
   { name: 'Notifications', href: '/admin/notifications', icon: Bell },
   { name: 'Orders', href: '/admin/orders', icon: Package },
   { name: 'Deal Moderation', href: '/admin/deals', icon: Tag },
+  { name: 'Banking', href: '/admin/banking', icon: CreditCard },
   { name: 'Platform Settings', href: '/admin/settings', icon: Settings },
 ];
 
