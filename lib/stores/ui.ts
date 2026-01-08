@@ -9,7 +9,7 @@ interface UIStore {
   closeRegister: () => void;
 }
 
-export const useUIStore = create<UIStore>()((set) => ({
+export const useUIStore = create<UIStore>((set) => ({
   isLoginOpen: false,
   isRegisterOpen: false,
   openLogin: () => set({ isLoginOpen: true, isRegisterOpen: false }),

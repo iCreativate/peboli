@@ -136,16 +136,63 @@ export function DepartmentSidebar() {
         });
         if (res.ok) {
           const data = await res.json();
-          console.log('[DepartmentSidebar] Fetched departments from API:', data);
-          if (Array.isArray(data)) {
-            console.log('[DepartmentSidebar] Setting', data.length, 'categories');
+          if (Array.isArray(data) && data.length > 0) {
             setCategories(data);
+          } else {
+            // Fallback to defaults if empty
+            setCategories([
+              'Appliances',
+              'Automotive & DIY',
+              'Baby & Toddler',
+              'Beauty',
+              'Books & Courses',
+              'Camping & Outdoor',
+              'Clothing & Shoes',
+              'Electronics',
+              'Gaming & Media',
+              'Garden, Pool & Patio',
+              'Groceries & Household',
+              'Health & Personal Care',
+              'Homeware',
+              'Liquor',
+              'Office & Stationery',
+              'Pets',
+              'Sport & Training',
+              'Toys',
+            ].map(name => ({ 
+              name, 
+              slug: name.toLowerCase().replace(/ & /g, '-').replace(/\s+/g, '-') 
+            })));
           }
         } else {
-          console.error('[DepartmentSidebar] Failed to fetch departments:', res.status);
+          throw new Error(`HTTP ${res.status}`);
         }
       } catch (error) {
         console.error('Error fetching departments:', error);
+        // Fallback to defaults
+        setCategories([
+          'Appliances',
+          'Automotive & DIY',
+          'Baby & Toddler',
+          'Beauty',
+          'Books & Courses',
+          'Camping & Outdoor',
+          'Clothing & Shoes',
+          'Electronics',
+          'Gaming & Media',
+          'Garden, Pool & Patio',
+          'Groceries & Household',
+          'Health & Personal Care',
+          'Homeware',
+          'Liquor',
+          'Office & Stationery',
+          'Pets',
+          'Sport & Training',
+          'Toys',
+        ].map(name => ({ 
+          name, 
+          slug: name.toLowerCase().replace(/ & /g, '-').replace(/\s+/g, '-') 
+        })));
       }
     };
     

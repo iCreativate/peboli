@@ -27,11 +27,29 @@ export async function GET() {
       }, { headers });
     }
 
-    // Return empty array if not found (no defaults - must be configured)
-    console.log('[API /api/admin/departments GET] No setting found, returning empty array');
+    // Return default departments if not found
     return NextResponse.json({
       success: true,
-      departments: [],
+      departments: [
+        { name: 'Appliances', slug: 'appliances' },
+        { name: 'Automotive & DIY', slug: 'automotive-diy' },
+        { name: 'Baby & Toddler', slug: 'baby-toddler' },
+        { name: 'Beauty', slug: 'beauty' },
+        { name: 'Books & Courses', slug: 'books-courses' },
+        { name: 'Camping & Outdoor', slug: 'camping-outdoor' },
+        { name: 'Clothing & Shoes', slug: 'clothing-shoes' },
+        { name: 'Electronics', slug: 'electronics' },
+        { name: 'Gaming & Media', slug: 'gaming-media' },
+        { name: 'Garden, Pool & Patio', slug: 'garden-pool-patio' },
+        { name: 'Groceries & Household', slug: 'groceries-household' },
+        { name: 'Health & Personal Care', slug: 'health-personal-care' },
+        { name: 'Homeware', slug: 'homeware' },
+        { name: 'Liquor', slug: 'liquor' },
+        { name: 'Office & Stationery', slug: 'office-stationery' },
+        { name: 'Pets', slug: 'pets' },
+        { name: 'Sport & Training', slug: 'sport-training' },
+        { name: 'Toys', slug: 'toys' },
+      ],
     }, { headers });
   } catch (error: any) {
     console.error('Error fetching departments:', error);
@@ -64,10 +82,7 @@ export async function PUT(request: NextRequest) {
 
     const jsonValue = JSON.parse(JSON.stringify(departments));
 
-    console.log('[API /api/admin/departments PUT] Saving', departments.length, 'departments to database');
-    console.log('[API /api/admin/departments PUT] Data:', JSON.stringify(departments));
-
-    const result = await prisma.setting.upsert({
+    await prisma.setting.upsert({
       where: { key: SETTING_KEY },
       update: {
         value: jsonValue,
@@ -78,8 +93,6 @@ export async function PUT(request: NextRequest) {
         value: jsonValue,
       },
     });
-
-    console.log('[API /api/admin/departments PUT] Saved successfully. Setting ID:', result.id);
 
     return NextResponse.json({
       success: true,

@@ -40,9 +40,7 @@ export function TakealotHeader() {
         });
         if (deptRes.ok) {
           const deptData = await deptRes.json();
-          console.log('[TakealotHeader] Fetched departments from API:', deptData);
-          if (Array.isArray(deptData)) {
-            console.log('[TakealotHeader] Setting', deptData.length, 'categories');
+          if (Array.isArray(deptData) && deptData.length > 0) {
             setCategories(deptData);
           }
         }
@@ -57,14 +55,36 @@ export function TakealotHeader() {
         });
         if (collRes.ok) {
           const collData = await collRes.json();
-          console.log('[TakealotHeader] Fetched collections from API:', collData);
           if (Array.isArray(collData)) {
-            console.log('[TakealotHeader] Setting', collData.length, 'collections');
             setCollections(collData);
           }
         }
       } catch (error) {
         console.error('Error fetching header data:', error);
+        // Fallback to defaults
+        setCategories([
+          'Appliances',
+          'Automotive & DIY',
+          'Baby & Toddler',
+          'Beauty',
+          'Books & Courses',
+          'Camping & Outdoor',
+          'Clothing & Shoes',
+          'Electronics',
+          'Gaming & Media',
+          'Garden, Pool & Patio',
+          'Groceries & Household',
+          'Health & Personal Care',
+          'Homeware',
+          'Liquor',
+          'Office & Stationery',
+          'Pets',
+          'Sport & Training',
+          'Toys',
+        ].map(name => ({ 
+          name, 
+          slug: name.toLowerCase().replace(/ & /g, '-').replace(/\s+/g, '-') 
+        })));
       }
     };
     
