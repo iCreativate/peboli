@@ -21,6 +21,7 @@ export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
 
   useEffect(() => {
     fetchOrders();
@@ -65,6 +66,8 @@ export default function AdminOrdersPage() {
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input 
+            id="orderSearch"
+            name="orderSearch"
             placeholder="Search orders..." 
             className="pl-9"
             value={search}
