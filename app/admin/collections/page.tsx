@@ -34,28 +34,26 @@ export default function AdminCollectionsPage() {
         setCollections(data.collections);
         // Also update local store for backward compatibility
         const store = useAdminStore.getState();
-        if (store.addCollection && store.deleteCollection) {
-          // Sync with store
-          const currentIds = store.collections.map(c => c.id);
-          const newIds = data.collections.map((c: Collection) => c.id);
-          
-          // Remove deleted collections
-          currentIds.forEach(id => {
-            if (!newIds.includes(id)) {
-              store.deleteCollection(id);
-            }
-          });
-          
-          // Add/update collections
-          data.collections.forEach((coll: Collection) => {
-            const existing = store.collections.find(c => c.id === coll.id);
-            if (existing) {
-              store.updateCollection(coll.id, coll);
-            } else {
-              store.addCollection(coll);
-            }
-          });
-        }
+        // Sync with store
+        const currentIds = store.collections.map(c => c.id);
+        const newIds = data.collections.map((c: Collection) => c.id);
+        
+        // Remove deleted collections
+        currentIds.forEach(id => {
+          if (!newIds.includes(id)) {
+            store.deleteCollection(id);
+          }
+        });
+        
+        // Add/update collections
+        data.collections.forEach((coll: Collection) => {
+          const existing = store.collections.find(c => c.id === coll.id);
+          if (existing) {
+            store.updateCollection(coll.id, coll);
+          } else {
+            store.addCollection(coll);
+          }
+        });
       } else {
         console.error('Invalid response format:', data);
       }
@@ -88,28 +86,26 @@ export default function AdminCollectionsPage() {
         setCollections(newCollections);
         // Also update local store
         const store = useAdminStore.getState();
-        if (store.addCollection && store.deleteCollection) {
-          // Sync with store
-          const currentIds = store.collections.map(c => c.id);
-          const newIds = newCollections.map(c => c.id);
-          
-          // Remove deleted collections
-          currentIds.forEach(id => {
-            if (!newIds.includes(id)) {
-              store.deleteCollection(id);
-            }
-          });
-          
-          // Add/update collections
-          newCollections.forEach(coll => {
-            const existing = store.collections.find(c => c.id === coll.id);
-            if (existing) {
-              store.updateCollection(coll.id, coll);
-            } else {
-              store.addCollection(coll);
-            }
-          });
-        }
+        // Sync with store
+        const currentIds = store.collections.map(c => c.id);
+        const newIds = newCollections.map(c => c.id);
+        
+        // Remove deleted collections
+        currentIds.forEach(id => {
+          if (!newIds.includes(id)) {
+            store.deleteCollection(id);
+          }
+        });
+        
+        // Add/update collections
+        newCollections.forEach(coll => {
+          const existing = store.collections.find(c => c.id === coll.id);
+          if (existing) {
+            store.updateCollection(coll.id, coll);
+          } else {
+            store.addCollection(coll);
+          }
+        });
         setSaved(true);
         setTimeout(() => setSaved(false), 2000);
         console.log('Collections saved successfully:', newCollections);

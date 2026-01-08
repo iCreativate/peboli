@@ -33,14 +33,26 @@ export default function AdminDepartmentsPage() {
         setDepartments(data.departments);
         // Also update local store for backward compatibility
         const store = useAdminStore.getState();
-        if (store.updateDepartment) {
-          // Clear and add all departments
-          data.departments.forEach((dept: Department) => {
-            if (!store.departments.find(d => d.slug === dept.slug)) {
-              store.addDepartment(dept);
-            }
-          });
-        }
+        // Sync with store - remove old, add new
+        const currentSlugs = store.departments.map(d => d.slug);
+        const newSlugs = data.departments.map((d: Department) => d.slug);
+        
+        // Remove deleted departments
+        currentSlugs.forEach(slug => {
+          if (!newSlugs.includes(slug)) {
+            store.deleteDepartment(slug);
+          }
+        });
+        
+        // Add/update departments
+        data.departments.forEach((dept: Department) => {
+          const existing = store.departments.find(d => d.slug === dept.slug);
+          if (existing) {
+            store.updateDepartment(dept.slug, dept);
+          } else {
+            store.addDepartment(dept);
+          }
+        });
       } else {
         console.error('Invalid response format:', data);
       }
@@ -73,28 +85,26 @@ export default function AdminDepartmentsPage() {
         setDepartments(newDepartments);
         // Also update local store
         const store = useAdminStore.getState();
-        if (store.addDepartment && store.deleteDepartment) {
-          // Sync with store
-          const currentSlugs = store.departments.map(d => d.slug);
-          const newSlugs = newDepartments.map(d => d.slug);
-          
-          // Remove deleted departments
-          currentSlugs.forEach(slug => {
-            if (!newSlugs.includes(slug)) {
-              store.deleteDepartment(slug);
-            }
-          });
-          
-          // Add/update departments
-          newDepartments.forEach(dept => {
-            const existing = store.departments.find(d => d.slug === dept.slug);
-            if (existing) {
-              store.updateDepartment(dept.slug, dept);
-            } else {
-              store.addDepartment(dept);
-            }
-          });
-        }
+        // Sync with store
+        const currentSlugs = store.departments.map(d => d.slug);
+        const newSlugs = newDepartments.map(d => d.slug);
+        
+        // Remove deleted departments
+        currentSlugs.forEach(slug => {
+          if (!newSlugs.includes(slug)) {
+            store.deleteDepartment(slug);
+          }
+        });
+        
+        // Add/update departments
+        newDepartments.forEach(dept => {
+          const existing = store.departments.find(d => d.slug === dept.slug);
+          if (existing) {
+            store.updateDepartment(dept.slug, dept);
+          } else {
+            store.addDepartment(dept);
+          }
+        });
         setSaved(true);
         setTimeout(() => setSaved(false), 2000);
         console.log('Departments saved successfully:', newDepartments);
