@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useCallback, lazy, Suspense } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { HomepageSettings } from '@/components/admin/settings/HomepageSettings';
 import { DepartmentSettings } from '@/components/admin/settings/DepartmentSettings';
 import { CollectionSettings } from '@/components/admin/settings/CollectionSettings';
@@ -40,13 +40,6 @@ const TAB_COMPONENTS: Record<TabName, React.ComponentType> = {
   'Security': SecuritySettings,
   'System': SystemSettings,
 };
-
-// Loading fallback for tab content
-const TabContentLoader = () => (
-  <div className="flex items-center justify-center py-12">
-    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-  </div>
-);
 
 export default function AdminSettingsPage() {
   const [activeTab, setActiveTab] = useState<TabName>('Homepage');
@@ -94,9 +87,7 @@ export default function AdminSettingsPage() {
 
       {/* Tab Content - Optimized rendering */}
       <div className="mt-6">
-        <Suspense fallback={<TabContentLoader />}>
-          <ActiveComponent />
-        </Suspense>
+        <ActiveComponent />
       </div>
     </div>
   );

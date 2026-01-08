@@ -246,4 +246,4 @@ export const CollectionSettings = memo(function CollectionSettings() {
       </div>
     </div>
   );
-}
+});
