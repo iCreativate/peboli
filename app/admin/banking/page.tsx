@@ -586,6 +586,8 @@ export default function BankingPage() {
                         <label className="relative inline-flex items-center cursor-pointer">
                           <input
                             type="checkbox"
+                            id={`enable-${integration.id}`}
+                            name={`enable-${integration.id}`}
                             checked={integration.isEnabled}
                             onChange={(e) => {
                               setPaymentIntegrations(prev => 
@@ -593,6 +595,7 @@ export default function BankingPage() {
                               );
                             }}
                             className="sr-only peer"
+                            aria-label={`Enable ${integration.name} payment integration`}
                           />
                           <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                         </label>
@@ -601,12 +604,14 @@ export default function BankingPage() {
                       {integration.isEnabled && (
                         <div className="mt-4 space-y-3 pt-4 border-t border-gray-200">
                           <div>
-                            <label className="text-sm font-semibold text-[#1A1D29] mb-1 block">
+                            <label htmlFor={`apiKey-${integration.id}`} className="text-sm font-semibold text-[#1A1D29] mb-1 block">
                               API Key / Public Key
                             </label>
                             <div className="relative">
                               <Key className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8B95A5]" />
                               <Input
+                                id={`apiKey-${integration.id}`}
+                                name={`apiKey-${integration.id}`}
                                 type="password"
                                 placeholder={integration.type === 'yoco' ? 'Yoco Public Key' : 'iKhokha API Key'}
                                 value={integration.apiKey || ''}
@@ -620,12 +625,14 @@ export default function BankingPage() {
                             </div>
                           </div>
                           <div>
-                            <label className="text-sm font-semibold text-[#1A1D29] mb-1 block">
+                            <label htmlFor={`secretKey-${integration.id}`} className="text-sm font-semibold text-[#1A1D29] mb-1 block">
                               Secret Key
                             </label>
                             <div className="relative">
                               <Key className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8B95A5]" />
                               <Input
+                                id={`secretKey-${integration.id}`}
+                                name={`secretKey-${integration.id}`}
                                 type="password"
                                 placeholder={integration.type === 'yoco' ? 'Yoco Secret Key' : 'iKhokha Secret Key'}
                                 value={integration.secretKey || ''}
@@ -639,12 +646,14 @@ export default function BankingPage() {
                             </div>
                           </div>
                           <div>
-                            <label className="text-sm font-semibold text-[#1A1D29] mb-1 block">
+                            <label htmlFor={`webhookUrl-${integration.id}`} className="text-sm font-semibold text-[#1A1D29] mb-1 block">
                               Webhook URL
                             </label>
                             <div className="relative">
                               <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8B95A5]" />
                               <Input
+                                id={`webhookUrl-${integration.id}`}
+                                name={`webhookUrl-${integration.id}`}
                                 type="text"
                                 placeholder="https://peboli.store/api/webhooks/payment"
                                 value={integration.webhookUrl || ''}
@@ -694,17 +703,17 @@ export default function BankingPage() {
                 <h2 className="text-lg font-bold text-[#1A1D29] mb-4">Banking Settings</h2>
                 <div className="space-y-6">
                   <div>
-                    <label className="text-sm font-semibold text-[#1A1D29]">Default Currency</label>
-                    <select className="mt-2 h-11 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-[#1A1D29] focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <label htmlFor="defaultCurrency" className="text-sm font-semibold text-[#1A1D29]">Default Currency</label>
+                    <select id="defaultCurrency" name="defaultCurrency" className="mt-2 h-11 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-[#1A1D29] focus:outline-none focus:ring-2 focus:ring-blue-500">
                       <option value="ZAR">ZAR - South African Rand</option>
                       <option value="USD">USD - US Dollar</option>
                       <option value="EUR">EUR - Euro</option>
                     </select>
                   </div>
                   <div>
-                    <label className="text-sm font-semibold text-[#1A1D29]">Auto-Reconciliation</label>
+                    <label htmlFor="autoReconcile" className="text-sm font-semibold text-[#1A1D29]">Auto-Reconciliation</label>
                     <div className="mt-2 flex items-center gap-2">
-                      <input type="checkbox" id="autoReconcile" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                      <input type="checkbox" id="autoReconcile" name="autoReconcile" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
                       <label htmlFor="autoReconcile" className="text-sm text-[#8B95A5]">Automatically reconcile transactions daily</label>
                     </div>
                   </div>
@@ -712,15 +721,15 @@ export default function BankingPage() {
                     <label className="text-sm font-semibold text-[#1A1D29]">Transaction Notifications</label>
                     <div className="mt-2 space-y-2">
                       <div className="flex items-center gap-2">
-                        <input type="checkbox" id="notifyDeposits" defaultChecked className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                        <input type="checkbox" id="notifyDeposits" name="notifyDeposits" defaultChecked className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
                         <label htmlFor="notifyDeposits" className="text-sm text-[#8B95A5]">Notify on deposits</label>
                       </div>
                       <div className="flex items-center gap-2">
-                        <input type="checkbox" id="notifyWithdrawals" defaultChecked className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                        <input type="checkbox" id="notifyWithdrawals" name="notifyWithdrawals" defaultChecked className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
                         <label htmlFor="notifyWithdrawals" className="text-sm text-[#8B95A5]">Notify on withdrawals</label>
                       </div>
                       <div className="flex items-center gap-2">
-                        <input type="checkbox" id="notifyFailures" defaultChecked className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                        <input type="checkbox" id="notifyFailures" name="notifyFailures" defaultChecked className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
                         <label htmlFor="notifyFailures" className="text-sm text-[#8B95A5]">Notify on failed transactions</label>
                       </div>
                     </div>
@@ -754,8 +763,10 @@ export default function BankingPage() {
             
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-semibold text-[#1A1D29] mb-1 block">Bank Name</label>
+                <label htmlFor="add-modal-bankName" className="text-sm font-semibold text-[#1A1D29] mb-1 block">Bank Name</label>
                 <Input
+                  id="add-modal-bankName"
+                  name="add-modal-bankName"
                   placeholder="e.g. Standard Bank, FNB, ABSA"
                   value={accountForm.bankName}
                   onChange={(e) => setAccountForm({ ...accountForm, bankName: e.target.value })}
@@ -764,8 +775,10 @@ export default function BankingPage() {
               </div>
               
               <div>
-                <label className="text-sm font-semibold text-[#1A1D29] mb-1 block">Account Number</label>
+                <label htmlFor="add-modal-accountNumber" className="text-sm font-semibold text-[#1A1D29] mb-1 block">Account Number</label>
                 <Input
+                  id="add-modal-accountNumber"
+                  name="add-modal-accountNumber"
                   type="text"
                   placeholder="Enter account number"
                   value={accountForm.accountNumber}
@@ -775,8 +788,10 @@ export default function BankingPage() {
               </div>
               
               <div>
-                <label className="text-sm font-semibold text-[#1A1D29] mb-1 block">Account Holder Name</label>
+                <label htmlFor="add-modal-accountHolderName" className="text-sm font-semibold text-[#1A1D29] mb-1 block">Account Holder Name</label>
                 <Input
+                  id="add-modal-accountHolderName"
+                  name="add-modal-accountHolderName"
                   placeholder="Account holder's full name"
                   value={accountForm.accountHolderName}
                   onChange={(e) => setAccountForm({ ...accountForm, accountHolderName: e.target.value })}
@@ -786,8 +801,10 @@ export default function BankingPage() {
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-semibold text-[#1A1D29] mb-1 block">Account Type</label>
+                  <label htmlFor="add-modal-accountType" className="text-sm font-semibold text-[#1A1D29] mb-1 block">Account Type</label>
                   <select
+                    id="add-modal-accountType"
+                    name="add-modal-accountType"
                     value={accountForm.accountType}
                     onChange={(e) => setAccountForm({ ...accountForm, accountType: e.target.value as 'checking' | 'savings' })}
                     className="h-10 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-[#1A1D29] focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -798,8 +815,10 @@ export default function BankingPage() {
                 </div>
                 
                 <div>
-                  <label className="text-sm font-semibold text-[#1A1D29] mb-1 block">Branch Code</label>
+                  <label htmlFor="add-modal-branchCode" className="text-sm font-semibold text-[#1A1D29] mb-1 block">Branch Code</label>
                   <Input
+                    id="add-modal-branchCode"
+                    name="add-modal-branchCode"
                     placeholder="e.g. 051001"
                     value={accountForm.branchCode}
                     onChange={(e) => setAccountForm({ ...accountForm, branchCode: e.target.value })}
@@ -809,8 +828,10 @@ export default function BankingPage() {
               </div>
               
               <div>
-                <label className="text-sm font-semibold text-[#1A1D29] mb-1 block">Currency</label>
+                <label htmlFor="add-modal-currency" className="text-sm font-semibold text-[#1A1D29] mb-1 block">Currency</label>
                 <select
+                  id="add-modal-currency"
+                  name="add-modal-currency"
                   value={accountForm.currency}
                   onChange={(e) => setAccountForm({ ...accountForm, currency: e.target.value })}
                   className="h-10 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-[#1A1D29] focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -862,8 +883,10 @@ export default function BankingPage() {
             
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-semibold text-[#1A1D29] mb-1 block">Bank Name</label>
+                <label htmlFor="add-modal-bankName" className="text-sm font-semibold text-[#1A1D29] mb-1 block">Bank Name</label>
                 <Input
+                  id="add-modal-bankName"
+                  name="add-modal-bankName"
                   placeholder="e.g. Standard Bank, FNB, ABSA"
                   value={accountForm.bankName}
                   onChange={(e) => setAccountForm({ ...accountForm, bankName: e.target.value })}
@@ -872,8 +895,10 @@ export default function BankingPage() {
               </div>
               
               <div>
-                <label className="text-sm font-semibold text-[#1A1D29] mb-1 block">Account Number</label>
+                <label htmlFor="add-modal-accountNumber" className="text-sm font-semibold text-[#1A1D29] mb-1 block">Account Number</label>
                 <Input
+                  id="add-modal-accountNumber"
+                  name="add-modal-accountNumber"
                   type="text"
                   placeholder="Enter account number"
                   value={accountForm.accountNumber}
@@ -883,8 +908,10 @@ export default function BankingPage() {
               </div>
               
               <div>
-                <label className="text-sm font-semibold text-[#1A1D29] mb-1 block">Account Holder Name</label>
+                <label htmlFor="add-modal-accountHolderName" className="text-sm font-semibold text-[#1A1D29] mb-1 block">Account Holder Name</label>
                 <Input
+                  id="add-modal-accountHolderName"
+                  name="add-modal-accountHolderName"
                   placeholder="Account holder's full name"
                   value={accountForm.accountHolderName}
                   onChange={(e) => setAccountForm({ ...accountForm, accountHolderName: e.target.value })}
@@ -894,8 +921,10 @@ export default function BankingPage() {
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-semibold text-[#1A1D29] mb-1 block">Account Type</label>
+                  <label htmlFor="add-modal-accountType" className="text-sm font-semibold text-[#1A1D29] mb-1 block">Account Type</label>
                   <select
+                    id="add-modal-accountType"
+                    name="add-modal-accountType"
                     value={accountForm.accountType}
                     onChange={(e) => setAccountForm({ ...accountForm, accountType: e.target.value as 'checking' | 'savings' })}
                     className="h-10 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-[#1A1D29] focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -906,8 +935,10 @@ export default function BankingPage() {
                 </div>
                 
                 <div>
-                  <label className="text-sm font-semibold text-[#1A1D29] mb-1 block">Branch Code</label>
+                  <label htmlFor="add-modal-branchCode" className="text-sm font-semibold text-[#1A1D29] mb-1 block">Branch Code</label>
                   <Input
+                    id="add-modal-branchCode"
+                    name="add-modal-branchCode"
                     placeholder="e.g. 051001"
                     value={accountForm.branchCode}
                     onChange={(e) => setAccountForm({ ...accountForm, branchCode: e.target.value })}
@@ -917,8 +948,10 @@ export default function BankingPage() {
               </div>
               
               <div>
-                <label className="text-sm font-semibold text-[#1A1D29] mb-1 block">Currency</label>
+                <label htmlFor="add-modal-currency" className="text-sm font-semibold text-[#1A1D29] mb-1 block">Currency</label>
                 <select
+                  id="add-modal-currency"
+                  name="add-modal-currency"
                   value={accountForm.currency}
                   onChange={(e) => setAccountForm({ ...accountForm, currency: e.target.value })}
                   className="h-10 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-[#1A1D29] focus:outline-none focus:ring-2 focus:ring-blue-500"
