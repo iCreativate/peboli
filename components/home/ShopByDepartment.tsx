@@ -8,7 +8,7 @@ import { motion } from 'framer-motion';
 type Department = { name: string; slug: string };
 
 export function ShopByDepartment() {
-  const [departments, setDepartments] = useState<typeof MAIN_CATEGORIES>(MAIN_CATEGORIES);
+  const [departments, setDepartments] = useState<typeof MAIN_CATEGORIES>([]);
   const [loading, setLoading] = useState(true);
   
   // Fetch departments from API
@@ -24,7 +24,7 @@ export function ShopByDepartment() {
         });
         if (res.ok) {
           const data = await res.json();
-          if (Array.isArray(data) && data.length > 0) {
+          if (Array.isArray(data)) {
             setDepartments(data.map((dept: Department) => ({
               id: dept.slug,
               name: dept.name,
@@ -32,8 +32,6 @@ export function ShopByDepartment() {
               icon: '📦', // Default icon, could be enhanced later
               productCount: 0, // Could be calculated from products
             })));
-          } else {
-            console.warn('No departments returned from API');
           }
         } else {
           console.error('Failed to fetch departments:', res.status);
@@ -51,6 +49,11 @@ export function ShopByDepartment() {
     const interval = setInterval(fetchDepartments, 30000);
     return () => clearInterval(interval);
   }, []);
+
+  // Don't render if no departments
+  if (!loading && departments.length === 0) {
+    return null;
+  }
 
   return (
     <section className="py-10 md:py-12 bg-white border-b border-gray-100">

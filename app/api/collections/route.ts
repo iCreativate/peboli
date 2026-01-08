@@ -22,17 +22,8 @@ export async function GET() {
       return NextResponse.json(setting.value as Array<{ id: string; name: string; href: string; color?: string }>, { headers });
     }
 
-    // Return default collections if not found
-    return NextResponse.json([
-      { id: 'new-arrivals', name: 'New Arrivals', href: '/new' },
-      { id: 'christmas', name: 'Christmas', href: '/christmas' },
-      { id: 'summer', name: 'Summer', href: '/summer' },
-      { id: 'deals', name: 'Deals & Promotions', href: '/deals' },
-      { id: 'liquor', name: 'Festive Liquor', href: '/liquor' },
-      { id: 'brands', name: 'Brands Store', href: '/brands' },
-      { id: 'splash', name: 'PeboliSPLASH', href: '/more', color: '#db2777' },
-      { id: 'clearance', name: 'Clearance', href: '/clearance' },
-    ], { headers });
+    // Return empty array if not found (no mock data)
+    return NextResponse.json([], { headers });
   } catch (error: any) {
     console.error('Error fetching collections:', error);
     return NextResponse.json(

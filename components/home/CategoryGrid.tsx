@@ -9,13 +9,19 @@ import { motion } from 'framer-motion';
 type Department = { name: string; slug: string };
 
 export function CategoryGrid() {
-  const [categories, setCategories] = useState<typeof MAIN_CATEGORIES>(MAIN_CATEGORIES);
+  const [categories, setCategories] = useState<typeof MAIN_CATEGORIES>([]);
   
   // Fetch departments from API
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const res = await fetch('/api/departments', { cache: 'no-store' });
+        const res = await fetch('/api/departments?t=' + Date.now(), { 
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+          }
+        });
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data)) {
@@ -34,7 +40,16 @@ export function CategoryGrid() {
     };
     
     fetchDepartments();
+    
+    // Refresh every 30 seconds to get updates
+    const interval = setInterval(fetchDepartments, 30000);
+    return () => clearInterval(interval);
   }, []);
+
+  // Don't render if no categories
+  if (categories.length === 0) {
+    return null;
+  }
 
   return (
     <section className="py-16 md:py-20 bg-gradient-to-b from-[#F7F8FA] to-white">

@@ -136,63 +136,15 @@ export function DepartmentSidebar() {
         });
         if (res.ok) {
           const data = await res.json();
-          if (Array.isArray(data) && data.length > 0) {
+          if (Array.isArray(data)) {
             setCategories(data);
-          } else {
-            // Fallback to defaults if empty
-            setCategories([
-              'Appliances',
-              'Automotive & DIY',
-              'Baby & Toddler',
-              'Beauty',
-              'Books & Courses',
-              'Camping & Outdoor',
-              'Clothing & Shoes',
-              'Electronics',
-              'Gaming & Media',
-              'Garden, Pool & Patio',
-              'Groceries & Household',
-              'Health & Personal Care',
-              'Homeware',
-              'Liquor',
-              'Office & Stationery',
-              'Pets',
-              'Sport & Training',
-              'Toys',
-            ].map(name => ({ 
-              name, 
-              slug: name.toLowerCase().replace(/ & /g, '-').replace(/\s+/g, '-') 
-            })));
           }
         } else {
           throw new Error(`HTTP ${res.status}`);
         }
       } catch (error) {
         console.error('Error fetching departments:', error);
-        // Fallback to defaults
-        setCategories([
-          'Appliances',
-          'Automotive & DIY',
-          'Baby & Toddler',
-          'Beauty',
-          'Books & Courses',
-          'Camping & Outdoor',
-          'Clothing & Shoes',
-          'Electronics',
-          'Gaming & Media',
-          'Garden, Pool & Patio',
-          'Groceries & Household',
-          'Health & Personal Care',
-          'Homeware',
-          'Liquor',
-          'Office & Stationery',
-          'Pets',
-          'Sport & Training',
-          'Toys',
-        ].map(name => ({ 
-          name, 
-          slug: name.toLowerCase().replace(/ & /g, '-').replace(/\s+/g, '-') 
-        })));
+        setCategories([]);
       }
     };
     
