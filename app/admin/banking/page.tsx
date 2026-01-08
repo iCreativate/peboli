@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useTransition } from 'react';
 import { 
   CreditCard, 
   Building2, 
@@ -70,6 +70,7 @@ export default function BankingPage() {
     { id: 'yoco', name: 'Yoco', type: 'yoco', isEnabled: false },
     { id: 'ikhokha', name: 'iKhokha', type: 'ikhokha', isEnabled: false },
   ]);
+  const [isPending, startTransition] = useTransition();
   
   // Form state for adding/editing accounts
   const [accountForm, setAccountForm] = useState({
@@ -174,17 +175,19 @@ export default function BankingPage() {
             Export
           </Button>
           <Button 
-            onClick={() => {
-              setAccountForm({
-                bankName: '',
-                accountNumber: '',
-                accountType: 'checking',
-                branchCode: '',
-                accountHolderName: '',
-                currency: 'ZAR',
+            onClick={useCallback(() => {
+              startTransition(() => {
+                setAccountForm({
+                  bankName: '',
+                  accountNumber: '',
+                  accountType: 'checking',
+                  branchCode: '',
+                  accountHolderName: '',
+                  currency: 'ZAR',
+                });
+                setShowAddAccountModal(true);
               });
-              setShowAddAccountModal(true);
-            }}
+            }, [])}
             className="h-10 rounded-xl text-white border-0 hover:opacity-90"
             style={{ background: 'linear-gradient(135deg, #0B1220 0%, #1A2333 45%, #0B1220 100%)' }}
           >
@@ -199,7 +202,11 @@ export default function BankingPage() {
         {TABS.map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id as any)}
+            onClick={useCallback(() => {
+              startTransition(() => {
+                setActiveTab(tab.id as any);
+              });
+            }, [tab.id])}
             className={`relative pb-4 text-sm font-medium transition-colors whitespace-nowrap ${
               activeTab === tab.id
                 ? 'text-blue-600'
@@ -576,10 +583,13 @@ export default function BankingPage() {
                           <Button 
                             className="h-10 rounded-xl text-white font-bold w-full border-0 hover:opacity-90"
                             style={{ background: 'linear-gradient(135deg, #0B1220 0%, #1A2333 45%, #0B1220 100%)' }}
-                            onClick={() => {
-                              // TODO: Save integration settings to API
-                              alert(`${integration.name} settings saved!`);
-                            }}
+                            onClick={useCallback(() => {
+                              // Use setTimeout to defer non-critical work
+                              setTimeout(() => {
+                                // TODO: Save integration settings to API
+                                alert(`${integration.name} settings saved!`);
+                              }, 0);
+                            }, [integration.name])}
                           >
                             <Save className="h-4 w-4 mr-2" />
                             Save {integration.name} Settings
@@ -735,35 +745,37 @@ export default function BankingPage() {
               <Button
                 className="flex-1 h-11 rounded-xl text-white font-bold border-0 hover:opacity-90"
                 style={{ background: 'linear-gradient(135deg, #0B1220 0%, #1A2333 45%, #0B1220 100%)' }}
-                onClick={() => {
+                onClick={useCallback(() => {
                   if (!accountForm.bankName || !accountForm.accountNumber) {
                     alert('Please fill in all required fields');
                     return;
                   }
                   
-                  const newAccount: BankAccount = {
-                    id: Date.now().toString(),
-                    bankName: accountForm.bankName,
-                    accountNumber: `****${accountForm.accountNumber.slice(-4)}`,
-                    accountType: accountForm.accountType,
-                    balance: 0,
-                    currency: accountForm.currency,
-                    isActive: true,
-                    branchCode: accountForm.branchCode,
-                    accountHolderName: accountForm.accountHolderName,
-                  };
-                  
-                  setAccounts([...accounts, newAccount]);
-                  setShowAddAccountModal(false);
-                  setAccountForm({
-                    bankName: '',
-                    accountNumber: '',
-                    accountType: 'checking',
-                    branchCode: '',
-                    accountHolderName: '',
-                    currency: 'ZAR',
+                  startTransition(() => {
+                    const newAccount: BankAccount = {
+                      id: Date.now().toString(),
+                      bankName: accountForm.bankName,
+                      accountNumber: `****${accountForm.accountNumber.slice(-4)}`,
+                      accountType: accountForm.accountType,
+                      balance: 0,
+                      currency: accountForm.currency,
+                      isActive: true,
+                      branchCode: accountForm.branchCode,
+                      accountHolderName: accountForm.accountHolderName,
+                    };
+                    
+                    setAccounts(prev => [...prev, newAccount]);
+                    setShowAddAccountModal(false);
+                    setAccountForm({
+                      bankName: '',
+                      accountNumber: '',
+                      accountType: 'checking',
+                      branchCode: '',
+                      accountHolderName: '',
+                      currency: 'ZAR',
+                    });
                   });
-                }}
+                }, [accountForm])}
               >
                 <Check className="h-4 w-4 mr-2" />
                 Add Account
