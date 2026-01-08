@@ -14,6 +14,15 @@ export const metadata: Metadata = {
   icons: {
     icon: '/icon',
   },
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Peboli',
+  },
+  formatDetection: {
+    telephone: false,
+  },
 };
 
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
