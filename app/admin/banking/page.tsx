@@ -477,6 +477,8 @@ export default function BankingPage() {
                     <div className="relative">
                       <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8B95A5]" />
                       <Input
+                        id="searchTransactions"
+                        name="searchTransactions"
                         type="search"
                         placeholder="Search transactions..."
                         className="h-10 rounded-xl pl-10 w-64"
