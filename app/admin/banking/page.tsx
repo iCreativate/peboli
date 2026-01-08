@@ -95,63 +95,29 @@ export default function BankingPage() {
             setPaymentIntegrations(integrationsData.integrations);
           }
         }
-      } catch (error) {
-        console.error('Error fetching payment integrations:', error);
-      }
 
-      // TODO: Replace with actual API call for accounts and transactions
-      setTimeout(() => {
-        setAccounts([
-          {
-            id: '1',
-            bankName: 'Standard Bank',
-            accountNumber: '****1234',
-            accountType: 'checking',
-            balance: 125000.50,
-            currency: 'ZAR',
-            isActive: true,
-          },
-          {
-            id: '2',
-            bankName: 'FNB',
-            accountNumber: '****5678',
-            accountType: 'savings',
-            balance: 50000.00,
-            currency: 'ZAR',
-            isActive: true,
-          },
-        ]);
-        setTransactions([
-          {
-            id: '1',
-            type: 'deposit',
-            amount: 5000.00,
-            description: 'Order payment from customer',
-            status: 'completed',
-            date: new Date().toISOString(),
-            reference: 'ORD-12345',
-          },
-          {
-            id: '2',
-            type: 'withdrawal',
-            amount: 2500.00,
-            description: 'Vendor payout',
-            status: 'completed',
-            date: new Date(Date.now() - 86400000).toISOString(),
-            reference: 'PAY-67890',
-          },
-          {
-            id: '3',
-            type: 'fee',
-            amount: 50.00,
-            description: 'Transaction fee',
-            status: 'completed',
-            date: new Date(Date.now() - 172800000).toISOString(),
-            reference: 'FEE-11111',
-          },
-        ]);
+        // TODO: Fetch bank accounts from API
+        // const accountsRes = await fetch('/api/admin/bank-accounts');
+        // if (accountsRes.ok) {
+        //   const accountsData = await accountsRes.json();
+        //   if (accountsData.success && accountsData.accounts) {
+        //     setAccounts(accountsData.accounts);
+        //   }
+        // }
+
+        // TODO: Fetch transactions from API
+        // const transactionsRes = await fetch('/api/admin/transactions');
+        // if (transactionsRes.ok) {
+        //   const transactionsData = await transactionsRes.json();
+        //   if (transactionsData.success && transactionsData.transactions) {
+        //     setTransactions(transactionsData.transactions);
+        //   }
+        // }
+      } catch (error) {
+        console.error('Error fetching banking data:', error);
+      } finally {
         setLoading(false);
-      }, 500);
+      }
     };
 
     fetchData();
@@ -529,7 +495,20 @@ export default function BankingPage() {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {filteredTransactions.map((transaction) => (
+                      {filteredTransactions.length === 0 ? (
+                        <tr>
+                          <td colSpan={6} className="px-6 py-12 text-center">
+                            <div className="flex flex-col items-center">
+                              <CreditCard className="h-12 w-12 text-gray-300 mb-4" />
+                              <p className="text-gray-500 font-medium">No transactions found</p>
+                              <p className="text-sm text-gray-400 mt-2">
+                                {searchQuery ? 'Try adjusting your search' : 'Transactions will appear here once you start processing payments'}
+                              </p>
+                            </div>
+                          </td>
+                        </tr>
+                      ) : (
+                        filteredTransactions.map((transaction) => (
                         <tr key={transaction.id} className="hover:bg-gray-50">
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-[#1A1D29]">
                             {new Date(transaction.date).toLocaleDateString()}
@@ -561,7 +540,8 @@ export default function BankingPage() {
                             </span>
                           </td>
                         </tr>
-                      ))}
+                        ))
+                      )}
                     </tbody>
                   </table>
                 </div>
