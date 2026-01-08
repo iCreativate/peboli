@@ -333,26 +333,28 @@ export function TakealotHeader() {
       </div>
 
       {/* Quick Navigation (Featured Collections) */}
-      <div className="border-b border-gray-100 bg-white/80 backdrop-blur-md sticky top-0 z-40 shadow-sm">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center gap-8 overflow-x-auto py-3 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-            {collections.map((c) => (
-              <Link
-                key={c.id}
-                href={c.href}
-                className={`text-sm whitespace-nowrap transition-all duration-200 px-3 py-1.5 rounded-full hover:bg-gray-50 ${
-                  c.color 
-                    ? 'font-bold' 
-                    : 'text-gray-600 hover:text-[#0B1220] font-medium'
-                }`}
-                style={c.color ? { color: c.color, backgroundColor: `${c.color}10` } : undefined}
-              >
-                {c.name}
-              </Link>
-            ))}
+      {collections.length > 0 && (
+        <div className="border-b border-gray-100 bg-white/80 backdrop-blur-md sticky top-0 z-40 shadow-sm">
+          <div className="container mx-auto px-4">
+            <div className="flex items-center gap-8 overflow-x-auto py-3 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+              {collections.map((c) => (
+                <Link
+                  key={c.id}
+                  href={c.href}
+                  className={`text-sm whitespace-nowrap transition-all duration-200 px-3 py-1.5 rounded-full hover:bg-gray-50 ${
+                    c.color 
+                      ? 'font-bold' 
+                      : 'text-gray-600 hover:text-[#0B1220] font-medium'
+                  }`}
+                  style={c.color ? { color: c.color, backgroundColor: `${c.color}10` } : undefined}
+                >
+                  {c.name}
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </header>
   );
 }
