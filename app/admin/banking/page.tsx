@@ -71,6 +71,14 @@ export default function BankingPage() {
     { id: 'ikhokha', name: 'iKhokha', type: 'ikhokha', isEnabled: false },
   ]);
   const [isPending, startTransition] = useTransition();
+  const [bankingSettings, setBankingSettings] = useState({
+    defaultCurrency: 'ZAR',
+    autoReconcile: false,
+    notifyDeposits: true,
+    notifyWithdrawals: true,
+    notifyFailures: true,
+  });
+  const [isSavingSettings, setIsSavingSettings] = useState(false);
   
   // Form state for adding/editing accounts
   const [accountForm, setAccountForm] = useState({
@@ -248,6 +256,32 @@ export default function BankingPage() {
       alert(`Failed to save ${integration.name} settings. Please try again.`);
     }
   }, []);
+
+  const handleSaveBankingSettings = useCallback(async () => {
+    setIsSavingSettings(true);
+    try {
+      const response = await fetch('/api/admin/banking-settings', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ settings: bankingSettings }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert('Banking settings saved successfully!');
+      } else {
+        alert(`Failed to save banking settings: ${data.error}`);
+      }
+    } catch (error) {
+      console.error('Error saving banking settings:', error);
+      alert('Failed to save banking settings. Please try again.');
+    } finally {
+      setIsSavingSettings(false);
+    }
+  }, [bankingSettings]);
 
   return (
     <div className="space-y-6">
@@ -706,7 +740,13 @@ export default function BankingPage() {
                 <div className="space-y-6">
                   <div>
                     <label htmlFor="defaultCurrency" className="text-sm font-semibold text-[#1A1D29]">Default Currency</label>
-                    <select id="defaultCurrency" name="defaultCurrency" className="mt-2 h-11 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-[#1A1D29] focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <select 
+                      id="defaultCurrency" 
+                      name="defaultCurrency" 
+                      value={bankingSettings.defaultCurrency}
+                      onChange={(e) => setBankingSettings({ ...bankingSettings, defaultCurrency: e.target.value })}
+                      className="mt-2 h-11 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-[#1A1D29] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
                       <option value="ZAR">ZAR - South African Rand</option>
                       <option value="USD">USD - US Dollar</option>
                       <option value="EUR">EUR - Euro</option>
@@ -715,7 +755,14 @@ export default function BankingPage() {
                   <div>
                     <label htmlFor="autoReconcile" className="text-sm font-semibold text-[#1A1D29]">Auto-Reconciliation</label>
                     <div className="mt-2 flex items-center gap-2">
-                      <input type="checkbox" id="autoReconcile" name="autoReconcile" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                      <input 
+                        type="checkbox" 
+                        id="autoReconcile" 
+                        name="autoReconcile" 
+                        checked={bankingSettings.autoReconcile}
+                        onChange={(e) => setBankingSettings({ ...bankingSettings, autoReconcile: e.target.checked })}
+                        className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
+                      />
                       <label htmlFor="autoReconcile" className="text-sm text-[#8B95A5]">Automatically reconcile transactions daily</label>
                     </div>
                   </div>
@@ -723,24 +770,57 @@ export default function BankingPage() {
                     <label className="text-sm font-semibold text-[#1A1D29]">Transaction Notifications</label>
                     <div className="mt-2 space-y-2">
                       <div className="flex items-center gap-2">
-                        <input type="checkbox" id="notifyDeposits" name="notifyDeposits" defaultChecked className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                        <input 
+                          type="checkbox" 
+                          id="notifyDeposits" 
+                          name="notifyDeposits" 
+                          checked={bankingSettings.notifyDeposits}
+                          onChange={(e) => setBankingSettings({ ...bankingSettings, notifyDeposits: e.target.checked })}
+                          className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
+                        />
                         <label htmlFor="notifyDeposits" className="text-sm text-[#8B95A5]">Notify on deposits</label>
                       </div>
                       <div className="flex items-center gap-2">
-                        <input type="checkbox" id="notifyWithdrawals" name="notifyWithdrawals" defaultChecked className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                        <input 
+                          type="checkbox" 
+                          id="notifyWithdrawals" 
+                          name="notifyWithdrawals" 
+                          checked={bankingSettings.notifyWithdrawals}
+                          onChange={(e) => setBankingSettings({ ...bankingSettings, notifyWithdrawals: e.target.checked })}
+                          className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
+                        />
                         <label htmlFor="notifyWithdrawals" className="text-sm text-[#8B95A5]">Notify on withdrawals</label>
                       </div>
                       <div className="flex items-center gap-2">
-                        <input type="checkbox" id="notifyFailures" name="notifyFailures" defaultChecked className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                        <input 
+                          type="checkbox" 
+                          id="notifyFailures" 
+                          name="notifyFailures" 
+                          checked={bankingSettings.notifyFailures}
+                          onChange={(e) => setBankingSettings({ ...bankingSettings, notifyFailures: e.target.checked })}
+                          className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
+                        />
                         <label htmlFor="notifyFailures" className="text-sm text-[#8B95A5]">Notify on failed transactions</label>
                       </div>
                     </div>
                   </div>
                   <Button 
-                    className="h-11 rounded-xl text-white font-bold border-0 hover:opacity-90"
+                    onClick={handleSaveBankingSettings}
+                    disabled={isSavingSettings}
+                    className="h-11 rounded-xl text-white font-bold border-0 hover:opacity-90 disabled:opacity-50"
                     style={{ background: 'linear-gradient(135deg, #0B1220 0%, #1A2333 45%, #0B1220 100%)' }}
                   >
-                    Save Settings
+                    {isSavingSettings ? (
+                      <>
+                        <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="h-4 w-4 mr-2" />
+                        Save Settings
+                      </>
+                    )}
                   </Button>
                 </div>
               </div>
