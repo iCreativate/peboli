@@ -327,10 +327,10 @@ export default function BankingPage() {
         'Account Number': acc.accountNumber,
         'Account Type': acc.accountType,
         'Branch Code': acc.branchCode,
-        'Account Holder': acc.accountHolderName,
+        'Account Holder': acc.accountHolderName || 'N/A',
         'Balance': acc.balance.toFixed(2),
         'Currency': acc.currency,
-        'Status': acc.status,
+        'Status': acc.isActive ? 'Active' : 'Inactive',
       }));
       filename = `bank-accounts-${new Date().toISOString().split('T')[0]}`;
     } else {
