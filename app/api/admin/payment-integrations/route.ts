@@ -7,6 +7,12 @@ const SETTING_KEY = 'payment_integrations';
 
 async function loadPaymentIntegrations() {
   try {
+    // Check if Setting model exists in Prisma client
+    if (!prisma.setting) {
+      console.error('Setting model not found in Prisma client');
+      throw new Error('Setting model not available');
+    }
+    
     const setting = await prisma.setting.findUnique({
       where: { key: SETTING_KEY },
     });
@@ -14,8 +20,12 @@ async function loadPaymentIntegrations() {
     if (setting && setting.value) {
       return setting.value as Record<string, any>;
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error loading payment integrations:', error);
+    // If it's a model not found error, return defaults
+    if (error?.message?.includes('Setting model not available') || error?.code === 'P2001') {
+      console.warn('Setting model not available, returning defaults');
+    }
   }
   
   // Return default integrations
@@ -37,6 +47,12 @@ async function loadPaymentIntegrations() {
 
 async function savePaymentIntegrations(integrations: Record<string, any>) {
   try {
+    // Check if Setting model exists in Prisma client
+    if (!prisma.setting) {
+      console.error('Setting model not found in Prisma client');
+      throw new Error('Setting model not available. Please ensure Prisma client is regenerated.');
+    }
+    
     // Ensure the value is properly serialized as JSON
     const jsonValue = JSON.parse(JSON.stringify(integrations));
     
@@ -57,6 +73,7 @@ async function savePaymentIntegrations(integrations: Record<string, any>) {
       message: error?.message,
       code: error?.code,
       meta: error?.meta,
+      stack: error?.stack,
     });
     throw error;
   }
