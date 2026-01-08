@@ -84,60 +84,77 @@ export default function BankingPage() {
 
   useEffect(() => {
     // Fetch banking data
-    // TODO: Replace with actual API call
-    setLoading(true);
-    setTimeout(() => {
-      setAccounts([
-        {
-          id: '1',
-          bankName: 'Standard Bank',
-          accountNumber: '****1234',
-          accountType: 'checking',
-          balance: 125000.50,
-          currency: 'ZAR',
-          isActive: true,
-        },
-        {
-          id: '2',
-          bankName: 'FNB',
-          accountNumber: '****5678',
-          accountType: 'savings',
-          balance: 50000.00,
-          currency: 'ZAR',
-          isActive: true,
-        },
-      ]);
-      setTransactions([
-        {
-          id: '1',
-          type: 'deposit',
-          amount: 5000.00,
-          description: 'Order payment from customer',
-          status: 'completed',
-          date: new Date().toISOString(),
-          reference: 'ORD-12345',
-        },
-        {
-          id: '2',
-          type: 'withdrawal',
-          amount: 2500.00,
-          description: 'Vendor payout',
-          status: 'completed',
-          date: new Date(Date.now() - 86400000).toISOString(),
-          reference: 'PAY-67890',
-        },
-        {
-          id: '3',
-          type: 'fee',
-          amount: 50.00,
-          description: 'Transaction fee',
-          status: 'completed',
-          date: new Date(Date.now() - 172800000).toISOString(),
-          reference: 'FEE-11111',
-        },
-      ]);
-      setLoading(false);
-    }, 500);
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        // Fetch payment integrations
+        const integrationsRes = await fetch('/api/admin/payment-integrations');
+        if (integrationsRes.ok) {
+          const integrationsData = await integrationsRes.json();
+          if (integrationsData.success && integrationsData.integrations) {
+            setPaymentIntegrations(integrationsData.integrations);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching payment integrations:', error);
+      }
+
+      // TODO: Replace with actual API call for accounts and transactions
+      setTimeout(() => {
+        setAccounts([
+          {
+            id: '1',
+            bankName: 'Standard Bank',
+            accountNumber: '****1234',
+            accountType: 'checking',
+            balance: 125000.50,
+            currency: 'ZAR',
+            isActive: true,
+          },
+          {
+            id: '2',
+            bankName: 'FNB',
+            accountNumber: '****5678',
+            accountType: 'savings',
+            balance: 50000.00,
+            currency: 'ZAR',
+            isActive: true,
+          },
+        ]);
+        setTransactions([
+          {
+            id: '1',
+            type: 'deposit',
+            amount: 5000.00,
+            description: 'Order payment from customer',
+            status: 'completed',
+            date: new Date().toISOString(),
+            reference: 'ORD-12345',
+          },
+          {
+            id: '2',
+            type: 'withdrawal',
+            amount: 2500.00,
+            description: 'Vendor payout',
+            status: 'completed',
+            date: new Date(Date.now() - 86400000).toISOString(),
+            reference: 'PAY-67890',
+          },
+          {
+            id: '3',
+            type: 'fee',
+            amount: 50.00,
+            description: 'Transaction fee',
+            status: 'completed',
+            date: new Date(Date.now() - 172800000).toISOString(),
+            reference: 'FEE-11111',
+          },
+        ]);
+        setLoading(false);
+      }, 500);
+    };
+
+    fetchData();
   }, []);
 
   const totalBalance = accounts.reduce((sum, acc) => sum + acc.balance, 0);
@@ -239,12 +256,31 @@ export default function BankingPage() {
     });
   }, [accountForm, editingAccount]);
 
-  const handleSaveIntegration = useCallback((integrationName: string) => {
-    // Use setTimeout to defer non-critical work
-    setTimeout(() => {
-      // TODO: Save integration settings to API
-      alert(`${integrationName} settings saved!`);
-    }, 0);
+  const handleSaveIntegration = useCallback(async (integration: PaymentIntegration) => {
+    try {
+      const response = await fetch('/api/admin/payment-integrations', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ integration }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Update local state with saved integration
+        setPaymentIntegrations(prev => 
+          prev.map(i => i.id === integration.id ? { ...i, ...data.integration } : i)
+        );
+        alert(`${integration.name} settings saved successfully!`);
+      } else {
+        alert(`Failed to save ${integration.name} settings: ${data.error}`);
+      }
+    } catch (error) {
+      console.error('Error saving payment integration:', error);
+      alert(`Failed to save ${integration.name} settings. Please try again.`);
+    }
   }, []);
 
   return (
@@ -653,7 +689,7 @@ export default function BankingPage() {
                           <Button 
                             className="h-10 rounded-xl text-white font-bold w-full border-0 hover:opacity-90"
                             style={{ background: 'linear-gradient(135deg, #0B1220 0%, #1A2333 45%, #0B1220 100%)' }}
-                            onClick={() => handleSaveIntegration(integration.name)}
+                            onClick={() => handleSaveIntegration(integration)}
                           >
                             <Save className="h-4 w-4 mr-2" />
                             Save {integration.name} Settings
