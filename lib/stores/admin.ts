@@ -222,7 +222,7 @@ export const useAdminStore = create<AdminState>()(
     }),
     {
       name: 'peboli_admin',
-      version: 7,
+      version: 8,
       storage: typeof window !== 'undefined' ? {
         getItem: (name) => {
           const str = localStorage.getItem(name);

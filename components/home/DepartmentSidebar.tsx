@@ -129,32 +129,32 @@ export function DepartmentSidebar() {
     setMounted(true);
   }, []);
   
-  const categories =
-    (mounted && adminDepartments && adminDepartments.length > 0)
-      ? adminDepartments
-      : [
-          'Appliances',
-          'Automotive & DIY',
-          'Baby & Toddler',
-          'Beauty',
-          'Books & Courses',
-          'Camping & Outdoor',
-          'Clothing & Shoes',
-          'Electronics',
-          'Gaming & Media',
-          'Garden, Pool & Patio',
-          'Groceries & Household',
-          'Health & Personal Care',
-          'Homeware',
-          'Liquor',
-          'Office & Stationery',
-          'Pets',
-          'Sport & Training',
-          'Toys',
-        ].map(name => ({ 
-          name, 
-          slug: name.toLowerCase().replace(/ & /g, '-').replace(/\s+/g, '-') 
-        }));
+  // Always use admin departments when mounted (even if empty), only fall back if not mounted yet
+  const categories = mounted && adminDepartments
+    ? adminDepartments
+    : [
+        'Appliances',
+        'Automotive & DIY',
+        'Baby & Toddler',
+        'Beauty',
+        'Books & Courses',
+        'Camping & Outdoor',
+        'Clothing & Shoes',
+        'Electronics',
+        'Gaming & Media',
+        'Garden, Pool & Patio',
+        'Groceries & Household',
+        'Health & Personal Care',
+        'Homeware',
+        'Liquor',
+        'Office & Stationery',
+        'Pets',
+        'Sport & Training',
+        'Toys',
+      ].map(name => ({ 
+        name, 
+        slug: name.toLowerCase().replace(/ & /g, '-').replace(/\s+/g, '-') 
+      }));
 
   // Find data for hovered category
   const hoveredSlug = categories.find(c => c.name === hoveredCategory)?.slug;

@@ -1,11 +1,32 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { MAIN_CATEGORIES } from '@/lib/constants/categories';
 import { motion } from 'framer-motion';
+import { useAdminStore } from '@/lib/stores/admin';
 
 export function CategoryGrid() {
+  const adminDepartments = useAdminStore((s) => s.departments);
+  const [mounted, setMounted] = useState(false);
+  
+  // Wait for client-side hydration
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  
+  // Always use admin departments when mounted (even if empty), only fall back if not mounted yet
+  const categories = mounted && adminDepartments
+    ? adminDepartments.map((dept) => ({
+        id: dept.slug,
+        name: dept.name,
+        slug: dept.slug,
+        icon: '📦',
+        productCount: 0,
+      }))
+    : MAIN_CATEGORIES;
+
   return (
     <section className="py-16 md:py-20 bg-gradient-to-b from-[#F7F8FA] to-white">
       <div className="container mx-auto px-4 lg:px-6">
@@ -14,7 +35,7 @@ export function CategoryGrid() {
           <p className="text-lg text-[#8B95A5] font-medium">Explore our curated collections</p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-5 md:gap-6">
-          {MAIN_CATEGORIES.map((category, index) => (
+          {categories.map((category, index) => (
             <motion.div
               key={category.id}
               initial={{ opacity: 0, y: 20 }}

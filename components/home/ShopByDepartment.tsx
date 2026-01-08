@@ -15,8 +15,8 @@ export function ShopByDepartment() {
     setMounted(true);
   }, []);
   
-  // Use admin departments if available, otherwise fall back to MAIN_CATEGORIES
-  const departments = (mounted && adminDepartments && adminDepartments.length > 0)
+  // Always use admin departments when mounted (even if empty), only fall back if not mounted yet
+  const departments = mounted && adminDepartments
     ? adminDepartments.map((dept) => ({
         id: dept.slug,
         name: dept.name,
