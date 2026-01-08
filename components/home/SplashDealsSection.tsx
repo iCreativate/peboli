@@ -110,12 +110,6 @@ export function SplashDealsSection() {
             {productDeals.length > 0
               ? productDeals.slice(0, 4).map((deal, index) => {
                   if (!deal.product) return null;
-                  // Create a product-like object from the deal
-                  const product = {
-                    ...deal.product,
-                    isSplashDeal: true,
-                    splashSaleEndsAt: deal.endsAt,
-                  } as Product;
                   
                   return (
                     <motion.div
@@ -124,7 +118,37 @@ export function SplashDealsSection() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: index * 0.1 }}
                     >
-                      <ProductCard product={product} />
+                      <Link href={`/products/${deal.product.slug}`} className="block">
+                        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
+                          {deal.product.images && deal.product.images.length > 0 && (
+                            <div className="relative aspect-square">
+                              <img
+                                src={deal.product.images[0].url}
+                                alt={deal.product.name}
+                                className="w-full h-full object-cover"
+                              />
+                              {deal.discountPercentage && (
+                                <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-lg text-sm font-bold">
+                                  -{deal.discountPercentage}%
+                                </div>
+                              )}
+                            </div>
+                          )}
+                          <div className="p-4">
+                            <h3 className="font-semibold text-gray-900 line-clamp-2 mb-2">{deal.product.name}</h3>
+                            <div className="flex items-center gap-2">
+                              <span className="text-lg font-bold text-[#0B1220]">
+                                R{Number(deal.product.price).toFixed(2)}
+                              </span>
+                              {deal.product.compareAtPrice && (
+                                <span className="text-sm text-gray-500 line-through">
+                                  R{Number(deal.product.compareAtPrice).toFixed(2)}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </Link>
                     </motion.div>
                   );
                 })
