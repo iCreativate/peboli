@@ -185,7 +185,8 @@ export default function BankingPage() {
               });
               setShowAddAccountModal(true);
             }}
-            className="h-10 rounded-xl premium-gradient text-white"
+            className="h-10 rounded-xl text-white border-0 hover:opacity-90"
+            style={{ background: 'linear-gradient(135deg, #0B1220 0%, #1A2333 45%, #0B1220 100%)' }}
           >
             <Plus className="h-4 w-4 mr-2" />
             Add Account
@@ -573,7 +574,8 @@ export default function BankingPage() {
                             </label>
                           </div>
                           <Button 
-                            className="h-10 rounded-xl premium-gradient text-white font-bold w-full"
+                            className="h-10 rounded-xl text-white font-bold w-full border-0 hover:opacity-90"
+                            style={{ background: 'linear-gradient(135deg, #0B1220 0%, #1A2333 45%, #0B1220 100%)' }}
                             onClick={() => {
                               // TODO: Save integration settings to API
                               alert(`${integration.name} settings saved!`);
@@ -625,7 +627,10 @@ export default function BankingPage() {
                       </div>
                     </div>
                   </div>
-                  <Button className="h-11 rounded-xl premium-gradient text-white font-bold">
+                  <Button 
+                    className="h-11 rounded-xl text-white font-bold border-0 hover:opacity-90"
+                    style={{ background: 'linear-gradient(135deg, #0B1220 0%, #1A2333 45%, #0B1220 100%)' }}
+                  >
                     Save Settings
                   </Button>
                 </div>
@@ -728,7 +733,8 @@ export default function BankingPage() {
                 Cancel
               </Button>
               <Button
-                className="flex-1 h-11 rounded-xl premium-gradient text-white font-bold"
+                className="flex-1 h-11 rounded-xl text-white font-bold border-0 hover:opacity-90"
+                style={{ background: 'linear-gradient(135deg, #0B1220 0%, #1A2333 45%, #0B1220 100%)' }}
                 onClick={() => {
                   if (!accountForm.bankName || !accountForm.accountNumber) {
                     alert('Please fill in all required fields');
@@ -866,7 +872,8 @@ export default function BankingPage() {
                 Cancel
               </Button>
               <Button
-                className="flex-1 h-11 rounded-xl premium-gradient text-white font-bold"
+                className="flex-1 h-11 rounded-xl text-white font-bold border-0 hover:opacity-90"
+                style={{ background: 'linear-gradient(135deg, #0B1220 0%, #1A2333 45%, #0B1220 100%)' }}
                 onClick={() => {
                   if (!accountForm.bankName || !accountForm.accountNumber) {
                     alert('Please fill in all required fields');
