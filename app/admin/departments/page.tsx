@@ -11,9 +11,11 @@ type Department = { name: string; slug: string };
 
 export default function AdminDepartmentsPage() {
   const [departments, setDepartments] = useState<Department[]>([]);
+  const [localDepartments, setLocalDepartments] = useState<Department[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
 
@@ -31,6 +33,8 @@ export default function AdminDepartmentsPage() {
       const data = await res.json();
       if (data.success && Array.isArray(data.departments)) {
         setDepartments(data.departments);
+        setLocalDepartments(data.departments);
+        setHasUnsavedChanges(false);
         // Also update local store for backward compatibility
         const store = useAdminStore.getState();
         // Sync with store - remove old, add new
@@ -83,6 +87,8 @@ export default function AdminDepartmentsPage() {
       const data = await res.json();
       if (data.success) {
         setDepartments(newDepartments);
+        setLocalDepartments(newDepartments);
+        setHasUnsavedChanges(false);
         // Also update local store
         const store = useAdminStore.getState();
         // Sync with store
@@ -130,40 +136,50 @@ export default function AdminDepartmentsPage() {
     const n = name.trim();
     const s = (slug.trim() || n.toLowerCase().replace(/\s+/g, '-').replace(/&/g, 'and').replace(/,+/g, ''));
     if (!n || !s) return;
-    if (departments.some((d) => d.slug === s)) {
+    if (localDepartments.some((d) => d.slug === s)) {
       alert('A department with this slug already exists');
       return;
     }
-    const newDepartments = [...departments, { name: n, slug: s }];
-    saveDepartments(newDepartments);
+    const newDepartments = [...localDepartments, { name: n, slug: s }];
+    setLocalDepartments(newDepartments);
+    setHasUnsavedChanges(true);
     setName('');
     setSlug('');
   };
 
   const handleUpdate = (slug: string, updates: Partial<Department>) => {
-    const newDepartments = departments.map(d => 
+    const newDepartments = localDepartments.map(d => 
       d.slug === slug ? { ...d, ...updates } : d
     );
-    saveDepartments(newDepartments);
+    setLocalDepartments(newDepartments);
+    setHasUnsavedChanges(true);
+  };
+
+  const handleSave = () => {
+    if (hasUnsavedChanges) {
+      saveDepartments(localDepartments);
+    }
   };
 
   const handleDelete = (slug: string) => {
     if (confirm('Are you sure you want to delete this department?')) {
-      const newDepartments = departments.filter(d => d.slug !== slug);
-      saveDepartments(newDepartments);
+      const newDepartments = localDepartments.filter(d => d.slug !== slug);
+      setLocalDepartments(newDepartments);
+      setHasUnsavedChanges(true);
     }
   };
 
   const handleMove = (slug: string, direction: 'up' | 'down') => {
-    const idx = departments.findIndex(d => d.slug === slug);
+    const idx = localDepartments.findIndex(d => d.slug === slug);
     if (idx === -1) return;
-    const newDepartments = [...departments];
+    const newDepartments = [...localDepartments];
     if (direction === 'up' && idx > 0) {
       [newDepartments[idx], newDepartments[idx - 1]] = [newDepartments[idx - 1], newDepartments[idx]];
     } else if (direction === 'down' && idx < newDepartments.length - 1) {
       [newDepartments[idx], newDepartments[idx + 1]] = [newDepartments[idx + 1], newDepartments[idx]];
     }
-    saveDepartments(newDepartments);
+    setLocalDepartments(newDepartments);
+    setHasUnsavedChanges(true);
   };
 
   return (
@@ -174,12 +190,26 @@ export default function AdminDepartmentsPage() {
           <h2 className="mt-1 text-2xl md:text-3xl font-black text-[#1A1D29] tracking-tight">Shop by Department</h2>
           <p className="mt-2 text-sm text-[#8B95A5]">Manage the sidebar department list.</p>
         </div>
-        {saved && (
-          <div className="flex items-center gap-2 text-green-600">
-            <Check className="h-5 w-5" />
-            <span className="font-semibold">Saved!</span>
-          </div>
-        )}
+        <div className="flex items-center gap-4">
+          {hasUnsavedChanges && (
+            <div className="flex items-center gap-2 text-orange-600">
+              <span className="text-sm font-semibold">Unsaved changes</span>
+            </div>
+          )}
+          {saved && (
+            <div className="flex items-center gap-2 text-green-600">
+              <Check className="h-5 w-5" />
+              <span className="font-semibold">Saved!</span>
+            </div>
+          )}
+          <Button 
+            onClick={handleSave} 
+            disabled={!hasUnsavedChanges || saving}
+            className="bg-[#0B1220] text-white hover:bg-gray-800"
+          >
+            {saving ? 'Saving...' : 'Save Changes'}
+          </Button>
+        </div>
       </div>
 
       <div className="rounded-2xl border border-gray-100 bg-white premium-shadow p-6">
@@ -188,7 +218,7 @@ export default function AdminDepartmentsPage() {
           <div className="mt-4 text-center text-gray-500">Loading departments...</div>
         ) : (
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-            {departments.map((d, idx) => (
+            {localDepartments.map((d, idx) => (
               <div key={d.slug} className="border rounded-xl p-4 bg-white">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
