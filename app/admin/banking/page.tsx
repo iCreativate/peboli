@@ -295,6 +295,65 @@ export default function BankingPage() {
     }
   }, [bankingSettings]);
 
+  // Export banking data based on active tab
+  const handleExport = useCallback(async () => {
+    let dataToExport: any[] = [];
+    let filename = '';
+    let headers: Record<string, string> = {};
+
+    if (activeTab === 'transactions') {
+      const data = filteredTransactions.length > 0 ? filteredTransactions : transactions;
+      if (data.length === 0) {
+        alert('No transactions to export');
+        return;
+      }
+      dataToExport = data.map(t => ({
+        'Date': new Date(t.date).toLocaleDateString(),
+        'Type': t.type,
+        'Description': t.description,
+        'Amount': t.amount.toFixed(2),
+        'Status': t.status,
+        'Reference': t.reference,
+        'Account': t.accountName || 'N/A',
+      }));
+      filename = `transactions-${new Date().toISOString().split('T')[0]}`;
+    } else if (activeTab === 'accounts') {
+      if (accounts.length === 0) {
+        alert('No accounts to export');
+        return;
+      }
+      dataToExport = accounts.map(acc => ({
+        'Bank Name': acc.bankName,
+        'Account Number': acc.accountNumber,
+        'Account Type': acc.accountType,
+        'Branch Code': acc.branchCode,
+        'Account Holder': acc.accountHolderName,
+        'Balance': acc.balance.toFixed(2),
+        'Currency': acc.currency,
+        'Status': acc.status,
+      }));
+      filename = `bank-accounts-${new Date().toISOString().split('T')[0]}`;
+    } else {
+      // Overview - export summary data
+      const summaryData = [{
+        'Total Balance': totalBalance.toFixed(2),
+        'Pending Transactions': pendingTransactions,
+        'Monthly Income': monthlyIncome.toFixed(2),
+        'Monthly Expenses': monthlyExpenses.toFixed(2),
+        'Net Income': (monthlyIncome - monthlyExpenses).toFixed(2),
+        'Total Accounts': accounts.length,
+        'Total Transactions': transactions.length,
+      }];
+      dataToExport = summaryData;
+      filename = `banking-summary-${new Date().toISOString().split('T')[0]}`;
+    }
+
+    // Ask user for format
+    const exportFormat = confirm('Export as Excel? (Click OK for Excel, Cancel for CSV)') ? 'excel' : 'csv';
+    
+    await exportDataUtil(dataToExport, filename, exportFormat, headers);
+  }, [activeTab, filteredTransactions, transactions, accounts, totalBalance, pendingTransactions, monthlyIncome, monthlyExpenses]);
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -304,7 +363,7 @@ export default function BankingPage() {
           <p className="text-sm text-[#8B95A5] mt-1">Manage bank accounts, transactions, and financial settings.</p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="h-10 rounded-xl">
+          <Button variant="outline" className="h-10 rounded-xl" onClick={handleExport}>
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>

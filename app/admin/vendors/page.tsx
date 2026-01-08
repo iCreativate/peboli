@@ -1,9 +1,10 @@
 'use client';
 
 import { Check, X, ExternalLink, Store, Filter, Download, LayoutDashboard, Eye, MessageSquare } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { exportData } from '@/lib/export';
 
 type Application = {
   id: string;
@@ -128,6 +129,36 @@ export default function VendorApprovalsPage() {
     setIsProfileModalOpen(true);
   };
 
+  // Export vendors data
+  const handleExport = useCallback(async () => {
+    const dataToExport = filteredApps.length > 0 ? filteredApps : applications;
+    if (dataToExport.length === 0) {
+      alert('No vendors to export');
+      return;
+    }
+
+    // Transform vendors for export
+    const exportDataArray = dataToExport.map(app => ({
+      'Name': app.name,
+      'Email': app.email,
+      'Tier': app.tier,
+      'Status': app.status,
+      'Submitted': app.submitted,
+      'Joined At': app.joinedAt ? new Date(app.joinedAt).toLocaleDateString() : 'N/A',
+      'Description': app.description,
+      'Rejection Reason': app.rejectionReason || 'N/A',
+    }));
+
+    // Ask user for format
+    const exportFormat = confirm('Export as Excel? (Click OK for Excel, Cancel for CSV)') ? 'excel' : 'csv';
+    
+    await exportData(
+      exportDataArray,
+      `vendors-${activeTab.toLowerCase()}-${new Date().toISOString().split('T')[0]}`,
+      exportFormat
+    );
+  }, [filteredApps, applications, activeTab]);
+
   if (loading) return <div>Loading...</div>;
 
   return (
@@ -141,6 +172,10 @@ export default function VendorApprovalsPage() {
         </div>
         
         <div className="flex gap-2 w-full md:w-auto">
+          <Button variant="outline" onClick={handleExport} className="h-10">
+            <Download className="h-4 w-4 mr-2" />
+            Export
+          </Button>
           <div className="relative flex-1 md:w-64">
             <input
               type="text"

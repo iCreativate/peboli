@@ -4,6 +4,7 @@ import { Search, MoreHorizontal, ShieldCheck, ShieldAlert, Filter, Download, Use
 import { useState, useEffect, useCallback, useMemo, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { exportData } from '@/lib/export';
 
 type User = {
   id: string;
@@ -159,6 +160,33 @@ export default function UsersPage() {
     });
   }, []);
 
+  // Export users data
+  const handleExport = useCallback(async () => {
+    const dataToExport = filteredUsers.length > 0 ? filteredUsers : users;
+    if (dataToExport.length === 0) {
+      alert('No users to export');
+      return;
+    }
+
+    // Ask user for format
+    const format = confirm('Export as Excel? (Click OK for Excel, Cancel for CSV)') ? 'excel' : 'csv';
+    
+    await exportData(
+      dataToExport,
+      `users-${activeTab.toLowerCase().replace(/\s+/g, '-')}-${new Date().toISOString().split('T')[0]}`,
+      format,
+      {
+        id: 'ID',
+        name: 'Name',
+        email: 'Email',
+        role: 'Role',
+        status: 'Status',
+        joined: 'Joined Date',
+        avatar: 'Avatar',
+      }
+    );
+  }, [filteredUsers, users, activeTab]);
+
   return (
     <div className="space-y-8 relative">
       {/* Header */}
@@ -168,7 +196,7 @@ export default function UsersPage() {
           <p className="text-gray-500 mt-2">Manage user access, roles, and platform activity.</p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="bg-white">
+          <Button variant="outline" className="bg-white" onClick={handleExport}>
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>

@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { Package, Search, Filter, Eye } from 'lucide-react';
+import { Package, Search, Filter, Eye, Download } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
+import { exportData } from '@/lib/export';
 
 interface Order {
   id: string;
@@ -52,6 +53,35 @@ export default function AdminOrdersPage() {
     return matchesSearch && matchesStatus;
   });
 
+  // Export orders data
+  const handleExport = useCallback(async () => {
+    const dataToExport = filteredOrders.length > 0 ? filteredOrders : orders;
+    if (dataToExport.length === 0) {
+      alert('No orders to export');
+      return;
+    }
+
+    // Transform orders for export
+    const exportDataArray = dataToExport.map(order => ({
+      'Order Number': order.orderNumber,
+      'Customer Name': order.user.name,
+      'Customer Email': order.user.email,
+      'Date': format(new Date(order.createdAt), 'yyyy-MM-dd'),
+      'Total': Number(order.total).toFixed(2),
+      'Status': order.status,
+      'Items Count': order.items.length,
+    }));
+
+    // Ask user for format
+    const exportFormat = confirm('Export as Excel? (Click OK for Excel, Cancel for CSV)') ? 'excel' : 'csv';
+    
+    await exportData(
+      exportDataArray,
+      `orders-${statusFilter || 'all'}-${new Date().toISOString().split('T')[0]}`,
+      exportFormat
+    );
+  }, [filteredOrders, orders, statusFilter]);
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -59,6 +89,10 @@ export default function AdminOrdersPage() {
           <h1 className="text-2xl font-bold text-gray-900">Order Management</h1>
           <p className="text-gray-500 mt-1">View and manage customer orders.</p>
         </div>
+        <Button variant="outline" onClick={handleExport}>
+          <Download className="h-4 w-4 mr-2" />
+          Export
+        </Button>
       </div>
 
       {/* Filters */}
