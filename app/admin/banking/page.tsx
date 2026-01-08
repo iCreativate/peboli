@@ -351,7 +351,7 @@ export default function BankingPage() {
     // Ask user for format
     const exportFormat = confirm('Export as Excel? (Click OK for Excel, Cancel for CSV)') ? 'excel' : 'csv';
     
-    await exportDataUtil(dataToExport, filename, exportFormat, headers);
+    await exportData(dataToExport, filename, exportFormat, headers);
   }, [activeTab, filteredTransactions, transactions, accounts, totalBalance, pendingTransactions, monthlyIncome, monthlyExpenses]);
 
   return (
