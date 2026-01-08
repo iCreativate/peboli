@@ -37,19 +37,27 @@ async function loadPaymentIntegrations() {
 
 async function savePaymentIntegrations(integrations: Record<string, any>) {
   try {
+    // Ensure the value is properly serialized as JSON
+    const jsonValue = JSON.parse(JSON.stringify(integrations));
+    
     await prisma.setting.upsert({
       where: { key: SETTING_KEY },
       update: {
-        value: integrations,
+        value: jsonValue,
         updatedAt: new Date(),
       },
       create: {
         key: SETTING_KEY,
-        value: integrations,
+        value: jsonValue,
       },
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error saving payment integrations:', error);
+    console.error('Error details:', {
+      message: error?.message,
+      code: error?.code,
+      meta: error?.meta,
+    });
     throw error;
   }
 }
@@ -136,10 +144,26 @@ export async function PUT(request: NextRequest) {
       message: `${integration.name} settings saved successfully.`,
       integration: integrations[integration.id]
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error updating payment integration:', error);
+    console.error('Error details:', {
+      message: error?.message,
+      code: error?.code,
+      meta: error?.meta,
+      stack: error?.stack,
+    });
+    
+    // Return more detailed error message for debugging
+    const errorMessage = error?.message || 'An error occurred while updating payment integration.';
     return NextResponse.json(
-      { error: 'An error occurred while updating payment integration.', success: false },
+      { 
+        error: errorMessage,
+        success: false,
+        details: process.env.NODE_ENV === 'development' ? {
+          code: error?.code,
+          meta: error?.meta,
+        } : undefined,
+      },
       { status: 500 }
     );
   }
