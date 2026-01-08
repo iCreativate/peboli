@@ -12,8 +12,14 @@ export async function GET() {
       where: { key: SETTING_KEY },
     });
 
+    const headers = {
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+    };
+
     if (setting && setting.value) {
-      return NextResponse.json(setting.value as Array<{ id: string; name: string; href: string; color?: string }>);
+      return NextResponse.json(setting.value as Array<{ id: string; name: string; href: string; color?: string }>, { headers });
     }
 
     // Return default collections if not found
@@ -26,7 +32,7 @@ export async function GET() {
       { id: 'brands', name: 'Brands Store', href: '/brands' },
       { id: 'splash', name: 'PeboliSPLASH', href: '/more', color: '#db2777' },
       { id: 'clearance', name: 'Clearance', href: '/clearance' },
-    ]);
+    ], { headers });
   } catch (error: any) {
     console.error('Error fetching collections:', error);
     return NextResponse.json(
