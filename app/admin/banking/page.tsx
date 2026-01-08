@@ -314,7 +314,7 @@ export default function BankingPage() {
         'Amount': t.amount.toFixed(2),
         'Status': t.status,
         'Reference': t.reference,
-        'Account': t.accountName || 'N/A',
+        'Account': (t as any).accountName || 'N/A',
       }));
       filename = `transactions-${new Date().toISOString().split('T')[0]}`;
     } else if (activeTab === 'accounts') {
