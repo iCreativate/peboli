@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useAdminStore } from '@/lib/stores/admin';
@@ -16,7 +16,7 @@ import {
   Check
 } from 'lucide-react';
 
-export function CollectionSettings() {
+export const CollectionSettings = memo(function CollectionSettings() {
   const collections = useAdminStore((s) => s.collections);
   const addCollection = useAdminStore((s) => s.addCollection);
   const updateCollection = useAdminStore((s) => s.updateCollection);

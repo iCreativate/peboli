@@ -1,13 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useAdminStore } from '@/lib/stores/admin';
 import Link from 'next/link';
 import { Save, Check } from 'lucide-react';
 
-export function DepartmentSettings() {
+export const DepartmentSettings = memo(function DepartmentSettings() {
   const departments = useAdminStore((s) => s.departments);
   const addDepartment = useAdminStore((s) => s.addDepartment);
   const updateDepartment = useAdminStore((s) => s.updateDepartment);
@@ -149,4 +149,4 @@ export function DepartmentSettings() {
       </div>
     </div>
   );
-}
+});

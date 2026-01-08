@@ -1,16 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo, useCallback, lazy, Suspense } from 'react';
 import { HomepageSettings } from '@/components/admin/settings/HomepageSettings';
 import { DepartmentSettings } from '@/components/admin/settings/DepartmentSettings';
+import { CollectionSettings } from '@/components/admin/settings/CollectionSettings';
 import { CatalogSettings } from '@/components/admin/settings/CatalogSettings';
 import { PromotionSettings } from '@/components/admin/settings/PromotionSettings';
 import { TeamSettings } from '@/components/admin/settings/TeamSettings';
 import { SystemSettings } from '@/components/admin/settings/SystemSettings';
 import { SecuritySettings } from '@/components/admin/settings/SecuritySettings';
 import { SocialMediaSettings } from '@/components/admin/settings/SocialMediaSettings';
-
-import { CollectionSettings } from '@/components/admin/settings/CollectionSettings';
 import { ThemeSettings } from '@/components/admin/settings/ThemeSettings';
 
 const TABS = [
@@ -24,10 +23,43 @@ const TABS = [
   'Social Media',
   'Security',
   'System'
-];
+] as const;
+
+type TabName = typeof TABS[number];
+
+// Tab content mapping for faster lookups
+const TAB_COMPONENTS: Record<TabName, React.ComponentType> = {
+  'Homepage': HomepageSettings,
+  'Departments': DepartmentSettings,
+  'Collections': CollectionSettings,
+  'Catalog': CatalogSettings,
+  'Promotions': PromotionSettings,
+  'Team': TeamSettings,
+  'Theme': ThemeSettings,
+  'Social Media': SocialMediaSettings,
+  'Security': SecuritySettings,
+  'System': SystemSettings,
+};
+
+// Loading fallback for tab content
+const TabContentLoader = () => (
+  <div className="flex items-center justify-center py-12">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+  </div>
+);
 
 export default function AdminSettingsPage() {
-  const [activeTab, setActiveTab] = useState('Homepage');
+  const [activeTab, setActiveTab] = useState<TabName>('Homepage');
+
+  // Memoize the active component to prevent unnecessary re-renders
+  const ActiveComponent = useMemo(() => {
+    return TAB_COMPONENTS[activeTab];
+  }, [activeTab]);
+
+  // Optimize click handler with useCallback
+  const handleTabClick = useCallback((tab: TabName) => {
+    setActiveTab(tab);
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -44,7 +76,7 @@ export default function AdminSettingsPage() {
           {TABS.map((tab) => (
             <button
               key={tab}
-              onClick={() => setActiveTab(tab)}
+              onClick={() => handleTabClick(tab)}
               className={`relative pb-4 text-sm font-medium transition-colors whitespace-nowrap ${
                 activeTab === tab 
                   ? 'text-blue-600' 
@@ -60,18 +92,11 @@ export default function AdminSettingsPage() {
         </div>
       </div>
 
-      {/* Tab Content */}
+      {/* Tab Content - Optimized rendering */}
       <div className="mt-6">
-        {activeTab === 'Homepage' && <HomepageSettings />}
-        {activeTab === 'Departments' && <DepartmentSettings />}
-        {activeTab === 'Collections' && <CollectionSettings />}
-        {activeTab === 'Catalog' && <CatalogSettings />}
-        {activeTab === 'Promotions' && <PromotionSettings />}
-        {activeTab === 'Team' && <TeamSettings />}
-        {activeTab === 'Theme' && <ThemeSettings />}
-        {activeTab === 'Social Media' && <SocialMediaSettings />}
-        {activeTab === 'Security' && <SecuritySettings />}
-        {activeTab === 'System' && <SystemSettings />}
+        <Suspense fallback={<TabContentLoader />}>
+          <ActiveComponent />
+        </Suspense>
       </div>
     </div>
   );
