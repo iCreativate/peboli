@@ -75,10 +75,22 @@ export async function PUT(request: NextRequest) {
       },
     });
 
+    // Verify the save by reading it back
+    const saved = await prisma.setting.findUnique({
+      where: { key: SETTING_KEY },
+    });
+
+    const headers = {
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+    };
+
     return NextResponse.json({
       success: true,
       message: 'Departments saved successfully',
-    });
+      departments: (saved?.value as Array<{ name: string; slug: string }>) || departments,
+    }, { headers });
   } catch (error: any) {
     console.error('Error saving departments:', error);
     return NextResponse.json(

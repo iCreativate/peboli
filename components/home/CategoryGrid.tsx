@@ -41,9 +41,21 @@ export function CategoryGrid() {
     
     fetchDepartments();
     
-    // Refresh every 30 seconds to get updates
-    const interval = setInterval(fetchDepartments, 30000);
-    return () => clearInterval(interval);
+    // Refresh every 10 seconds to get updates (reduced from 30s for faster updates)
+    const interval = setInterval(fetchDepartments, 10000);
+    
+    // Listen for custom event from admin page
+    window.addEventListener('departmentsUpdated', fetchDepartments);
+    window.addEventListener('storage', () => {
+      if (localStorage.getItem('departmentsUpdated')) {
+        fetchDepartments();
+      }
+    });
+    
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('departmentsUpdated', fetchDepartments);
+    };
   }, []);
 
   // Don't render if no categories

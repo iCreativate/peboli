@@ -15,7 +15,8 @@ export function ShopByDepartment() {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const res = await fetch('/api/departments?t=' + Date.now(), { 
+        const timestamp = Date.now();
+        const res = await fetch(`/api/departments?t=${timestamp}`, { 
           cache: 'no-store',
           headers: {
             'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -24,7 +25,8 @@ export function ShopByDepartment() {
         });
         if (res.ok) {
           const data = await res.json();
-          if (Array.isArray(data)) {
+          console.log('Fetched departments from API:', data);
+          if (Array.isArray(data) && data.length > 0) {
             setDepartments(data.map((dept: Department) => ({
               id: dept.slug,
               name: dept.name,
@@ -32,9 +34,12 @@ export function ShopByDepartment() {
               icon: '📦', // Default icon, could be enhanced later
               productCount: 0, // Could be calculated from products
             })));
+          } else {
+            console.warn('No departments found in API response');
+            setDepartments([]);
           }
         } else {
-          console.error('Failed to fetch departments:', res.status);
+          console.error('Failed to fetch departments:', res.status, await res.text());
         }
       } catch (error) {
         console.error('Error fetching departments:', error);
@@ -45,9 +50,23 @@ export function ShopByDepartment() {
     
     fetchDepartments();
     
-    // Refresh every 30 seconds to get updates
-    const interval = setInterval(fetchDepartments, 30000);
-    return () => clearInterval(interval);
+    // Refresh every 10 seconds to get updates (reduced from 30s for faster updates)
+    const interval = setInterval(fetchDepartments, 10000);
+    
+    // Also listen for storage events to refresh when admin saves
+    const handleStorageChange = () => {
+      fetchDepartments();
+    };
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Listen for custom event from admin page
+    window.addEventListener('departmentsUpdated', fetchDepartments);
+    
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('departmentsUpdated', fetchDepartments);
+    };
   }, []);
 
   // Don't render if no departments

@@ -108,6 +108,13 @@ export default function AdminDepartmentsPage() {
         setSaved(true);
         setTimeout(() => setSaved(false), 2000);
         console.log('Departments saved successfully:', newDepartments);
+        
+        // Dispatch custom event to notify landing page components
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new Event('departmentsUpdated'));
+          // Also try localStorage event for cross-tab communication
+          localStorage.setItem('departmentsUpdated', Date.now().toString());
+        }
       } else {
         throw new Error(data.error || 'Unknown error');
       }
