@@ -15,10 +15,16 @@ export function ShopByDepartment() {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const res = await fetch('/api/departments', { cache: 'no-store' });
+        const res = await fetch('/api/departments?t=' + Date.now(), { 
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+          }
+        });
         if (res.ok) {
           const data = await res.json();
-          if (Array.isArray(data)) {
+          if (Array.isArray(data) && data.length > 0) {
             setDepartments(data.map((dept: Department) => ({
               id: dept.slug,
               name: dept.name,
@@ -26,7 +32,11 @@ export function ShopByDepartment() {
               icon: '📦', // Default icon, could be enhanced later
               productCount: 0, // Could be calculated from products
             })));
+          } else {
+            console.warn('No departments returned from API');
           }
+        } else {
+          console.error('Failed to fetch departments:', res.status);
         }
       } catch (error) {
         console.error('Error fetching departments:', error);
@@ -36,6 +46,10 @@ export function ShopByDepartment() {
     };
     
     fetchDepartments();
+    
+    // Refresh every 30 seconds to get updates
+    const interval = setInterval(fetchDepartments, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   return (

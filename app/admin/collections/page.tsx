@@ -25,16 +25,43 @@ export default function AdminCollectionsPage() {
 
   const fetchCollections = async () => {
     try {
-      const res = await fetch('/api/admin/collections');
+      const res = await fetch('/api/admin/collections', { cache: 'no-store' });
+      if (!res.ok) {
+        throw new Error(`Failed to fetch: ${res.status}`);
+      }
       const data = await res.json();
       if (data.success && Array.isArray(data.collections)) {
         setCollections(data.collections);
         // Also update local store for backward compatibility
         const store = useAdminStore.getState();
-        store.collections = data.collections;
+        if (store.addCollection && store.deleteCollection) {
+          // Sync with store
+          const currentIds = store.collections.map(c => c.id);
+          const newIds = data.collections.map((c: Collection) => c.id);
+          
+          // Remove deleted collections
+          currentIds.forEach(id => {
+            if (!newIds.includes(id)) {
+              store.deleteCollection(id);
+            }
+          });
+          
+          // Add/update collections
+          data.collections.forEach((coll: Collection) => {
+            const existing = store.collections.find(c => c.id === coll.id);
+            if (existing) {
+              store.updateCollection(coll.id, coll);
+            } else {
+              store.addCollection(coll);
+            }
+          });
+        }
+      } else {
+        console.error('Invalid response format:', data);
       }
     } catch (error) {
       console.error('Error fetching collections:', error);
+      alert('Failed to load collections. Please refresh the page.');
     } finally {
       setLoading(false);
     }
@@ -48,21 +75,50 @@ export default function AdminCollectionsPage() {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ collections: newCollections }),
+        cache: 'no-store',
       });
+      
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
+        throw new Error(errorData.error || `Failed to save: ${res.status}`);
+      }
+      
       const data = await res.json();
       if (data.success) {
         setCollections(newCollections);
         // Also update local store
         const store = useAdminStore.getState();
-        store.collections = newCollections;
+        if (store.addCollection && store.deleteCollection) {
+          // Sync with store
+          const currentIds = store.collections.map(c => c.id);
+          const newIds = newCollections.map(c => c.id);
+          
+          // Remove deleted collections
+          currentIds.forEach(id => {
+            if (!newIds.includes(id)) {
+              store.deleteCollection(id);
+            }
+          });
+          
+          // Add/update collections
+          newCollections.forEach(coll => {
+            const existing = store.collections.find(c => c.id === coll.id);
+            if (existing) {
+              store.updateCollection(coll.id, coll);
+            } else {
+              store.addCollection(coll);
+            }
+          });
+        }
         setSaved(true);
         setTimeout(() => setSaved(false), 2000);
+        console.log('Collections saved successfully:', newCollections);
       } else {
-        alert('Failed to save collections: ' + data.error);
+        throw new Error(data.error || 'Unknown error');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving collections:', error);
-      alert('Failed to save collections');
+      alert('Failed to save collections: ' + (error.message || 'Unknown error'));
     } finally {
       setSaving(false);
     }

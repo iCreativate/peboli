@@ -29,17 +29,30 @@ export function TakealotHeader() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const timestamp = Date.now();
         // Fetch departments
-        const deptRes = await fetch('/api/departments', { cache: 'no-store' });
+        const deptRes = await fetch(`/api/departments?t=${timestamp}`, { 
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+          }
+        });
         if (deptRes.ok) {
           const deptData = await deptRes.json();
-          if (Array.isArray(deptData)) {
+          if (Array.isArray(deptData) && deptData.length > 0) {
             setCategories(deptData);
           }
         }
         
         // Fetch collections
-        const collRes = await fetch('/api/collections', { cache: 'no-store' });
+        const collRes = await fetch(`/api/collections?t=${timestamp}`, { 
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+          }
+        });
         if (collRes.ok) {
           const collData = await collRes.json();
           if (Array.isArray(collData)) {
@@ -76,6 +89,10 @@ export function TakealotHeader() {
     };
     
     fetchData();
+    
+    // Refresh every 30 seconds to get updates
+    const interval = setInterval(fetchData, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleLogout = () => {

@@ -24,16 +24,29 @@ export default function AdminDepartmentsPage() {
 
   const fetchDepartments = async () => {
     try {
-      const res = await fetch('/api/admin/departments');
+      const res = await fetch('/api/admin/departments', { cache: 'no-store' });
+      if (!res.ok) {
+        throw new Error(`Failed to fetch: ${res.status}`);
+      }
       const data = await res.json();
       if (data.success && Array.isArray(data.departments)) {
         setDepartments(data.departments);
         // Also update local store for backward compatibility
         const store = useAdminStore.getState();
-        store.departments = data.departments;
+        if (store.updateDepartment) {
+          // Clear and add all departments
+          data.departments.forEach((dept: Department) => {
+            if (!store.departments.find(d => d.slug === dept.slug)) {
+              store.addDepartment(dept);
+            }
+          });
+        }
+      } else {
+        console.error('Invalid response format:', data);
       }
     } catch (error) {
       console.error('Error fetching departments:', error);
+      alert('Failed to load departments. Please refresh the page.');
     } finally {
       setLoading(false);
     }
@@ -47,21 +60,50 @@ export default function AdminDepartmentsPage() {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ departments: newDepartments }),
+        cache: 'no-store',
       });
+      
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
+        throw new Error(errorData.error || `Failed to save: ${res.status}`);
+      }
+      
       const data = await res.json();
       if (data.success) {
         setDepartments(newDepartments);
         // Also update local store
         const store = useAdminStore.getState();
-        store.departments = newDepartments;
+        if (store.addDepartment && store.deleteDepartment) {
+          // Sync with store
+          const currentSlugs = store.departments.map(d => d.slug);
+          const newSlugs = newDepartments.map(d => d.slug);
+          
+          // Remove deleted departments
+          currentSlugs.forEach(slug => {
+            if (!newSlugs.includes(slug)) {
+              store.deleteDepartment(slug);
+            }
+          });
+          
+          // Add/update departments
+          newDepartments.forEach(dept => {
+            const existing = store.departments.find(d => d.slug === dept.slug);
+            if (existing) {
+              store.updateDepartment(dept.slug, dept);
+            } else {
+              store.addDepartment(dept);
+            }
+          });
+        }
         setSaved(true);
         setTimeout(() => setSaved(false), 2000);
+        console.log('Departments saved successfully:', newDepartments);
       } else {
-        alert('Failed to save departments: ' + data.error);
+        throw new Error(data.error || 'Unknown error');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving departments:', error);
-      alert('Failed to save departments');
+      alert('Failed to save departments: ' + (error.message || 'Unknown error'));
     } finally {
       setSaving(false);
     }

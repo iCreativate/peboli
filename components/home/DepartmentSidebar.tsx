@@ -127,12 +127,45 @@ export function DepartmentSidebar() {
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const res = await fetch('/api/departments', { cache: 'no-store' });
+        const res = await fetch('/api/departments?t=' + Date.now(), { 
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+          }
+        });
         if (res.ok) {
           const data = await res.json();
-          if (Array.isArray(data)) {
+          if (Array.isArray(data) && data.length > 0) {
             setCategories(data);
+          } else {
+            // Fallback to defaults if empty
+            setCategories([
+              'Appliances',
+              'Automotive & DIY',
+              'Baby & Toddler',
+              'Beauty',
+              'Books & Courses',
+              'Camping & Outdoor',
+              'Clothing & Shoes',
+              'Electronics',
+              'Gaming & Media',
+              'Garden, Pool & Patio',
+              'Groceries & Household',
+              'Health & Personal Care',
+              'Homeware',
+              'Liquor',
+              'Office & Stationery',
+              'Pets',
+              'Sport & Training',
+              'Toys',
+            ].map(name => ({ 
+              name, 
+              slug: name.toLowerCase().replace(/ & /g, '-').replace(/\s+/g, '-') 
+            })));
           }
+        } else {
+          throw new Error(`HTTP ${res.status}`);
         }
       } catch (error) {
         console.error('Error fetching departments:', error);
@@ -164,6 +197,10 @@ export function DepartmentSidebar() {
     };
     
     fetchDepartments();
+    
+    // Refresh every 30 seconds to get updates
+    const interval = setInterval(fetchDepartments, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   // Find data for hovered category
