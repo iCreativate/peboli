@@ -104,6 +104,18 @@ export default function BankingPage() {
           }
         }
 
+        // Fetch banking settings
+        const settingsRes = await fetch('/api/admin/banking-settings');
+        if (settingsRes.ok) {
+          const settingsData = await settingsRes.json();
+          if (settingsData.success && settingsData.settings) {
+            setBankingSettings(prev => ({
+              ...prev,
+              ...settingsData.settings,
+            }));
+          }
+        }
+
         // TODO: Fetch bank accounts from API
         // const accountsRes = await fetch('/api/admin/bank-accounts');
         // if (accountsRes.ok) {
