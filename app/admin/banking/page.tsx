@@ -356,7 +356,14 @@ export default function BankingPage() {
                   </Button>
                 </div>
                 <div className="space-y-3">
-                  {transactions.slice(0, 5).map((transaction) => (
+                  {transactions.length === 0 ? (
+                    <div className="text-center py-12">
+                      <CreditCard className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                      <p className="text-gray-500 font-medium">No transactions yet</p>
+                      <p className="text-sm text-gray-400 mt-2">Transactions will appear here once you start processing payments</p>
+                    </div>
+                  ) : (
+                    transactions.slice(0, 5).map((transaction) => (
                     <div key={transaction.id} className="flex items-center justify-between p-3 rounded-xl border border-gray-100 hover:bg-gray-50 transition-colors">
                       <div className="flex items-center gap-3">
                         <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${
@@ -389,7 +396,8 @@ export default function BankingPage() {
                         </p>
                       </div>
                     </div>
-                  ))}
+                    ))
+                  )}
                 </div>
               </div>
             </div>
