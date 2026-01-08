@@ -121,40 +121,50 @@ export function DepartmentSidebar() {
       });
   }, []);
 
-  const adminDepartments = useAdminStore((s) => s.departments);
-  const [mounted, setMounted] = useState(false);
+  const [categories, setCategories] = useState<Array<{ name: string; slug: string }>>([]);
   
-  // Wait for client-side hydration
+  // Fetch departments from API
   useEffect(() => {
-    setMounted(true);
+    const fetchDepartments = async () => {
+      try {
+        const res = await fetch('/api/departments', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data)) {
+            setCategories(data);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching departments:', error);
+        // Fallback to defaults
+        setCategories([
+          'Appliances',
+          'Automotive & DIY',
+          'Baby & Toddler',
+          'Beauty',
+          'Books & Courses',
+          'Camping & Outdoor',
+          'Clothing & Shoes',
+          'Electronics',
+          'Gaming & Media',
+          'Garden, Pool & Patio',
+          'Groceries & Household',
+          'Health & Personal Care',
+          'Homeware',
+          'Liquor',
+          'Office & Stationery',
+          'Pets',
+          'Sport & Training',
+          'Toys',
+        ].map(name => ({ 
+          name, 
+          slug: name.toLowerCase().replace(/ & /g, '-').replace(/\s+/g, '-') 
+        })));
+      }
+    };
+    
+    fetchDepartments();
   }, []);
-  
-  // Always use admin departments when mounted (even if empty), only fall back if not mounted yet
-  const categories = mounted && adminDepartments
-    ? adminDepartments
-    : [
-        'Appliances',
-        'Automotive & DIY',
-        'Baby & Toddler',
-        'Beauty',
-        'Books & Courses',
-        'Camping & Outdoor',
-        'Clothing & Shoes',
-        'Electronics',
-        'Gaming & Media',
-        'Garden, Pool & Patio',
-        'Groceries & Household',
-        'Health & Personal Care',
-        'Homeware',
-        'Liquor',
-        'Office & Stationery',
-        'Pets',
-        'Sport & Training',
-        'Toys',
-      ].map(name => ({ 
-        name, 
-        slug: name.toLowerCase().replace(/ & /g, '-').replace(/\s+/g, '-') 
-      }));
 
   // Find data for hovered category
   const hoveredSlug = categories.find(c => c.name === hoveredCategory)?.slug;

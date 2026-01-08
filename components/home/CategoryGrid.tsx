@@ -5,27 +5,36 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { MAIN_CATEGORIES } from '@/lib/constants/categories';
 import { motion } from 'framer-motion';
-import { useAdminStore } from '@/lib/stores/admin';
+
+type Department = { name: string; slug: string };
 
 export function CategoryGrid() {
-  const adminDepartments = useAdminStore((s) => s.departments);
-  const [mounted, setMounted] = useState(false);
+  const [categories, setCategories] = useState<typeof MAIN_CATEGORIES>(MAIN_CATEGORIES);
   
-  // Wait for client-side hydration
+  // Fetch departments from API
   useEffect(() => {
-    setMounted(true);
+    const fetchDepartments = async () => {
+      try {
+        const res = await fetch('/api/departments', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data)) {
+            setCategories(data.map((dept: Department) => ({
+              id: dept.slug,
+              name: dept.name,
+              slug: dept.slug,
+              icon: '📦',
+              productCount: 0,
+            })));
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching departments:', error);
+      }
+    };
+    
+    fetchDepartments();
   }, []);
-  
-  // Always use admin departments when mounted (even if empty), only fall back if not mounted yet
-  const categories = mounted && adminDepartments
-    ? adminDepartments.map((dept) => ({
-        id: dept.slug,
-        name: dept.name,
-        slug: dept.slug,
-        icon: '📦',
-        productCount: 0,
-      }))
-    : MAIN_CATEGORIES;
 
   return (
     <section className="py-16 md:py-20 bg-gradient-to-b from-[#F7F8FA] to-white">

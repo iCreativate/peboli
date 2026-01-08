@@ -4,27 +4,39 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { MAIN_CATEGORIES } from '@/lib/constants/categories';
 import { motion } from 'framer-motion';
-import { useAdminStore } from '@/lib/stores/admin';
+
+type Department = { name: string; slug: string };
 
 export function ShopByDepartment() {
-  const adminDepartments = useAdminStore((s) => s.departments);
-  const [mounted, setMounted] = useState(false);
+  const [departments, setDepartments] = useState<typeof MAIN_CATEGORIES>(MAIN_CATEGORIES);
+  const [loading, setLoading] = useState(true);
   
-  // Wait for client-side hydration
+  // Fetch departments from API
   useEffect(() => {
-    setMounted(true);
+    const fetchDepartments = async () => {
+      try {
+        const res = await fetch('/api/departments', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data)) {
+            setDepartments(data.map((dept: Department) => ({
+              id: dept.slug,
+              name: dept.name,
+              slug: dept.slug,
+              icon: '📦', // Default icon, could be enhanced later
+              productCount: 0, // Could be calculated from products
+            })));
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching departments:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchDepartments();
   }, []);
-  
-  // Always use admin departments when mounted (even if empty), only fall back if not mounted yet
-  const departments = mounted && adminDepartments
-    ? adminDepartments.map((dept) => ({
-        id: dept.slug,
-        name: dept.name,
-        slug: dept.slug,
-        icon: '📦', // Default icon, could be enhanced later
-        productCount: 0, // Could be calculated from products
-      }))
-    : MAIN_CATEGORIES;
 
   return (
     <section className="py-10 md:py-12 bg-white border-b border-gray-100">

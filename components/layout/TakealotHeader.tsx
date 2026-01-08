@@ -20,43 +20,63 @@ export function TakealotHeader() {
   const [isDepartmentsOpen, setIsDepartmentsOpen] = useState(false);
   const cartCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.qty, 0));
   const wishlistCount = useWishlistStore((s) => s.items.length);
-  const collections = useAdminStore((s) => s.collections);
-  const adminDepartments = useAdminStore((s) => s.departments);
   const { openLogin, openRegister } = useUIStore();
   const { user, logout } = useAuthStore();
-  const [mounted, setMounted] = useState(false);
+  const [collections, setCollections] = useState<Array<{ id: string; name: string; href: string; color?: string }>>([]);
+  const [categories, setCategories] = useState<Array<{ name: string; slug: string }>>([]);
   
-  // Wait for client-side hydration
+  // Fetch departments and collections from API
   useEffect(() => {
-    setMounted(true);
+    const fetchData = async () => {
+      try {
+        // Fetch departments
+        const deptRes = await fetch('/api/departments', { cache: 'no-store' });
+        if (deptRes.ok) {
+          const deptData = await deptRes.json();
+          if (Array.isArray(deptData)) {
+            setCategories(deptData);
+          }
+        }
+        
+        // Fetch collections
+        const collRes = await fetch('/api/collections', { cache: 'no-store' });
+        if (collRes.ok) {
+          const collData = await collRes.json();
+          if (Array.isArray(collData)) {
+            setCollections(collData);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching header data:', error);
+        // Fallback to defaults
+        setCategories([
+          'Appliances',
+          'Automotive & DIY',
+          'Baby & Toddler',
+          'Beauty',
+          'Books & Courses',
+          'Camping & Outdoor',
+          'Clothing & Shoes',
+          'Electronics',
+          'Gaming & Media',
+          'Garden, Pool & Patio',
+          'Groceries & Household',
+          'Health & Personal Care',
+          'Homeware',
+          'Liquor',
+          'Office & Stationery',
+          'Pets',
+          'Sport & Training',
+          'Toys',
+        ].map(name => ({ 
+          name, 
+          slug: name.toLowerCase().replace(/ & /g, '-').replace(/\s+/g, '-') 
+        })));
+      }
+    };
+    
+    fetchData();
   }, []);
-
-  // Always use admin departments when mounted (even if empty), only fall back if not mounted yet
-  const categories = mounted && adminDepartments
-    ? adminDepartments
-    : [
-        'Appliances',
-        'Automotive & DIY',
-        'Baby & Toddler',
-        'Beauty',
-        'Books & Courses',
-        'Camping & Outdoor',
-        'Clothing & Shoes',
-        'Electronics',
-        'Gaming & Media',
-        'Garden, Pool & Patio',
-        'Groceries & Household',
-        'Health & Personal Care',
-        'Homeware',
-        'Liquor',
-        'Office & Stationery',
-        'Pets',
-        'Sport & Training',
-        'Toys',
-      ].map(name => ({ 
-        name, 
-        slug: name.toLowerCase().replace(/ & /g, '-').replace(/\s+/g, '-') 
-      }));
 
   const handleLogout = () => {
     logout();
@@ -323,7 +343,7 @@ export function TakealotHeader() {
       <div className="border-b border-gray-100 bg-white/80 backdrop-blur-md sticky top-0 z-40 shadow-sm">
         <div className="container mx-auto px-4">
           <div className="flex items-center gap-8 overflow-x-auto py-3 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-            {(mounted && collections ? collections : []).map((c) => (
+            {collections.map((c) => (
               <Link
                 key={c.id}
                 href={c.href}
