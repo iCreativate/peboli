@@ -3,19 +3,26 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { MAIN_CATEGORIES } from '@/lib/constants/categories';
 import { motion } from 'framer-motion';
 
 type Department = { name: string; slug: string };
+type CategoryDisplay = { id: string; name: string; slug: string; icon: string; productCount: number };
 
 export function CategoryGrid() {
-  const [categories, setCategories] = useState<typeof MAIN_CATEGORIES>(MAIN_CATEGORIES);
+  const [categories, setCategories] = useState<CategoryDisplay[]>([]);
+  const [loading, setLoading] = useState(true);
   
   // Fetch departments from API
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
-        const res = await fetch('/api/departments', { cache: 'no-store' });
+        const res = await fetch('/api/departments?t=' + Date.now(), { 
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+          }
+        });
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data)) {
@@ -30,10 +37,16 @@ export function CategoryGrid() {
         }
       } catch (error) {
         console.error('Error fetching departments:', error);
+      } finally {
+        setLoading(false);
       }
     };
     
     fetchDepartments();
+    
+    // Refresh every 30 seconds to get updates
+    const interval = setInterval(fetchDepartments, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -43,8 +56,13 @@ export function CategoryGrid() {
           <h2 className="text-4xl md:text-5xl font-black text-[#1A1D29] mb-3 tracking-tight">Shop by Category</h2>
           <p className="text-lg text-[#8B95A5] font-medium">Explore our curated collections</p>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-5 md:gap-6">
-          {categories.map((category, index) => (
+        {loading ? (
+          <div className="text-center py-12 text-gray-500">Loading categories...</div>
+        ) : categories.length === 0 ? (
+          <div className="text-center py-12 text-gray-500">No categories available. Please configure departments in the admin console.</div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-5 md:gap-6">
+            {categories.map((category, index) => (
             <motion.div
               key={category.id}
               initial={{ opacity: 0, y: 20 }}
@@ -71,8 +89,9 @@ export function CategoryGrid() {
                 </div>
               </Link>
             </motion.div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

@@ -40,7 +40,7 @@ export function TakealotHeader() {
         });
         if (deptRes.ok) {
           const deptData = await deptRes.json();
-          if (Array.isArray(deptData) && deptData.length > 0) {
+          if (Array.isArray(deptData)) {
             setCategories(deptData);
           }
         }
@@ -61,30 +61,6 @@ export function TakealotHeader() {
         }
       } catch (error) {
         console.error('Error fetching header data:', error);
-        // Fallback to defaults
-        setCategories([
-          'Appliances',
-          'Automotive & DIY',
-          'Baby & Toddler',
-          'Beauty',
-          'Books & Courses',
-          'Camping & Outdoor',
-          'Clothing & Shoes',
-          'Electronics',
-          'Gaming & Media',
-          'Garden, Pool & Patio',
-          'Groceries & Household',
-          'Health & Personal Care',
-          'Homeware',
-          'Liquor',
-          'Office & Stationery',
-          'Pets',
-          'Sport & Training',
-          'Toys',
-        ].map(name => ({ 
-          name, 
-          slug: name.toLowerCase().replace(/ & /g, '-').replace(/\s+/g, '-') 
-        })));
       }
     };
     

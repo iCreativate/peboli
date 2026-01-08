@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { MAIN_CATEGORIES } from '@/lib/constants/categories';
 import { motion } from 'framer-motion';
 
 type Department = { name: string; slug: string };
+type DepartmentDisplay = { id: string; name: string; slug: string; icon: string; productCount: number };
 
 export function ShopByDepartment() {
-  const [departments, setDepartments] = useState<typeof MAIN_CATEGORIES>(MAIN_CATEGORIES);
+  const [departments, setDepartments] = useState<DepartmentDisplay[]>([]);
   const [loading, setLoading] = useState(true);
   
   // Fetch departments from API
@@ -71,8 +71,13 @@ export function ShopByDepartment() {
         </div>
 
         <div className="relative -mx-4 lg:mx-0">
-          <div className="flex gap-3 overflow-x-auto px-4 pb-1 md:grid md:grid-cols-4 lg:grid-cols-6 md:gap-4 md:px-0 md:overflow-visible">
-            {departments.map((dept, index) => (
+          {loading ? (
+            <div className="px-4 py-8 text-center text-gray-500">Loading departments...</div>
+          ) : departments.length === 0 ? (
+            <div className="px-4 py-8 text-center text-gray-500">No departments available. Please configure departments in the admin console.</div>
+          ) : (
+            <div className="flex gap-3 overflow-x-auto px-4 pb-1 md:grid md:grid-cols-4 lg:grid-cols-6 md:gap-4 md:px-0 md:overflow-visible">
+              {departments.map((dept, index) => (
               <motion.div
                 key={dept.id}
                 initial={{ opacity: 0, y: 10 }}
@@ -98,8 +103,9 @@ export function ShopByDepartment() {
                   </div>
                 </Link>
               </motion.div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </section>
