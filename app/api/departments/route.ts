@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 const SETTING_KEY = 'departments';
 
 export async function GET() {
@@ -10,7 +13,13 @@ export async function GET() {
     });
 
     if (setting && setting.value) {
-      return NextResponse.json(setting.value as Array<{ name: string; slug: string }>);
+      return NextResponse.json(setting.value as Array<{ name: string; slug: string }>, {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+        },
+      });
     }
 
     // Return default departments if not found
@@ -33,7 +42,13 @@ export async function GET() {
       { name: 'Pets', slug: 'pets' },
       { name: 'Sport & Training', slug: 'sport-training' },
       { name: 'Toys', slug: 'toys' },
-    ]);
+    ], {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      },
+    });
   } catch (error: any) {
     console.error('Error fetching departments:', error);
     return NextResponse.json(

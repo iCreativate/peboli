@@ -11,11 +11,17 @@ export async function GET() {
       where: { key: SETTING_KEY },
     });
 
+    const headers = {
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+    };
+
     if (setting && setting.value) {
       return NextResponse.json({
         success: true,
         departments: setting.value as Array<{ name: string; slug: string }>,
-      });
+      }, { headers });
     }
 
     // Return default departments if not found
@@ -41,7 +47,7 @@ export async function GET() {
         { name: 'Sport & Training', slug: 'sport-training' },
         { name: 'Toys', slug: 'toys' },
       ],
-    });
+    }, { headers });
   } catch (error: any) {
     console.error('Error fetching departments:', error);
     return NextResponse.json(
