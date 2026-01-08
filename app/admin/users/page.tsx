@@ -1,12 +1,12 @@
 'use client';
 
 import { Search, MoreHorizontal, ShieldCheck, ShieldAlert, Filter, Download, UserPlus, Trash2, Edit2, X, Save } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 type User = {
-  id: number;
+  id: string;
   name: string;
   email: string;
   role: 'Buyer' | 'Vendor' | 'Admin';
@@ -15,22 +15,16 @@ type User = {
   avatar: string;
 };
 
-const INITIAL_USERS: User[] = [
-  { id: 1, name: 'Alice Freeman', email: 'alice@example.com', role: 'Buyer', status: 'Active', joined: 'Oct 24, 2023', avatar: 'AF' },
-  { id: 2, name: 'Bob Smith', email: 'bob@store.com', role: 'Vendor', status: 'Active', joined: 'Nov 12, 2023', avatar: 'BS' },
-  { id: 3, name: 'Charlie Brown', email: 'charlie@example.com', role: 'Buyer', status: 'Suspended', joined: 'Dec 01, 2023', avatar: 'CB' },
-  { id: 4, name: 'Diana Prince', email: 'diana@admin.com', role: 'Admin', status: 'Active', joined: 'Jan 15, 2024', avatar: 'DP' },
-  { id: 5, name: 'Evan Wright', email: 'evan@store.com', role: 'Vendor', status: 'Pending', joined: 'Feb 20, 2024', avatar: 'EW' },
-];
-
 const TABS = ['All Users', 'Buyers', 'Vendors', 'Admins'];
 
 export default function UsersPage() {
-  const [users, setUsers] = useState<User[]>(INITIAL_USERS);
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('All Users');
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isPending, startTransition] = useTransition();
   const itemsPerPage = 5;
   
   // Modal State
@@ -43,64 +37,127 @@ export default function UsersPage() {
     status: 'Active'
   });
 
-  // Filter Users
-  const filteredUsers = users.filter(user => {
-    const matchesTab = 
-      activeTab === 'All Users' ? true :
-      activeTab === 'Buyers' ? user.role === 'Buyer' :
-      activeTab === 'Vendors' ? user.role === 'Vendor' :
-      user.role === 'Admin';
-      
-    const matchesSearch = 
-      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase());
+  // Fetch users from API
+  const fetchUsers = useCallback(async () => {
+    try {
+      setLoading(true);
+      const roleParam = activeTab === 'All Users' ? '' : activeTab;
+      const params = new URLSearchParams();
+      if (searchQuery) params.append('search', searchQuery);
+      if (roleParam) params.append('role', roleParam);
 
-    return matchesTab && matchesSearch;
-  });
+      const res = await fetch(`/api/admin/users?${params.toString()}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && Array.isArray(data.users)) {
+          setUsers(data.users);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [activeTab, searchQuery]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
+  // Filter Users (client-side filtering for additional filters)
+  const filteredUsers = useMemo(() => {
+    return users.filter(user => {
+      const matchesTab = 
+        activeTab === 'All Users' ? true :
+        activeTab === 'Buyers' ? user.role === 'Buyer' :
+        activeTab === 'Vendors' ? user.role === 'Vendor' :
+        user.role === 'Admin';
+        
+      const matchesSearch = 
+        user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchQuery.toLowerCase());
+
+      return matchesTab && matchesSearch;
+    });
+  }, [users, activeTab, searchQuery]);
 
   // Pagination
   const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedUsers = filteredUsers.slice(startIndex, startIndex + itemsPerPage);
 
-  const handleOpenAdd = () => {
+  const handleOpenAdd = useCallback(() => {
     setEditingUser(null);
     setFormData({ name: '', email: '', role: 'Buyer', status: 'Active' });
     setIsModalOpen(true);
-  };
+  }, []);
 
-  const handleOpenEdit = (user: User) => {
+  const handleOpenEdit = useCallback((user: User) => {
     setEditingUser(user);
     setFormData({ ...user });
     setIsModalOpen(true);
-  };
+  }, []);
 
-  const handleDelete = (id: number) => {
+  const handleDelete = useCallback(async (id: string) => {
     if (confirm('Are you sure you want to delete this user?')) {
-      setUsers(users.filter(u => u.id !== id));
+      try {
+        const res = await fetch(`/api/admin/users?id=${id}`, {
+          method: 'DELETE',
+        });
+        if (res.ok) {
+          await fetchUsers();
+        } else {
+          const data = await res.json();
+          alert(data.error || 'Failed to delete user');
+        }
+      } catch (error) {
+        console.error('Error deleting user:', error);
+        alert('Failed to delete user');
+      }
     }
-  };
+  }, [fetchUsers]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editingUser) {
-      // Edit
-      setUsers(users.map(u => u.id === editingUser.id ? { ...u, ...formData } as User : u));
-    } else {
-      // Add
-      const newUser: User = {
-        id: Math.max(...users.map(u => u.id)) + 1,
-        name: formData.name!,
-        email: formData.email!,
-        role: formData.role as any,
-        status: formData.status as any,
-        joined: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
-        avatar: formData.name!.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2)
-      };
-      setUsers([newUser, ...users]);
+    try {
+      if (editingUser) {
+        // Edit
+        const res = await fetch('/api/admin/users', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: editingUser.id,
+            name: formData.name,
+            email: formData.email,
+            role: formData.role,
+            status: formData.status,
+          }),
+        });
+        if (res.ok) {
+          await fetchUsers();
+          setIsModalOpen(false);
+        } else {
+          const data = await res.json();
+          alert(data.error || 'Failed to update user');
+        }
+      } else {
+        // Add - For now, we'll show an alert that user creation should be done through registration
+        alert('New users should be created through the registration process. You can invite users via email.');
+        setIsModalOpen(false);
+      }
+    } catch (error) {
+      console.error('Error saving user:', error);
+      alert('Failed to save user');
     }
-    setIsModalOpen(false);
-  };
+  }, [editingUser, formData, fetchUsers]);
+
+  // Optimized tab change handler with startTransition
+  const handleTabChange = useCallback((tab: string) => {
+    startTransition(() => {
+      setActiveTab(tab);
+      setCurrentPage(1); // Reset to first page when changing tabs
+    });
+  }, []);
 
   return (
     <div className="space-y-8 relative">
@@ -128,8 +185,9 @@ export default function UsersPage() {
           {TABS.map((tab) => (
             <button
               key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`relative pb-4 text-sm font-medium transition-colors whitespace-nowrap ${
+              onClick={() => handleTabChange(tab)}
+              disabled={isPending}
+              className={`relative pb-4 text-sm font-medium transition-colors whitespace-nowrap disabled:opacity-50 ${
                 activeTab === tab 
                   ? 'text-blue-600' 
                   : 'text-gray-500 hover:text-gray-700'
@@ -208,7 +266,20 @@ export default function UsersPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {paginatedUsers.map((user) => (
+              {loading ? (
+                <tr>
+                  <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
+                    Loading users...
+                  </td>
+                </tr>
+              ) : paginatedUsers.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
+                    No users found.
+                  </td>
+                </tr>
+              ) : (
+                paginatedUsers.map((user) => (
                 <tr key={user.id} className="group hover:bg-blue-50/30 transition-colors">
                   <td className="px-6 py-4">
                     <input type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-600" />
@@ -267,7 +338,7 @@ export default function UsersPage() {
                     </div>
                   </td>
                 </tr>
-              ))}
+              )))}
             </tbody>
           </table>
         </div>
