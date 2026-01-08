@@ -68,6 +68,7 @@ export default function AdminDepartmentsPage() {
     setSaving(true);
     setSaved(false);
     try {
+      console.log('[Admin] Saving departments to API:', newDepartments);
       const res = await fetch('/api/admin/departments', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -77,10 +78,12 @@ export default function AdminDepartmentsPage() {
       
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
+        console.error('[Admin] Save failed:', errorData);
         throw new Error(errorData.error || `Failed to save: ${res.status}`);
       }
       
       const data = await res.json();
+      console.log('[Admin] Save response:', data);
       if (data.success) {
         setDepartments(newDepartments);
         // Also update local store
@@ -107,12 +110,12 @@ export default function AdminDepartmentsPage() {
         });
         setSaved(true);
         setTimeout(() => setSaved(false), 2000);
-        console.log('Departments saved successfully:', newDepartments);
+        console.log('[Admin] Departments saved successfully to database:', newDepartments);
       } else {
         throw new Error(data.error || 'Unknown error');
       }
     } catch (error: any) {
-      console.error('Error saving departments:', error);
+      console.error('[Admin] Error saving departments:', error);
       alert('Failed to save departments: ' + (error.message || 'Unknown error'));
     } finally {
       setSaving(false);
@@ -137,11 +140,9 @@ export default function AdminDepartmentsPage() {
     const newDepartments = departments.map(d => 
       d.slug === slug ? { ...d, ...updates } : d
     );
-    // Debounce saves to avoid too many API calls
-    const timeoutId = setTimeout(() => {
-      saveDepartments(newDepartments);
-    }, 500);
-    return () => clearTimeout(timeoutId);
+    setDepartments(newDepartments);
+    // Save immediately - no debounce
+    saveDepartments(newDepartments);
   };
 
   const handleDelete = (slug: string) => {

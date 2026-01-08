@@ -27,19 +27,11 @@ export async function GET() {
       }, { headers });
     }
 
-    // Return default collections if not found
+    // Return empty array if not found (no defaults - must be configured)
+    console.log('[API /api/admin/collections GET] No setting found, returning empty array');
     return NextResponse.json({
       success: true,
-      collections: [
-        { id: 'new-arrivals', name: 'New Arrivals', href: '/new' },
-        { id: 'christmas', name: 'Christmas', href: '/christmas' },
-        { id: 'summer', name: 'Summer', href: '/summer' },
-        { id: 'deals', name: 'Deals & Promotions', href: '/deals' },
-        { id: 'liquor', name: 'Festive Liquor', href: '/liquor' },
-        { id: 'brands', name: 'Brands Store', href: '/brands' },
-        { id: 'splash', name: 'PeboliSPLASH', href: '/more', color: '#db2777' },
-        { id: 'clearance', name: 'Clearance', href: '/clearance' },
-      ],
+      collections: [],
     }, { headers });
   } catch (error: any) {
     console.error('Error fetching collections:', error);
