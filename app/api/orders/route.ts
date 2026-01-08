@@ -78,6 +78,13 @@ export async function POST(request: Request) {
             include: {
                 items: true,
                 address: true,
+                user: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                    },
+                },
             },
         });
 
@@ -141,9 +148,10 @@ export async function POST(request: Request) {
 
         // Notify Admin
         try {
+            const userName = order.user?.name || 'Customer';
             await notifyAdmins({
                 title: 'New Order Received',
-                message: `Order #${order.orderNumber} has been placed by ${order.user.name}. Total: R${order.total.toFixed(2)}`,
+                message: `Order #${order.orderNumber} has been placed by ${userName}. Total: R${Number(order.total).toFixed(2)}`,
                 type: 'order',
                 link: `/admin/orders/${order.id}`
             });
