@@ -69,6 +69,7 @@ export default function AdminCollectionsPage() {
     setSaving(true);
     setSaved(false);
     try {
+      console.log('[Admin] Saving collections to API:', newCollections);
       const res = await fetch('/api/admin/collections', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -78,10 +79,12 @@ export default function AdminCollectionsPage() {
       
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
+        console.error('[Admin] Save failed:', errorData);
         throw new Error(errorData.error || `Failed to save: ${res.status}`);
       }
       
       const data = await res.json();
+      console.log('[Admin] Save response:', data);
       if (data.success) {
         setCollections(newCollections);
         // Also update local store
@@ -108,12 +111,12 @@ export default function AdminCollectionsPage() {
         });
         setSaved(true);
         setTimeout(() => setSaved(false), 2000);
-        console.log('Collections saved successfully:', newCollections);
+        console.log('[Admin] Collections saved successfully to database:', newCollections);
       } else {
         throw new Error(data.error || 'Unknown error');
       }
     } catch (error: any) {
-      console.error('Error saving collections:', error);
+      console.error('[Admin] Error saving collections:', error);
       alert('Failed to save collections: ' + (error.message || 'Unknown error'));
     } finally {
       setSaving(false);

@@ -137,7 +137,11 @@ export default function AdminDepartmentsPage() {
     const newDepartments = departments.map(d => 
       d.slug === slug ? { ...d, ...updates } : d
     );
-    saveDepartments(newDepartments);
+    // Debounce saves to avoid too many API calls
+    const timeoutId = setTimeout(() => {
+      saveDepartments(newDepartments);
+    }, 500);
+    return () => clearTimeout(timeoutId);
   };
 
   const handleDelete = (slug: string) => {

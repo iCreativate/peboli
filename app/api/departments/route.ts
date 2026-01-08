@@ -12,8 +12,15 @@ export async function GET() {
       where: { key: SETTING_KEY },
     });
 
+    console.log('[API /api/departments] Setting found:', !!setting);
+    if (setting) {
+      console.log('[API /api/departments] Setting value:', JSON.stringify(setting.value));
+    }
+
     if (setting && setting.value) {
-      return NextResponse.json(setting.value as Array<{ name: string; slug: string }>, {
+      const departments = setting.value as Array<{ name: string; slug: string }>;
+      console.log('[API /api/departments] Returning', departments.length, 'departments from database');
+      return NextResponse.json(departments, {
         headers: {
           'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
           'Pragma': 'no-cache',
@@ -22,8 +29,15 @@ export async function GET() {
       });
     }
 
-    // Return default departments if not found
-    return NextResponse.json([
+    // Return empty array if not found (no defaults)
+    console.log('[API /api/departments] No setting found, returning empty array');
+    return NextResponse.json([], {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      },
+    });
       { name: 'Appliances', slug: 'appliances' },
       { name: 'Automotive & DIY', slug: 'automotive-diy' },
       { name: 'Baby & Toddler', slug: 'baby-toddler' },

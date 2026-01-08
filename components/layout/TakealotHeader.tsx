@@ -40,7 +40,9 @@ export function TakealotHeader() {
         });
         if (deptRes.ok) {
           const deptData = await deptRes.json();
+          console.log('[TakealotHeader] Fetched departments from API:', deptData);
           if (Array.isArray(deptData)) {
+            console.log('[TakealotHeader] Setting', deptData.length, 'categories');
             setCategories(deptData);
           }
         }
@@ -55,7 +57,9 @@ export function TakealotHeader() {
         });
         if (collRes.ok) {
           const collData = await collRes.json();
+          console.log('[TakealotHeader] Fetched collections from API:', collData);
           if (Array.isArray(collData)) {
+            console.log('[TakealotHeader] Setting', collData.length, 'collections');
             setCollections(collData);
           }
         }

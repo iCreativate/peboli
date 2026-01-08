@@ -24,19 +24,22 @@ export function ShopByDepartment() {
         });
         if (res.ok) {
           const data = await res.json();
+          console.log('[ShopByDepartment] Fetched departments from API:', data);
           if (Array.isArray(data) && data.length > 0) {
-            setDepartments(data.map((dept: Department) => ({
+            const mapped = data.map((dept: Department) => ({
               id: dept.slug,
               name: dept.name,
               slug: dept.slug,
               icon: '📦', // Default icon, could be enhanced later
               productCount: 0, // Could be calculated from products
-            })));
+            }));
+            console.log('[ShopByDepartment] Setting', mapped.length, 'departments');
+            setDepartments(mapped);
           } else {
-            console.warn('No departments returned from API');
+            console.warn('[ShopByDepartment] No departments returned from API (empty array)');
           }
         } else {
-          console.error('Failed to fetch departments:', res.status);
+          console.error('[ShopByDepartment] Failed to fetch departments:', res.status);
         }
       } catch (error) {
         console.error('Error fetching departments:', error);

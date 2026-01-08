@@ -72,7 +72,10 @@ export async function PUT(request: NextRequest) {
 
     const jsonValue = JSON.parse(JSON.stringify(collections));
 
-    await prisma.setting.upsert({
+    console.log('[API /api/admin/collections PUT] Saving', collections.length, 'collections to database');
+    console.log('[API /api/admin/collections PUT] Data:', JSON.stringify(collections));
+
+    const result = await prisma.setting.upsert({
       where: { key: SETTING_KEY },
       update: {
         value: jsonValue,
@@ -83,6 +86,8 @@ export async function PUT(request: NextRequest) {
         value: jsonValue,
       },
     });
+
+    console.log('[API /api/admin/collections PUT] Saved successfully. Setting ID:', result.id);
 
     return NextResponse.json({
       success: true,

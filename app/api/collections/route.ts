@@ -12,6 +12,11 @@ export async function GET() {
       where: { key: SETTING_KEY },
     });
 
+    console.log('[API /api/collections] Setting found:', !!setting);
+    if (setting) {
+      console.log('[API /api/collections] Setting value:', JSON.stringify(setting.value));
+    }
+
     const headers = {
       'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
       'Pragma': 'no-cache',
@@ -19,11 +24,14 @@ export async function GET() {
     };
 
     if (setting && setting.value) {
-      return NextResponse.json(setting.value as Array<{ id: string; name: string; href: string; color?: string }>, { headers });
+      const collections = setting.value as Array<{ id: string; name: string; href: string; color?: string }>;
+      console.log('[API /api/collections] Returning', collections.length, 'collections from database');
+      return NextResponse.json(collections, { headers });
     }
 
-    // Return default collections if not found
-    return NextResponse.json([
+    // Return empty array if not found (no defaults)
+    console.log('[API /api/collections] No setting found, returning empty array');
+    return NextResponse.json([], { headers });
       { id: 'new-arrivals', name: 'New Arrivals', href: '/new' },
       { id: 'christmas', name: 'Christmas', href: '/christmas' },
       { id: 'summer', name: 'Summer', href: '/summer' },

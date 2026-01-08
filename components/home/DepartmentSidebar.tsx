@@ -136,11 +136,13 @@ export function DepartmentSidebar() {
         });
         if (res.ok) {
           const data = await res.json();
+          console.log('[DepartmentSidebar] Fetched departments from API:', data);
           if (Array.isArray(data)) {
+            console.log('[DepartmentSidebar] Setting', data.length, 'categories');
             setCategories(data);
           }
         } else {
-          console.error('Failed to fetch departments:', res.status);
+          console.error('[DepartmentSidebar] Failed to fetch departments:', res.status);
         }
       } catch (error) {
         console.error('Error fetching departments:', error);
