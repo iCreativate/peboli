@@ -172,6 +172,7 @@ model Product {
   reviews    Review[]
   bulkDiscounts BulkDiscount[]
   chats      ProductChat[]
+  deals      Deal[]
 }
 
 model Collection {
@@ -376,4 +377,58 @@ model Setting {
   value     Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum DealType {
+  SPLASH_SALE
+  DAILY_DEAL
+  PRODUCT_CAMPAIGN
+  ADVERT
+}
+
+enum DealStatus {
+  DRAFT
+  SCHEDULED
+  ACTIVE
+  PAST
+  CANCELLED
+}
+
+model Deal {
+  id          String     @id @default(cuid())
+  type        DealType
+  title       String
+  description String?
+  status      DealStatus @default(DRAFT)
+  
+  // Campaign details
+  discountPercentage Int?
+  discountAmount     Decimal?
+  itemsCount         Int?
+  
+  // Product association (for Product Campaign)
+  productId          String?
+  product            Product? @relation(fields: [productId], references: [id])
+  
+  // Advert/Banner details
+  imageUrl           String?
+  bannerUrl          String?
+  linkUrl            String?
+  
+  // Scheduling
+  startsAt           DateTime?
+  endsAt             DateTime?
+  
+  // Metrics
+  revenue            Decimal   @default(0)
+  views              Int       @default(0)
+  clicks             Int       @default(0)
+  conversions       Int       @default(0)
+  
+  // Priority/Display
+  priority           Int       @default(0) // Higher = shown first
+  isFeatured         Boolean   @default(false)
+  
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
 }
