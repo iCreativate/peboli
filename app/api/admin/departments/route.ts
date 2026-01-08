@@ -54,6 +54,10 @@ export async function PUT(request: NextRequest) {
 
     const { departments } = await request.json();
 
+    console.log('[API /api/admin/departments PUT] Received departments:', departments);
+    console.log('[API /api/admin/departments PUT] Departments type:', typeof departments);
+    console.log('[API /api/admin/departments PUT] Is array:', Array.isArray(departments));
+
     if (!Array.isArray(departments)) {
       return NextResponse.json(
         { error: 'Invalid departments data', success: false },
@@ -62,6 +66,7 @@ export async function PUT(request: NextRequest) {
     }
 
     const jsonValue = JSON.parse(JSON.stringify(departments));
+    console.log('[API /api/admin/departments PUT] JSON value to save:', jsonValue);
 
     await prisma.setting.upsert({
       where: { key: SETTING_KEY },
@@ -75,10 +80,15 @@ export async function PUT(request: NextRequest) {
       },
     });
 
+    console.log('[API /api/admin/departments PUT] Data saved to database');
+
     // Verify the save by reading it back
     const saved = await prisma.setting.findUnique({
       where: { key: SETTING_KEY },
     });
+
+    console.log('[API /api/admin/departments PUT] Verified saved data:', saved?.value);
+    console.log('[API /api/admin/departments PUT] Saved data type:', typeof saved?.value);
 
     const headers = {
       'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',

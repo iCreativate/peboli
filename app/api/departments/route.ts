@@ -18,14 +18,20 @@ export async function GET() {
       'Expires': '0',
     };
 
+    console.log('[API /api/departments] Setting found:', setting ? 'yes' : 'no');
+    
     if (setting && setting.value) {
-      return NextResponse.json(setting.value as Array<{ name: string; slug: string }>, { headers });
+      const departments = setting.value as Array<{ name: string; slug: string }>;
+      console.log('[API /api/departments] Returning departments:', departments);
+      console.log('[API /api/departments] Departments count:', departments.length);
+      return NextResponse.json(departments, { headers });
     }
 
     // Return empty array if not found (no mock data)
+    console.log('[API /api/departments] No setting found, returning empty array');
     return NextResponse.json([], { headers });
   } catch (error: any) {
-    console.error('Error fetching departments:', error);
+    console.error('[API /api/departments] Error fetching departments:', error);
     return NextResponse.json(
       { error: 'Failed to fetch departments' },
       { status: 500 }

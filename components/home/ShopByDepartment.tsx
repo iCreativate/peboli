@@ -25,21 +25,33 @@ export function ShopByDepartment() {
         });
         if (res.ok) {
           const data = await res.json();
-          console.log('Fetched departments from API:', data);
-          if (Array.isArray(data) && data.length > 0) {
-            setDepartments(data.map((dept: Department) => ({
-              id: dept.slug,
-              name: dept.name,
-              slug: dept.slug,
-              icon: '📦', // Default icon, could be enhanced later
-              productCount: 0, // Could be calculated from products
-            })));
+          console.log('[ShopByDepartment] Fetched departments from API:', data);
+          console.log('[ShopByDepartment] Data type:', typeof data);
+          console.log('[ShopByDepartment] Is array:', Array.isArray(data));
+          console.log('[ShopByDepartment] Data length:', Array.isArray(data) ? data.length : 'N/A');
+          
+          if (Array.isArray(data)) {
+            if (data.length > 0) {
+              const mapped = data.map((dept: Department) => ({
+                id: dept.slug,
+                name: dept.name,
+                slug: dept.slug,
+                icon: '📦', // Default icon, could be enhanced later
+                productCount: 0, // Could be calculated from products
+              }));
+              console.log('[ShopByDepartment] Mapped departments:', mapped);
+              setDepartments(mapped);
+            } else {
+              console.warn('[ShopByDepartment] Empty array returned from API');
+              setDepartments([]);
+            }
           } else {
-            console.warn('No departments found in API response');
+            console.error('[ShopByDepartment] API did not return an array:', data);
             setDepartments([]);
           }
         } else {
-          console.error('Failed to fetch departments:', res.status, await res.text());
+          const errorText = await res.text();
+          console.error('[ShopByDepartment] Failed to fetch departments:', res.status, errorText);
         }
       } catch (error) {
         console.error('Error fetching departments:', error);
