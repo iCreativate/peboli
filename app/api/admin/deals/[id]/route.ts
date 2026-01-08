@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -26,8 +26,9 @@ export async function GET(
       );
     }
 
+    const { id } = await params;
     const deal = await prisma.deal.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         product: {
           select: {
@@ -68,7 +69,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -89,6 +90,7 @@ export async function PUT(
       );
     }
 
+    const { id } = await params;
     const body = await request.json();
     const {
       type,
@@ -110,7 +112,7 @@ export async function PUT(
 
     // Check if deal exists
     const existingDeal = await prisma.deal.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!existingDeal) {
@@ -139,7 +141,7 @@ export async function PUT(
     if (isFeatured !== undefined) updateData.isFeatured = isFeatured;
 
     const deal = await prisma.deal.update({
-      where: { id: params.id },
+      where: { id },
       data: updateData,
       include: {
         product: {
@@ -178,7 +180,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -199,8 +201,9 @@ export async function DELETE(
       );
     }
 
+    const { id } = await params;
     const deal = await prisma.deal.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!deal) {
@@ -211,7 +214,7 @@ export async function DELETE(
     }
 
     await prisma.deal.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({

@@ -92,7 +92,7 @@ export function SplashDealsSection() {
           </div>
           {featuredDeal?.endsAt && (
             <div className="flex-shrink-0">
-              <SplashSaleTimer endTime={featuredDeal.endsAt} />
+              <SplashSaleTimer endTime={new Date(featuredDeal.endsAt)} />
             </div>
           )}
         </div>
