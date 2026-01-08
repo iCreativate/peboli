@@ -82,7 +82,6 @@ export async function POST(request: Request) {
         });
 
         // Update stock, handle wallet and notify vendors/admin
-        const adminUser = await prisma.user.findFirst({ where: { role: 'ADMIN' } });
         const { notifyAdmins } = await import('@/lib/notifications');
 
         for (const item of items) {
