@@ -1,30 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { writeFile, readFile, mkdir } from 'fs/promises';
-import { existsSync } from 'fs';
-import path from 'path';
+import { prisma } from '@/lib/prisma';
 
-const DATA_DIR = path.join(process.cwd(), 'data');
-const PAYMENT_INTEGRATIONS_FILE = path.join(DATA_DIR, 'payment-integrations.json');
-
-// Ensure data directory exists
-async function ensureDataDir() {
-  if (!existsSync(DATA_DIR)) {
-    await mkdir(DATA_DIR, { recursive: true });
-  }
-}
+const SETTING_KEY = 'payment_integrations';
 
 async function loadPaymentIntegrations() {
   try {
-    await ensureDataDir();
-    if (existsSync(PAYMENT_INTEGRATIONS_FILE)) {
-      const data = await readFile(PAYMENT_INTEGRATIONS_FILE, 'utf-8');
-      return JSON.parse(data);
+    const setting = await prisma.setting.findUnique({
+      where: { key: SETTING_KEY },
+    });
+
+    if (setting && setting.value) {
+      return setting.value as Record<string, any>;
     }
   } catch (error) {
     console.error('Error loading payment integrations:', error);
   }
+  
+  // Return default integrations
   return {
     yoco: {
       id: 'yoco',
@@ -43,8 +37,17 @@ async function loadPaymentIntegrations() {
 
 async function savePaymentIntegrations(integrations: Record<string, any>) {
   try {
-    await ensureDataDir();
-    await writeFile(PAYMENT_INTEGRATIONS_FILE, JSON.stringify(integrations, null, 2), 'utf-8');
+    await prisma.setting.upsert({
+      where: { key: SETTING_KEY },
+      update: {
+        value: integrations,
+        updatedAt: new Date(),
+      },
+      create: {
+        key: SETTING_KEY,
+        value: integrations,
+      },
+    });
   } catch (error) {
     console.error('Error saving payment integrations:', error);
     throw error;
