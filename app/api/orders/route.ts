@@ -83,6 +83,7 @@ export async function POST(request: Request) {
 
         // Update stock, handle wallet and notify vendors/admin
         const adminUser = await prisma.user.findFirst({ where: { role: 'ADMIN' } });
+        const { notifyAdmins } = await import('@/lib/notifications');
 
         for (const item of items) {
             try {
@@ -140,16 +141,15 @@ export async function POST(request: Request) {
         }
 
         // Notify Admin
-        if (adminUser) {
-             await (prisma as any).notification.create({
-                data: {
-                    userId: adminUser.id,
-                    title: 'New Order Received',
-                    message: `Order #${order.orderNumber} has been placed. Total: ${order.total}`,
-                    type: 'system',
-                    link: `/admin/orders/${order.id}`
-                }
+        try {
+            await notifyAdmins({
+                title: 'New Order Received',
+                message: `Order #${order.orderNumber} has been placed by ${order.user.name}. Total: R${order.total.toFixed(2)}`,
+                type: 'order',
+                link: `/admin/orders/${order.id}`
             });
+        } catch (error) {
+            console.error('Error notifying admins about new order:', error);
         }
 
         return NextResponse.json(order, { status: 201 });

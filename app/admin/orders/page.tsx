@@ -40,11 +40,16 @@ export default function AdminOrdersPage() {
     }
   };
 
-  const filteredOrders = orders.filter(order => 
-    order.orderNumber.toLowerCase().includes(search.toLowerCase()) ||
-    order.user.name.toLowerCase().includes(search.toLowerCase()) ||
-    order.user.email.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredOrders = orders.filter(order => {
+    const matchesSearch = 
+      order.orderNumber.toLowerCase().includes(search.toLowerCase()) ||
+      order.user.name.toLowerCase().includes(search.toLowerCase()) ||
+      order.user.email.toLowerCase().includes(search.toLowerCase());
+    
+    const matchesStatus = !statusFilter || order.status === statusFilter;
+    
+    return matchesSearch && matchesStatus;
+  });
 
   return (
     <div className="space-y-6">
@@ -66,10 +71,21 @@ export default function AdminOrdersPage() {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <Button variant="outline" className="gap-2 rounded-xl">
-          <Filter className="h-4 w-4" />
-          Filters
-        </Button>
+        <select
+          id="statusFilter"
+          name="statusFilter"
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="h-10 px-3 rounded-xl border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="">All Statuses</option>
+          <option value="PENDING">Pending</option>
+          <option value="PROCESSING">Processing</option>
+          <option value="SHIPPED">Shipped</option>
+          <option value="DELIVERED">Delivered</option>
+          <option value="CANCELLED">Cancelled</option>
+          <option value="REFUNDED">Refunded</option>
+        </select>
       </div>
 
       {/* Orders Table */}

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { notifyAdmins, createNotification } from '@/lib/notifications';
 
 export async function PUT(
   request: NextRequest,
@@ -15,8 +16,42 @@ export async function PUT(
     const order = await prisma.order.update({
       where: { id: orderId },
       data: { status },
-      include: { items: true }
+      include: { 
+        items: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
     });
+
+    // Notify admins about order status change
+    try {
+      await notifyAdmins({
+        title: `Order #${order.orderNumber} Status Updated`,
+        message: `Order status changed to ${status} by ${order.user.name}`,
+        type: 'order',
+        link: `/admin/orders/${orderId}`,
+      });
+    } catch (error) {
+      console.error('Error notifying admins about order status change:', error);
+    }
+
+    // Notify customer about order status change
+    try {
+      await createNotification({
+        userId: order.user.id,
+        title: `Order #${order.orderNumber} Update`,
+        message: `Your order status has been updated to ${status}.`,
+        type: 'order',
+        link: `/orders/${orderId}`,
+      });
+    } catch (error) {
+      console.error('Error notifying customer about order status change:', error);
+    }
 
     if (status === 'DELIVERED') {
       // Release funds for all vendors in this order

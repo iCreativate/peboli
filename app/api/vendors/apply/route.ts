@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { notifyAdmins } from '@/lib/notifications';
 
 export async function POST(request: Request) {
   try {
@@ -61,6 +62,18 @@ export async function POST(request: Request) {
     } catch (dbError) {
       console.error('Database error:', dbError);
       return NextResponse.json({ error: 'Database error occurred while creating vendor.' }, { status: 500 });
+    }
+
+    // Notify admins about new vendor application
+    try {
+      await notifyAdmins({
+        title: 'New Vendor Application',
+        message: `${name} (${email}) has submitted a vendor application. Business type: ${businessType}`,
+        type: 'vendor',
+        link: `/admin/vendors`
+      });
+    } catch (error) {
+      console.error('Error notifying admins about vendor application:', error);
     }
 
     return NextResponse.json({ success: true, vendor });

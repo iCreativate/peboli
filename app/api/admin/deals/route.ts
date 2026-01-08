@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { prisma } from '@/lib/prisma';
+import { notifyAdmins } from '@/lib/notifications';
 
 export async function GET(request: NextRequest) {
   try {
@@ -166,6 +167,20 @@ export async function POST(request: NextRequest) {
         },
       },
     });
+
+    // Notify admins about new deal
+    if (status === 'ACTIVE') {
+      try {
+        await notifyAdmins({
+          title: `New ${type.replace('_', ' ')} Campaign`,
+          message: `${title} has been created and is now active.`,
+          type: 'deal',
+          link: `/admin/deals`,
+        });
+      } catch (error) {
+        console.error('Error notifying admins about deal:', error);
+      }
+    }
 
     return NextResponse.json({
       success: true,
