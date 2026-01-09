@@ -25,33 +25,45 @@ export function ShopByDepartment() {
         });
         if (res.ok) {
           const data = await res.json();
-          console.log('[ShopByDepartment] Fetched departments from API:', data);
+          console.log('[ShopByDepartment] Raw API response:', JSON.stringify(data, null, 2));
           console.log('[ShopByDepartment] Data type:', typeof data);
           console.log('[ShopByDepartment] Is array:', Array.isArray(data));
           console.log('[ShopByDepartment] Data length:', Array.isArray(data) ? data.length : 'N/A');
           
+          // Handle different response formats
+          let departmentsArray: Department[] = [];
+          
           if (Array.isArray(data)) {
-            if (data.length > 0) {
-              const mapped = data.map((dept: Department) => ({
-                id: dept.slug,
-                name: dept.name,
-                slug: dept.slug,
-                icon: '📦', // Default icon, could be enhanced later
-                productCount: 0, // Could be calculated from products
-              }));
-              console.log('[ShopByDepartment] Mapped departments:', mapped);
-              setDepartments(mapped);
-            } else {
-              console.warn('[ShopByDepartment] Empty array returned from API');
-              setDepartments([]);
+            departmentsArray = data;
+          } else if (data && typeof data === 'object') {
+            // Handle wrapped response like { departments: [...] }
+            if (Array.isArray(data.departments)) {
+              departmentsArray = data.departments;
+            } else if (data.success && Array.isArray(data.departments)) {
+              departmentsArray = data.departments;
             }
+          }
+          
+          console.log('[ShopByDepartment] Extracted departments array:', departmentsArray);
+          
+          if (departmentsArray.length > 0) {
+            const mapped = departmentsArray.map((dept: Department) => ({
+              id: dept.slug || dept.name?.toLowerCase().replace(/\s+/g, '-'),
+              name: dept.name,
+              slug: dept.slug || dept.name?.toLowerCase().replace(/\s+/g, '-'),
+              icon: '📦', // Default icon, could be enhanced later
+              productCount: 0, // Could be calculated from products
+            }));
+            console.log('[ShopByDepartment] Mapped departments:', mapped);
+            setDepartments(mapped);
           } else {
-            console.error('[ShopByDepartment] API did not return an array:', data);
+            console.warn('[ShopByDepartment] No departments found in response');
             setDepartments([]);
           }
         } else {
           const errorText = await res.text();
           console.error('[ShopByDepartment] Failed to fetch departments:', res.status, errorText);
+          setDepartments([]);
         }
       } catch (error) {
         console.error('Error fetching departments:', error);
