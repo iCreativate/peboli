@@ -72,23 +72,54 @@ export default function AdminDepartmentsPage() {
     setSaving(true);
     setSaved(false);
     try {
+      console.log('[Admin] Attempting to save departments:', newDepartments);
+      const payload = { departments: newDepartments };
+      console.log('[Admin] Payload to send:', JSON.stringify(payload, null, 2));
+      
       const res = await fetch('/api/admin/departments', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ departments: newDepartments }),
+        body: JSON.stringify(payload),
         cache: 'no-store',
       });
       
+      console.log('[Admin] Response status:', res.status);
+      console.log('[Admin] Response ok:', res.ok);
+      
       if (!res.ok) {
-        const errorData = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
+        const errorText = await res.text();
+        console.error('[Admin] Error response:', errorText);
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+        } catch {
+          errorData = { error: errorText || `HTTP ${res.status}` };
+        }
         throw new Error(errorData.error || `Failed to save: ${res.status}`);
       }
       
       const data = await res.json();
+      console.log('[Admin] Response data:', data);
+      
       if (data.success) {
         setDepartments(newDepartments);
         setLocalDepartments(newDepartments);
         setHasUnsavedChanges(false);
+        
+        // Verify the save by fetching again
+        setTimeout(async () => {
+          const verifyRes = await fetch('/api/admin/departments?t=' + Date.now(), { cache: 'no-store' });
+          if (verifyRes.ok) {
+            const verifyData = await verifyRes.json();
+            console.log('[Admin] Verification fetch result:', verifyData);
+            if (verifyData.success && Array.isArray(verifyData.departments)) {
+              console.log('[Admin] Verified: Departments saved correctly');
+            } else {
+              console.warn('[Admin] Warning: Verification failed - departments may not have been saved');
+            }
+          }
+        }, 500);
+        
         // Also update local store
         const store = useAdminStore.getState();
         // Sync with store
@@ -113,7 +144,7 @@ export default function AdminDepartmentsPage() {
         });
         setSaved(true);
         setTimeout(() => setSaved(false), 2000);
-        console.log('Departments saved successfully:', newDepartments);
+        console.log('[Admin] Departments saved successfully:', newDepartments);
         
         // Dispatch custom event to notify landing page components
         if (typeof window !== 'undefined') {
@@ -125,8 +156,9 @@ export default function AdminDepartmentsPage() {
         throw new Error(data.error || 'Unknown error');
       }
     } catch (error: any) {
-      console.error('Error saving departments:', error);
-      alert('Failed to save departments: ' + (error.message || 'Unknown error'));
+      console.error('[Admin] Error saving departments:', error);
+      console.error('[Admin] Error stack:', error.stack);
+      alert('Failed to save departments: ' + (error.message || 'Unknown error') + '\n\nCheck the browser console for details.');
     } finally {
       setSaving(false);
     }
