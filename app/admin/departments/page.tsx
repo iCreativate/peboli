@@ -188,8 +188,17 @@ export default function AdminDepartmentsPage() {
   };
 
   const handleSave = () => {
-    if (hasUnsavedChanges) {
+    console.log('[Admin] Save button clicked');
+    console.log('[Admin] Has unsaved changes:', hasUnsavedChanges);
+    console.log('[Admin] Local departments to save:', localDepartments);
+    if (hasUnsavedChanges && localDepartments.length > 0) {
       saveDepartments(localDepartments);
+    } else if (!hasUnsavedChanges) {
+      alert('No changes to save');
+    } else if (localDepartments.length === 0) {
+      if (confirm('You are about to save an empty departments list. This will remove all departments. Continue?')) {
+        saveDepartments(localDepartments);
+      }
     }
   };
 
