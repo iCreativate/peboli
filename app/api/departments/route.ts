@@ -21,10 +21,30 @@ export async function GET() {
     console.log('[API /api/departments] Setting found:', setting ? 'yes' : 'no');
     
     if (setting && setting.value) {
-      const departments = setting.value as Array<{ name: string; slug: string }>;
+      // Prisma JSON fields might need parsing
+      let departments: Array<{ name: string; slug: string }>;
+      if (typeof setting.value === 'string') {
+        try {
+          departments = JSON.parse(setting.value);
+        } catch (e) {
+          console.error('[API /api/departments] Failed to parse JSON string:', e);
+          departments = [];
+        }
+      } else if (Array.isArray(setting.value)) {
+        departments = setting.value as Array<{ name: string; slug: string }>;
+      } else {
+        console.error('[API /api/departments] Unexpected value type:', typeof setting.value);
+        departments = [];
+      }
+      
       console.log('[API /api/departments] Returning departments:', departments);
       console.log('[API /api/departments] Departments count:', departments.length);
-      return NextResponse.json(departments, { headers });
+      console.log('[API /api/departments] Raw setting value:', setting.value);
+      console.log('[API /api/departments] Setting value type:', typeof setting.value);
+      
+      if (departments.length > 0) {
+        return NextResponse.json(departments, { headers });
+      }
     }
 
     // Return empty array if not found (no mock data)
