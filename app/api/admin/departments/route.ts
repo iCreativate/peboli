@@ -49,11 +49,27 @@ export async function PUT(request: NextRequest) {
     console.log('[API /api/admin/departments PUT] Session:', session ? 'exists' : 'none');
     console.log('[API /api/admin/departments PUT] User email:', session?.user?.email);
 
-    if (!session || !session.user || session.user.email !== 'admin@peboli.store') {
-      console.error('[API /api/admin/departments PUT] Unauthorized access attempt');
+    if (!session || !session.user) {
+      console.error('[API /api/admin/departments PUT] No session found');
       return NextResponse.json(
-        { error: 'Unauthorized', success: false },
+        { 
+          error: 'Unauthorized - Please log in', 
+          success: false,
+          message: 'You must be logged in to save departments. Please log in as admin@peboli.store',
+        },
         { status: 401 }
+      );
+    }
+
+    if (session.user.email !== 'admin@peboli.store') {
+      console.error('[API /api/admin/departments PUT] Unauthorized access attempt by:', session.user.email);
+      return NextResponse.json(
+        { 
+          error: 'Unauthorized - Admin access required', 
+          success: false,
+          message: `You are logged in as ${session.user.email}, but you need to be logged in as admin@peboli.store to save departments.`,
+        },
+        { status: 403 }
       );
     }
 
