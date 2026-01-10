@@ -148,9 +148,19 @@ export default function AdminDepartmentsPage() {
         
         // Dispatch custom event to notify landing page components
         if (typeof window !== 'undefined') {
-          window.dispatchEvent(new Event('departmentsUpdated'));
+          console.log('[Admin] Dispatching departmentsUpdated event');
+          window.dispatchEvent(new CustomEvent('departmentsUpdated', { 
+            detail: { departments: newDepartments, timestamp: Date.now() }
+          }));
           // Also try localStorage event for cross-tab communication
           localStorage.setItem('departmentsUpdated', Date.now().toString());
+          localStorage.setItem('departmentsData', JSON.stringify(newDepartments));
+          // Trigger storage event manually for same-tab updates
+          window.dispatchEvent(new StorageEvent('storage', {
+            key: 'departmentsUpdated',
+            newValue: Date.now().toString(),
+          }));
+          console.log('[Admin] Events dispatched, localStorage updated');
         }
       } else {
         throw new Error(data.error || 'Unknown error');

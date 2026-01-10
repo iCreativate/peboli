@@ -74,22 +74,43 @@ export function ShopByDepartment() {
     
     fetchDepartments();
     
-    // Refresh every 10 seconds to get updates (reduced from 30s for faster updates)
-    const interval = setInterval(fetchDepartments, 10000);
+    // Refresh every 5 seconds to get updates (reduced for faster updates)
+    const interval = setInterval(fetchDepartments, 5000);
     
     // Also listen for storage events to refresh when admin saves
-    const handleStorageChange = () => {
+    const handleStorageChange = (e: StorageEvent | Event) => {
+      console.log('[ShopByDepartment] Storage/event change detected, refreshing...');
       fetchDepartments();
     };
+    
+    // Listen for storage events (cross-tab)
     window.addEventListener('storage', handleStorageChange);
     
-    // Listen for custom event from admin page
-    window.addEventListener('departmentsUpdated', fetchDepartments);
+    // Listen for custom event from admin page (same-tab)
+    window.addEventListener('departmentsUpdated', handleStorageChange);
+    
+    // Also listen for localStorage changes in the same tab
+    const checkLocalStorage = () => {
+      const lastUpdate = localStorage.getItem('departmentsUpdated');
+      if (lastUpdate) {
+        const updateTime = parseInt(lastUpdate);
+        const now = Date.now();
+        // If updated within last 2 seconds, refresh
+        if (now - updateTime < 2000) {
+          console.log('[ShopByDepartment] Recent update detected in localStorage, refreshing...');
+          fetchDepartments();
+        }
+      }
+    };
+    
+    // Check localStorage every second
+    const localStorageCheck = setInterval(checkLocalStorage, 1000);
     
     return () => {
       clearInterval(interval);
+      clearInterval(localStorageCheck);
       window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('departmentsUpdated', fetchDepartments);
+      window.removeEventListener('departmentsUpdated', handleStorageChange);
     };
   }, []);
 
