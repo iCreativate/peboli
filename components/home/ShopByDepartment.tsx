@@ -93,9 +93,29 @@ export function ShopByDepartment() {
     };
   }, []);
 
-  // Don't render if no departments
-  if (!loading && departments.length === 0) {
-    return null;
+  // Show loading or empty state for debugging
+  if (loading) {
+    return (
+      <section className="py-10 md:py-12 bg-white border-b border-gray-100">
+        <div className="container mx-auto px-4 lg:px-6">
+          <div className="text-center text-gray-500">Loading departments...</div>
+        </div>
+      </section>
+    );
+  }
+
+  // Show empty state for debugging - comment out return null to see connection status
+  if (departments.length === 0) {
+    return (
+      <section className="py-10 md:py-12 bg-white border-b border-gray-100">
+        <div className="container mx-auto px-4 lg:px-6">
+          <div className="text-center">
+            <p className="text-gray-500 mb-2">No departments configured yet.</p>
+            <p className="text-sm text-gray-400">Add departments in the Admin Console → Platform Configuration → Departments</p>
+          </div>
+        </div>
+      </section>
+    );
   }
 
   return (

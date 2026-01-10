@@ -192,7 +192,12 @@ export function DepartmentSidebar() {
         {/* Category List - Scrollable */}
         <div className={`${isOpen ? 'flex' : 'hidden'} flex-1 overflow-y-auto border-b border-gray-200`}>
           <nav className="w-full py-2">
-            {categories.map((category, index) => (
+            {categories.length === 0 ? (
+              <div className="px-4 py-2 text-xs text-gray-400 text-center">
+                No departments configured
+              </div>
+            ) : (
+              categories.map((category, index) => (
               <div
                 key={index}
                 onMouseEnter={() => handleMouseEnter(category.name)}
@@ -206,7 +211,8 @@ export function DepartmentSidebar() {
                   <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-[#0B1220] transition-colors" />
                 </Link>
               </div>
-            ))}
+              ))
+            )}
           </nav>
         </div>
 
