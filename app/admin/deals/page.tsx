@@ -5,6 +5,12 @@ import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
+type Product = {
+  id: string;
+  name: string;
+  price: number;
+};
+
 type Deal = {
   id: string;
   type: 'SPLASH_SALE' | 'DAILY_DEAL' | 'PRODUCT_CAMPAIGN' | 'ADVERT';
@@ -48,6 +54,7 @@ const TYPE_LABELS: Record<Deal['type'], string> = {
 
 export default function DealModerationPage() {
   const [deals, setDeals] = useState<Deal[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [activeTab, setActiveTab] = useState('Active Deals');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -104,6 +111,24 @@ export default function DealModerationPage() {
   useEffect(() => {
     fetchDeals();
   }, [fetchDeals]);
+
+  const fetchProducts = useCallback(async () => {
+    try {
+      const response = await fetch('/api/admin/products');
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        setProducts(data);
+      } else {
+        console.error('Failed to fetch products:', data.error);
+      }
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
   const filteredDeals = deals;
 
@@ -263,7 +288,7 @@ export default function DealModerationPage() {
           </Button>
           <button 
             onClick={handleOpenCreate}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition-all"
           >
             <Plus className="h-4 w-4" />
             Create Campaign
@@ -319,7 +344,7 @@ export default function DealModerationPage() {
               <div 
                 key={deal.id} 
                 onClick={() => handleOpenEdit(deal)}
-                className="group bg-white rounded-2xl border border-gray-200 p-6 shadow-sm hover:shadow-lg transition-all duration-300 relative overflow-hidden cursor-pointer"
+                className="group bg-white rounded-2xl border border-gray-200 p-6 hover:border-gray-300 transition-all duration-300 relative overflow-hidden cursor-pointer"
               >
                 {/* Progress Bar Background for Active Deals */}
                 {deal.status === 'ACTIVE' && (
@@ -393,8 +418,8 @@ export default function DealModerationPage() {
 
       {/* Create/Edit Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl animate-in fade-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+          <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-gray-100 animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between p-4 border-b border-gray-100 sticky top-0 bg-white z-10">
               <h2 className="text-lg font-bold text-gray-900">{editingDeal ? 'Edit Campaign' : 'New Campaign'}</h2>
               <button onClick={() => setIsModalOpen(false)} className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
@@ -516,17 +541,24 @@ export default function DealModerationPage() {
                 </div>
               )}
 
-              {formData.type === 'PRODUCT_CAMPAIGN' && (
+              {(formData.type === 'SPLASH_SALE' || formData.type === 'DAILY_DEAL' || formData.type === 'PRODUCT_CAMPAIGN') && (
                 <div className="space-y-2">
-                  <label htmlFor="productId" className="text-sm font-medium text-gray-700">Product ID / SKU *</label>
-                  <Input 
+                  <label htmlFor="productId" className="text-sm font-medium text-gray-700">Product *</label>
+                  <select
                     id="productId"
                     name="productId"
-                    required={formData.type === 'PRODUCT_CAMPAIGN'}
+                    required={['SPLASH_SALE', 'DAILY_DEAL', 'PRODUCT_CAMPAIGN'].includes(formData.type)}
                     value={formData.productId || ''}
                     onChange={(e) => setFormData({ ...formData, productId: e.target.value })}
-                    placeholder="Enter Product ID or SKU"
-                  />
+                    className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                  >
+                    <option value="">Select a product...</option>
+                    {products.map((product) => (
+                      <option key={product.id} value={product.id}>
+                        {product.name} ({formatCurrency(product.price)})
+                      </option>
+                    ))}
+                  </select>
                 </div>
               )}
 

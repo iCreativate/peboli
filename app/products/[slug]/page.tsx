@@ -55,17 +55,9 @@ async function getProductBySlug(slug: string): Promise<Product | null> {
       createdAt: p.createdAt,
       updatedAt: p.updatedAt,
     };
-  } catch {
-    try {
-      const filePath = path.join(process.cwd(), 'public', 'live-products.json');
-      const raw = await fs.readFile(filePath, 'utf8');
-      const list = JSON.parse(raw) as unknown[];
-      if (!Array.isArray(list)) return null;
-      const found = list.find((x) => (x as { slug?: string })?.slug === slug) as Product | undefined;
-      return found || null;
-    } catch {
-      return null;
-    }
+  } catch (error) {
+    console.error('Error fetching product:', error);
+    return null;
   }
 }
 

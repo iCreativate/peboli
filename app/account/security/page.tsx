@@ -113,7 +113,7 @@ export default function SecurityPage() {
           </div>
 
           <div className="max-w-4xl mx-auto">
-            <div className="bg-white rounded-3xl border border-gray-100 premium-shadow p-6 md:p-8">
+            <div className="bg-white rounded-3xl border border-gray-100 p-6 md:p-8">
               <div className="flex items-center gap-4 mb-8">
                 <div className="h-12 w-12 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-600">
                   <Shield className="h-6 w-6" />
@@ -177,7 +177,7 @@ export default function SecurityPage() {
                         {/* QR Code */}
                         <div className="flex-1 flex flex-col items-center justify-center bg-gray-50 rounded-2xl p-6 border border-gray-100">
                           {qrCode ? (
-                            <div className="bg-white p-4 rounded-xl shadow-sm">
+                            <div className="bg-white p-4 rounded-xl border border-gray-200">
                               <Image 
                                 src={qrCode} 
                                 alt="2FA QR Code" 

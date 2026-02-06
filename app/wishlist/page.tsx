@@ -42,35 +42,16 @@ export default function WishlistPage() {
 
   if (!isMounted) return null;
 
-  if (!user) {
-    return (
-      <div className="min-h-screen flex flex-col bg-gray-50">
-        <TakealotHeader />
-        <main className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-           <div className="h-20 w-20 bg-gray-100 rounded-full flex items-center justify-center mb-6">
-              <Lock className="h-10 w-10 text-gray-400" />
-           </div>
-           <h1 className="text-2xl font-bold text-gray-900">Login Required</h1>
-           <p className="text-gray-500 mt-2 mb-8 max-w-md">Please sign in to view and manage your wishlist.</p>
-           <Button onClick={openLogin} className="h-12 px-8 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg shadow-blue-600/20 transition-all">
-             Sign In / Register
-           </Button>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <TakealotHeader />
 
       <main className="flex-1">
         <div className="container mx-auto px-4 lg:px-6 py-10">
-          <div className="rounded-3xl border border-gray-100 bg-white premium-shadow overflow-hidden">
+          <div className="rounded-3xl border border-gray-100 bg-white overflow-hidden">
             <div className="p-6 md:p-10 border-b border-gray-100">
               <div className="flex items-center gap-3">
-                <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-[#0B1220]/10 via-[#FF6B4A]/10 to-[#00C48C]/10 flex items-center justify-center text-[#0B1220]">
+                <div className="h-11 w-11 rounded-2xl bg-gray-50 flex items-center justify-center text-[#0B1220]">
                   <Heart className="h-5 w-5" />
                 </div>
                 <div>
@@ -142,7 +123,7 @@ export default function WishlistPage() {
                       setDraftPrice('');
                     }}
                     disabled={!canAdd}
-                    className="inline-flex items-center justify-center rounded-xl premium-gradient px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+                    className="inline-flex items-center justify-center rounded-xl bg-[#0B1220] hover:bg-[#1a283a] transition-all px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
                   >
                     Add to wishlist
                   </button>
@@ -151,7 +132,7 @@ export default function WishlistPage() {
 
               <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {items.map((item) => (
-                  <div key={item.id} className="rounded-2xl border border-gray-100 bg-white premium-shadow p-6">
+                  <div key={item.id} className="rounded-2xl border border-gray-100 bg-white p-6 hover:border-gray-300 transition-colors">
                     {item.image ? (
                       <img
                         src={item.image}
@@ -164,11 +145,7 @@ export default function WishlistPage() {
 
                     <div className="mt-4">
                       <div className="text-xs font-bold uppercase tracking-wide text-[#8B95A5]">Name</div>
-                      <input
-                        value={item.name}
-                        onChange={(e) => updateItem(item.id, { name: e.target.value })}
-                        className="mt-2 w-full h-11 rounded-xl border border-gray-200 bg-white px-4 text-sm outline-none focus:ring-2 focus:ring-[#0B1220]/20 focus:border-[#0B1220]"
-                      />
+                      <div className="mt-2 text-base font-bold text-[#1A1D29] line-clamp-2 min-h-[1.5rem]">{item.name}</div>
                     </div>
 
                     <div className="mt-3">
@@ -202,7 +179,7 @@ export default function WishlistPage() {
                           image: item.image,
                         });
                       }}
-                      className="mt-4 inline-flex w-full items-center justify-center rounded-xl premium-gradient px-5 py-3 text-sm font-semibold text-white"
+                      className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-[#0B1220] hover:bg-[#1a283a] transition-colors px-5 py-3 text-sm font-semibold text-white"
                     >
                       Add to cart
                     </button>
@@ -216,7 +193,7 @@ export default function WishlistPage() {
                 </div>
               )}
 
-              <div className="mt-10 rounded-2xl border border-gray-100 bg-gradient-to-br from-[#0B1220]/6 via-transparent to-[#FF6B4A]/5 p-6">
+              <div className="mt-10 rounded-2xl border border-gray-100 bg-gray-50 p-6">
                 <div className="flex items-start gap-4">
                   <div className="h-11 w-11 rounded-2xl bg-white border border-gray-200 flex items-center justify-center">
                     <Sparkles className="h-5 w-5 text-[#0B1220]" />
@@ -225,7 +202,7 @@ export default function WishlistPage() {
                     <div className="font-black text-[#1A1D29]">Discover more</div>
                     <div className="mt-1 text-sm text-[#8B95A5]">Browse deals or explore categories to save more items.</div>
                     <div className="mt-5 flex flex-wrap gap-3">
-                      <Link href="/deals" className="inline-flex items-center justify-center rounded-xl premium-gradient px-5 py-2.5 text-sm font-semibold text-white">Browse deals</Link>
+                      <Link href="/deals" className="inline-flex items-center justify-center rounded-xl bg-[#0B1220] hover:bg-[#1a283a] transition-colors px-5 py-2.5 text-sm font-semibold text-white">Browse deals</Link>
                       <Link href="/categories/electronics" className="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-semibold text-[#1A1D29] hover:bg-gray-50 transition-colors">Explore electronics</Link>
                     </div>
                   </div>

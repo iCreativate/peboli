@@ -79,7 +79,7 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Time Range Tabs */}
-        <div className="flex items-center bg-white rounded-lg p-1 border border-gray-200 shadow-sm">
+        <div className="flex items-center bg-white rounded-lg p-1 border border-gray-200">
           {TABS.map((tab) => (
             <button
               key={tab}
@@ -87,7 +87,7 @@ export default function AdminDashboardPage() {
               className={cn(
                 "px-3 py-1.5 text-xs font-medium rounded-md transition-all",
                 activeTab === tab
-                  ? "bg-gray-900 text-white shadow-sm"
+                  ? "bg-gray-900 text-white"
                   : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
               )}
             >
@@ -99,7 +99,7 @@ export default function AdminDashboardPage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white p-6 rounded-2xl border border-gray-200 hover:border-blue-300 transition-colors">
           <div className="flex items-center justify-between mb-4">
             <div className="h-10 w-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600">
               <DollarSign className="h-5 w-5" />
@@ -113,7 +113,7 @@ export default function AdminDashboardPage() {
           <h3 className="text-2xl font-black text-gray-900 mt-1">R {stats.totalRevenue.toFixed(2)}</h3>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white p-6 rounded-2xl border border-gray-200 hover:border-purple-300 transition-colors">
           <div className="flex items-center justify-between mb-4">
             <div className="h-10 w-10 bg-purple-50 rounded-xl flex items-center justify-center text-purple-600">
               <Users className="h-5 w-5" />
@@ -127,7 +127,7 @@ export default function AdminDashboardPage() {
           <h3 className="text-2xl font-black text-gray-900 mt-1">{stats.totalUsers}</h3>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white p-6 rounded-2xl border border-gray-200 hover:border-orange-300 transition-colors">
           <div className="flex items-center justify-between mb-4">
             <div className="h-10 w-10 bg-orange-50 rounded-xl flex items-center justify-center text-orange-600">
               <Store className="h-5 w-5" />
@@ -140,7 +140,7 @@ export default function AdminDashboardPage() {
           <h3 className="text-2xl font-black text-gray-900 mt-1">{stats.totalVendors}</h3>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white p-6 rounded-2xl border border-gray-200 hover:border-emerald-300 transition-colors">
           <div className="flex items-center justify-between mb-4">
             <div className="h-10 w-10 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600">
               <ShoppingBag className="h-5 w-5" />
@@ -156,7 +156,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Revenue Chart */}
-      <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+      <div className="bg-white p-6 rounded-2xl border border-gray-200">
         <h3 className="font-bold text-gray-900 mb-6">Revenue Overview</h3>
         <div className="h-[300px] flex items-end gap-2 p-4 bg-gray-50 rounded-xl border border-gray-100">
            {stats.monthlyRevenue && stats.monthlyRevenue.map((rev, i) => {
@@ -185,7 +185,7 @@ export default function AdminDashboardPage() {
         {/* Recent Activity */}
         <div className="lg:col-span-2 space-y-6">
           <h3 className="text-lg font-bold text-gray-900">Recent Activity</h3>
-          <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+          <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
             {stats.recentOrders.length > 0 ? stats.recentOrders.map((order, i) => (
               <div key={i} className="flex items-center gap-4 p-4 border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors">
                 <div className={`h-10 w-10 rounded-full flex items-center justify-center text-emerald-600 bg-emerald-50`}>
@@ -209,7 +209,7 @@ export default function AdminDashboardPage() {
         {/* Platform Health / Quick Stats */}
         <div className="space-y-6">
           <h3 className="text-lg font-bold text-gray-900">Platform Health</h3>
-          <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm space-y-6">
+          <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-6">
             <div>
               <div className="flex justify-between text-sm font-medium mb-2">
                 <span className="text-gray-700">Server Load</span>
@@ -243,7 +243,7 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-6 text-white shadow-lg shadow-blue-900/20">
+          <div className="bg-[#0B1220] rounded-2xl p-6 text-white">
             <h4 className="font-bold text-lg mb-2">Pro Tip</h4>
             <p className="text-blue-100 text-sm mb-4">
               Review pending vendor applications to increase catalog diversity.
@@ -256,7 +256,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Social Media Section */}
-      <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+      <div className="bg-white p-6 rounded-2xl border border-gray-200">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h3 className="font-bold text-gray-900">Social Media</h3>
@@ -294,7 +294,7 @@ export default function AdminDashboardPage() {
                       rel="noopener noreferrer"
                       className="flex flex-col items-center gap-2 group"
                     >
-                      <Icon className={`h-6 w-6 ${platform.color} group-hover:scale-110 transition-transform`} />
+                      <Icon className={`h-6 w-6 ${platform.color} transition-transform`} />
                       <span className="text-xs font-medium text-gray-700 truncate w-full text-center">
                         {platform.name}
                       </span>

@@ -189,14 +189,14 @@ export default function VendorApprovalsPage() {
                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
             </div>
           </div>
-          <div className="flex items-center bg-white rounded-lg p-1 border border-gray-200 shadow-sm">
+          <div className="flex items-center bg-white rounded-lg p-1 border border-gray-200">
             {TABS.map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
                   activeTab === tab
-                    ? "bg-gray-900 text-white shadow-sm"
+                    ? "bg-gray-900 text-white"
                     : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
                 }`}
               >
@@ -215,7 +215,7 @@ export default function VendorApprovalsPage() {
             filteredApps.map((app) => (
             <div
                 key={app.id}
-                className="group relative bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-all duration-200"
+                className="group relative bg-white rounded-2xl border border-gray-100 p-6 hover:border-gray-300 transition-all duration-200"
             >
                 <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
                 {/* Content */}
@@ -291,8 +291,8 @@ export default function VendorApprovalsPage() {
 
       {/* Reject Modal */}
       {isRejectModalOpen && selectedApp && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-xl animate-in fade-in zoom-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md p-6 border border-gray-200 animate-in fade-in zoom-in duration-200">
             <h3 className="text-lg font-bold text-gray-900 mb-2">Reject Application</h3>
             <p className="text-gray-500 text-sm mb-4">
               Please provide a reason for rejecting {selectedApp.name}'s application.
@@ -330,8 +330,8 @@ export default function VendorApprovalsPage() {
 
       {/* Profile Modal */}
       {isProfileModalOpen && selectedApp && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-            <div className="bg-white rounded-2xl w-full max-w-2xl p-8 shadow-xl relative animate-in fade-in zoom-in duration-200 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+            <div className="bg-white rounded-2xl w-full max-w-2xl p-8 border border-gray-100 relative animate-in fade-in zoom-in duration-200 max-h-[90vh] overflow-y-auto">
                 <button 
                     onClick={() => setIsProfileModalOpen(false)}
                     className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -350,7 +350,7 @@ export default function VendorApprovalsPage() {
                             <h3 className="text-sm font-medium text-gray-500 mb-1">Contact Information</h3>
                             <div className="bg-gray-50 rounded-xl p-4 space-y-3">
                                 <div className="flex items-center gap-3">
-                                    <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center text-gray-400 shadow-sm">
+                                    <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center text-gray-400 border border-gray-100">
                                         <Store className="h-4 w-4" />
                                     </div>
                                     <div>

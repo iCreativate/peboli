@@ -370,8 +370,7 @@ export default function BankingPage() {
           </Button>
           <Button 
             onClick={handleAddAccountClick}
-            className="h-10 rounded-xl text-white border-0 hover:opacity-90"
-            style={{ background: 'linear-gradient(135deg, #0B1220 0%, #1A2333 45%, #0B1220 100%)' }}
+            className="h-10 rounded-xl bg-[#0B1220] hover:bg-[#1a283a] transition-colors text-white border-0"
           >
             <Plus className="h-4 w-4 mr-2" />
             Add Account
@@ -410,7 +409,7 @@ export default function BankingPage() {
             <div className="space-y-6">
               {/* Summary Cards */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="bg-white rounded-2xl border border-gray-100 p-6 premium-shadow">
+                <div className="bg-white rounded-2xl border border-gray-100 p-6">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-semibold text-[#8B95A5]">Total Balance</span>
                     <Wallet className="h-5 w-5 text-[#8B95A5]" />
@@ -419,7 +418,7 @@ export default function BankingPage() {
                   <p className="text-xs text-[#8B95A5] mt-1">{accounts.length} active account{accounts.length !== 1 ? 's' : ''}</p>
                 </div>
 
-                <div className="bg-white rounded-2xl border border-gray-100 p-6 premium-shadow">
+                <div className="bg-white rounded-2xl border border-gray-100 p-6">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-semibold text-[#8B95A5]">Monthly Income</span>
                     <TrendingUp className="h-5 w-5 text-green-600" />
@@ -431,7 +430,7 @@ export default function BankingPage() {
                   </p>
                 </div>
 
-                <div className="bg-white rounded-2xl border border-gray-100 p-6 premium-shadow">
+                <div className="bg-white rounded-2xl border border-gray-100 p-6">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-semibold text-[#8B95A5]">Monthly Expenses</span>
                     <TrendingDown className="h-5 w-5 text-red-600" />
@@ -443,7 +442,7 @@ export default function BankingPage() {
                   </p>
                 </div>
 
-                <div className="bg-white rounded-2xl border border-gray-100 p-6 premium-shadow">
+                <div className="bg-white rounded-2xl border border-gray-100 p-6">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-semibold text-[#8B95A5]">Pending</span>
                     <CreditCard className="h-5 w-5 text-yellow-600" />
@@ -454,7 +453,7 @@ export default function BankingPage() {
               </div>
 
               {/* Recent Transactions */}
-              <div className="bg-white rounded-2xl border border-gray-100 p-6 premium-shadow">
+              <div className="bg-white rounded-2xl border border-gray-100 p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg font-bold text-[#1A1D29]">Recent Transactions</h2>
                   <Button variant="ghost" size="sm" className="text-sm">
@@ -511,16 +510,16 @@ export default function BankingPage() {
 
           {activeTab === 'accounts' && (
             <div className="space-y-6">
-              <div className="bg-white rounded-2xl border border-gray-100 p-6 premium-shadow">
-                <h2 className="text-lg font-bold text-[#1A1D29] mb-4">Bank Accounts</h2>
-                <div className="space-y-4">
-                  {accounts.map((account) => (
-                    <div key={account.id} className="p-4 rounded-xl border border-gray-200 bg-gradient-to-r from-gray-50 to-white">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold">
-                            <Building2 className="h-6 w-6" />
-                          </div>
+              <div className="bg-white rounded-2xl border border-gray-100 p-6">
+                  <h2 className="text-lg font-bold text-[#1A1D29] mb-4">Bank Accounts</h2>
+                  <div className="space-y-4">
+                    {accounts.map((account) => (
+                      <div key={account.id} className="p-4 rounded-xl border border-gray-200 bg-gray-50">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            <div className="h-12 w-12 rounded-xl bg-[#0B1220] flex items-center justify-center text-white font-bold">
+                              <Building2 className="h-6 w-6" />
+                            </div>
                           <div>
                             <p className="text-sm font-bold text-[#1A1D29]">{account.bankName}</p>
                             <p className="text-xs text-[#8B95A5]">{account.accountType.charAt(0).toUpperCase() + account.accountType.slice(1)} • {account.accountNumber}</p>
@@ -576,7 +575,7 @@ export default function BankingPage() {
 
           {activeTab === 'transactions' && (
             <div className="space-y-6">
-              <div className="bg-white rounded-2xl border border-gray-100 p-6 premium-shadow">
+              <div className="bg-white rounded-2xl border border-gray-100 p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg font-bold text-[#1A1D29]">All Transactions</h2>
                   <div className="flex items-center gap-3">
@@ -668,7 +667,7 @@ export default function BankingPage() {
           {activeTab === 'settings' && (
             <div className="space-y-6">
               {/* Payment Integrations */}
-              <div className="bg-white rounded-2xl border border-gray-100 p-6 premium-shadow">
+              <div className="bg-white rounded-2xl border border-gray-100 p-6">
                 <h2 className="text-lg font-bold text-[#1A1D29] mb-4">Payment Integrations</h2>
                 <p className="text-sm text-[#8B95A5] mb-6">Connect payment gateways to accept payments from customers.</p>
                 
@@ -792,10 +791,10 @@ export default function BankingPage() {
                             </label>
                           </div>
                           <Button 
-                            className="h-10 rounded-xl text-white font-bold w-full border-0 hover:opacity-90"
-                            style={{ background: 'linear-gradient(135deg, #0B1220 0%, #1A2333 45%, #0B1220 100%)' }}
-                            onClick={() => handleSaveIntegration(integration)}
-                          >
+                              className="h-10 rounded-xl text-white font-bold w-full border-0 hover:opacity-90"
+                              style={{ background: '#0B1220' }}
+                              onClick={() => handleSaveIntegration(integration)}
+                            >
                             <Save className="h-4 w-4 mr-2" />
                             Save {integration.name} Settings
                           </Button>
@@ -807,7 +806,7 @@ export default function BankingPage() {
               </div>
 
               {/* Banking Settings */}
-              <div className="bg-white rounded-2xl border border-gray-100 p-6 premium-shadow">
+              <div className="bg-white rounded-2xl border border-gray-100 p-6">
                 <h2 className="text-lg font-bold text-[#1A1D29] mb-4">Banking Settings</h2>
                 <div className="space-y-6">
                   <div>
@@ -880,7 +879,7 @@ export default function BankingPage() {
                     onClick={handleSaveBankingSettings}
                     disabled={isSavingSettings}
                     className="h-11 rounded-xl text-white font-bold border-0 hover:opacity-90 disabled:opacity-50"
-                    style={{ background: 'linear-gradient(135deg, #0B1220 0%, #1A2333 45%, #0B1220 100%)' }}
+                    style={{ background: '#0B1220' }}
                   >
                     {isSavingSettings ? (
                       <>
@@ -904,7 +903,7 @@ export default function BankingPage() {
       {/* Add Account Modal */}
       {showAddAccountModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 premium-shadow-lg">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-[#1A1D29]">Add Bank Account</h2>
               <button
@@ -1007,7 +1006,7 @@ export default function BankingPage() {
               </Button>
               <Button
                 className="flex-1 h-11 rounded-xl text-white font-bold border-0 hover:opacity-90"
-                style={{ background: 'linear-gradient(135deg, #0B1220 0%, #1A2333 45%, #0B1220 100%)' }}
+                style={{ background: '#0B1220' }}
                 onClick={handleSaveAccount}
               >
                 <Check className="h-4 w-4 mr-2" />
@@ -1021,7 +1020,7 @@ export default function BankingPage() {
       {/* Edit Account Modal */}
       {showEditAccountModal && editingAccount && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 premium-shadow-lg">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-[#1A1D29]">Edit Bank Account</h2>
               <button
@@ -1130,7 +1129,7 @@ export default function BankingPage() {
               </Button>
               <Button
                 className="flex-1 h-11 rounded-xl text-white font-bold border-0 hover:opacity-90"
-                style={{ background: 'linear-gradient(135deg, #0B1220 0%, #1A2333 45%, #0B1220 100%)' }}
+                style={{ background: '#0B1220' }}
                 onClick={handleUpdateAccount}
               >
                 <Save className="h-4 w-4 mr-2" />

@@ -5,11 +5,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useAdminStore } from '@/lib/stores/admin';
+import { HeroSettings } from '@/lib/stores/admin';
 
-export function HeroCarousel() {
+export function HeroCarousel({ hero }: { hero: HeroSettings }) {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const hero = useAdminStore((s) => s.hero);
   const images = Array.isArray(hero.imageUrls) ? hero.imageUrls : [];
 
   useEffect(() => {
@@ -33,7 +32,6 @@ export function HeroCarousel() {
         {images.length > 0 ? (
           <div className="absolute inset-0">
             <Image src={images[currentSlide]} alt="Hero" fill className="object-cover" priority />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
             <div className="absolute inset-0 z-10 flex items-center justify-center">
               <div className="text-center px-6">
                 <h2 className="text-4xl md:text-6xl font-black text-white tracking-tight">
@@ -47,7 +45,7 @@ export function HeroCarousel() {
                 {hero.ctaHref && hero.ctaLabel && (
                   <Link
                     href={hero.ctaHref}
-                    className="inline-flex items-center justify-center mt-8 rounded-xl bg-white text-[#0B1220] hover:bg-white/95 font-bold text-base md:text-lg px-6 md:px-10 py-3 md:py-4 premium-shadow-lg transition-all duration-200"
+                    className="inline-flex items-center justify-center mt-8 rounded-xl bg-white text-[#0B1220] hover:bg-white/95 font-bold text-base md:text-lg px-6 md:px-10 py-3 md:py-4 transition-all duration-200"
                   >
                     {hero.ctaLabel}
                   </Link>
@@ -56,7 +54,7 @@ export function HeroCarousel() {
             </div>
           </div>
         ) : (
-          <div className="absolute inset-0 premium-gradient">
+          <div className="absolute inset-0 bg-[#0B1220]">
             <div className="absolute inset-0 z-10 flex items-center justify-center">
               <div className="text-center px-6">
                 <h2 className="text-4xl md:text-6xl font-black text-white tracking-tight">
@@ -70,7 +68,7 @@ export function HeroCarousel() {
                 {hero.ctaHref && hero.ctaLabel && (
                   <Link
                     href={hero.ctaHref}
-                    className="inline-flex items-center justify-center mt-8 rounded-xl bg-white text-[#0B1220] hover:bg-white/95 font-bold text-base md:text-lg px-6 md:px-10 py-3 md:py-4 premium-shadow-lg transition-all duration-200"
+                    className="inline-flex items-center justify-center mt-8 rounded-xl bg-white text-[#0B1220] hover:bg-white/95 font-bold text-base md:text-lg px-6 md:px-10 py-3 md:py-4 transition-all duration-200"
                   >
                     {hero.ctaLabel}
                   </Link>
@@ -86,7 +84,7 @@ export function HeroCarousel() {
         variant="ghost"
         size="icon"
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm"
+        className="absolute left-4 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white/80 hover:bg-white text-gray-900 border border-gray-200"
       >
         <ChevronLeft className="h-6 w-6" />
       </Button>
@@ -94,7 +92,7 @@ export function HeroCarousel() {
         variant="ghost"
         size="icon"
         onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm"
+        className="absolute right-4 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white/80 hover:bg-white text-gray-900 border border-gray-200"
       >
         <ChevronRight className="h-6 w-6" />
       </Button>

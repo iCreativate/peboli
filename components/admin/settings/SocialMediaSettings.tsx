@@ -102,7 +102,7 @@ export function SocialMediaSettings() {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-2xl border border-gray-100 bg-white premium-shadow p-6">
+      <div className="rounded-2xl border border-gray-100 bg-white p-6">
         <div className="flex items-start justify-between gap-4 mb-6">
           <div>
             <div className="font-black text-[#1A1D29]">Social Media Handles</div>
@@ -163,7 +163,7 @@ export function SocialMediaSettings() {
           <Button
             type="submit"
             disabled={saving}
-            className="w-full h-12 rounded-xl premium-gradient text-white font-semibold shadow-lg disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full h-12 rounded-xl bg-[#0B1220] hover:bg-[#1a283a] transition-colors text-white font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {saving ? (
               <>Saving...</>

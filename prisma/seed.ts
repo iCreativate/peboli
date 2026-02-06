@@ -17,17 +17,9 @@ async function main() {
     }
 
     // 1. Create Categories
-    const categories = [
-        { name: 'Electronics & Tech', slug: 'electronics', icon: '📱' },
-        { name: 'Fashion & Accessories', slug: 'fashion', icon: '👕' },
-        { name: 'Home & Kitchen', slug: 'home', icon: '🏠' },
-        { name: 'Beauty & Personal Care', slug: 'beauty', icon: '💄' },
-        { name: 'Sports & Fitness', slug: 'sports', icon: '⚽' },
-        { name: 'Baby & Kids', slug: 'baby', icon: '👶' },
-        { name: 'Books, Games & Media', slug: 'books', icon: '📚' },
-        { name: 'Outlet & Deals', slug: 'deals', icon: '🔥' },
-    ];
-
+    const categories: Array<{name: string, slug: string, icon: string}> = [];
+    // Categories are now managed via Admin Console
+    
     for (const cat of categories) {
         await prisma.category.upsert({
             where: { slug: cat.slug },

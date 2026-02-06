@@ -69,7 +69,7 @@ function ReturnsHelpContent() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Sidebar / Info Card */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm sticky top-24">
+              <div className="bg-white rounded-2xl border border-gray-100 p-6 sticky top-24">
                 <div className="h-12 w-12 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center mb-4">
                   <RotateCcw className="h-6 w-6" />
                 </div>
@@ -99,7 +99,7 @@ function ReturnsHelpContent() {
 
             {/* Main Content */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+              <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
                 <div className="p-6 border-b border-gray-100">
                   <h2 className="text-lg font-bold text-[#1A1D29]">Frequently Asked Questions</h2>
                 </div>

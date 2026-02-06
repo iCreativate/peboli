@@ -76,7 +76,7 @@ export const CollectionSettings = memo(function CollectionSettings() {
       </div>
 
       {/* Add New Collection */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="rounded-2xl border border-gray-200 bg-white p-6">
         <div className="flex items-center gap-2 mb-4">
           <div className="h-8 w-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
             <Plus className="h-4 w-4" />
@@ -128,7 +128,7 @@ export const CollectionSettings = memo(function CollectionSettings() {
       </div>
 
       {/* Collections List */}
-      <div className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+      <div className="rounded-2xl border border-gray-200 bg-white overflow-hidden">
         <div className="p-6 border-b border-gray-100">
           <h3 className="font-bold text-gray-900">Active Collections</h3>
         </div>

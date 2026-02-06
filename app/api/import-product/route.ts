@@ -19,6 +19,55 @@ type ImportedProduct = {
 
 const uniq = (arr: string[]) => Array.from(new Set(arr));
 
+function convertToHighRes(url: string): string {
+  try {
+    const u = new URL(url);
+    
+    // Amazon: Remove size constraints (e.g. _SL1500_)
+    // Pattern: /images/I/xxxx._SLxxxx_.jpg -> /images/I/xxxx.jpg
+    if (u.hostname.includes('amazon') || u.hostname.includes('media-amazon')) {
+      const parts = u.pathname.split('/');
+      const last = parts[parts.length - 1];
+      if (last) {
+        // Remove ._SL..._ or ._AC..._ or similar
+        const newLast = last.replace(/\._[A-Z]{2}[0-9,]+_\./, '.');
+        parts[parts.length - 1] = newLast;
+        u.pathname = parts.join('/');
+      }
+    }
+
+    // Shopify: Remove size suffix (e.g. _100x100, _small, _medium, _large, etc.)
+    // Pattern: name_size.ext or name_size.ext?v=...
+    // We try to remove the suffix to get the "master" image
+    if (u.hostname.includes('cdn.shopify.com')) {
+       const path = u.pathname;
+       // Regex for _[number]x[number] or standard size names at the end of filename
+       const newPath = path.replace(/_(?:pico|icon|thumb|small|compact|medium|large|grande|1024x1024|2048x2048|[0-9]+x[0-9]+)(?=\.[^.]+$)/, '');
+       u.pathname = newPath;
+    }
+
+    // WordPress/WooCommerce: Remove -[width]x[height] suffix
+    // e.g. image-300x300.jpg -> image.jpg
+    // But be careful not to match IDs like product-12345.jpg if that's the main name. 
+    // Usually resizing adds -NxN.
+    if (u.pathname.match(/-\d+x\d+\.(jpg|jpeg|png|webp|gif)$/i)) {
+        u.pathname = u.pathname.replace(/-\d+x\d+(\.(jpg|jpeg|png|webp|gif))$/i, '$1');
+    }
+    
+    // General: Remove width/height query params which are often used for resizing
+    // Many CDNs use w=, h=, width=, height=
+    if (u.searchParams.has('w')) u.searchParams.delete('w');
+    if (u.searchParams.has('width')) u.searchParams.delete('width');
+    if (u.searchParams.has('h')) u.searchParams.delete('h');
+    if (u.searchParams.has('height')) u.searchParams.delete('height');
+    if (u.searchParams.has('size')) u.searchParams.delete('size'); // some use size=...
+
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
+
 function safeAbsoluteUrl(raw: string, base: string) {
   try {
     return new URL(raw, base).toString();
@@ -500,7 +549,8 @@ export async function GET(request: Request) {
     [...jsonImages, ...ogImages, ...twitterImages, ...(linkImage ? [linkImage] : []), ...inlineImages]
       .map((i) => safeAbsoluteUrl(i, target.toString()))
       .filter((x): x is string => Boolean(x))
-  ).slice(0, 12);
+      .map((url) => convertToHighRes(url))
+  );
 
   const finalBrand = jsonBrand || ogBrand || (ogSiteName || undefined);
   const finalSku = jsonSku || metaSku || undefined;

@@ -159,8 +159,8 @@ export default function TrackOrderPage() {
 
       <main className="flex-1">
         <div className="container mx-auto px-4 lg:px-6 py-10">
-          <div className="rounded-3xl border border-gray-100 bg-white premium-shadow overflow-hidden">
-            <div className="p-6 md:p-10 premium-gradient">
+          <div className="rounded-3xl border border-gray-100 bg-white overflow-hidden">
+            <div className="p-6 md:p-10 bg-[#0B1220]">
               <div className="max-w-3xl">
                 <div className="text-white/80 text-sm font-semibold">Logistics</div>
                 <h1 className="mt-1 text-3xl md:text-4xl font-black text-white tracking-tight">Track Your Order</h1>
@@ -177,8 +177,8 @@ export default function TrackOrderPage() {
                       className={cn(
                         "px-6 py-3 rounded-xl text-sm font-bold transition-all",
                         activeTab === tab.id
-                          ? "bg-white text-[#1A1D29] shadow-lg"
-                          : "bg-white/10 text-white hover:bg-white/20"
+                ? "bg-white text-[#1A1D29] border border-gray-200"
+                : "bg-white/10 text-white hover:bg-white/20"
                       )}
                     >
                       {tab.label}
@@ -202,7 +202,7 @@ export default function TrackOrderPage() {
                         placeholder="e.g. PB-123456" 
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-10 pr-4 py-3 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none w-full shadow-sm"
+                        className="pl-10 pr-4 py-3 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none w-full hover:border-gray-300 transition-colors"
                       />
                       <button className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#1A1D29] text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-black transition-colors">
                         Track
@@ -218,7 +218,7 @@ export default function TrackOrderPage() {
                   ) : (
                     <div className="grid gap-6">
                       {activeOrders.map((order) => (
-                      <div key={order.id} className="border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
+                      <div key={order.id} className="border border-gray-100 rounded-2xl overflow-hidden hover:border-gray-300 transition-colors">
                         <div className="bg-gray-50 p-4 border-b border-gray-100 flex flex-col md:flex-row justify-between md:items-center gap-2">
                           <div>
                             <span className="text-xs font-bold text-gray-500 block">Order #{order.id}</span>
@@ -239,7 +239,7 @@ export default function TrackOrderPage() {
                           {/* Progress Bar */}
                           <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden mb-8">
                             <div 
-                              className="h-full bg-gradient-to-r from-blue-500 to-purple-600 transition-all duration-1000"
+                              className="h-full bg-blue-600 transition-all duration-1000"
                               style={{ width: `${order.progress}%` }}
                             ></div>
                           </div>
@@ -307,7 +307,7 @@ export default function TrackOrderPage() {
                           placeholder="e.g. TRK-99887766" 
                           value={trackingNumber}
                           onChange={(e) => setTrackingNumber(e.target.value)}
-                          className="pl-10 pr-4 py-3 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none w-full shadow-sm"
+                          className="pl-10 pr-4 py-3 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none w-full hover:border-gray-300 transition-colors"
                         />
                       </div>
                       <button 
@@ -334,7 +334,7 @@ export default function TrackOrderPage() {
                   </div>
 
                   {trackingResult && (
-                    <div className="border border-gray-100 rounded-2xl overflow-hidden shadow-sm mt-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                    <div className="border border-gray-100 rounded-2xl overflow-hidden hover:border-gray-300 transition-colors mt-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
                       <div className="bg-gray-50 p-4 border-b border-gray-100 flex flex-col md:flex-row justify-between md:items-center gap-2">
                         <div>
                           <span className="text-xs font-bold text-gray-500 block">Tracking #{trackingResult.id}</span>
@@ -355,7 +355,7 @@ export default function TrackOrderPage() {
                         {/* Progress Bar */}
                         <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden mb-8">
                           <div 
-                            className="h-full bg-gradient-to-r from-blue-500 to-purple-600 transition-all duration-1000"
+                            className="h-full bg-[#0B1220] transition-all duration-1000"
                             style={{ width: `${trackingResult.progress}%` }}
                           ></div>
                         </div>
@@ -409,7 +409,7 @@ export default function TrackOrderPage() {
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {STATUS_GUIDE.map((status) => (
-                      <div key={status.status} className="border border-gray-100 rounded-2xl p-6 flex items-start gap-4 hover:shadow-md transition-shadow">
+                      <div key={status.status} className="border border-gray-100 rounded-2xl p-6 flex items-start gap-4 hover:border-gray-300 transition-colors">
                         <div className={cn("h-12 w-12 rounded-xl flex items-center justify-center", status.color)}>
                           {status.icon}
                         </div>

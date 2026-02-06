@@ -10,7 +10,7 @@ export function SellAuthButtons() {
     <div className="mt-8 flex flex-wrap gap-4 justify-center md:justify-start">
       <Link
         href="/sell/apply"
-        className="inline-flex items-center justify-center rounded-xl bg-white text-[#1A1D29] px-8 py-4 text-base font-bold shadow-lg hover:bg-gray-100 transition-all transform hover:-translate-y-1"
+        className="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white text-[#1A1D29] px-8 py-4 text-base font-bold hover:bg-gray-50 hover:border-gray-300 transition-colors"
       >
         Apply to Sell
       </Link>

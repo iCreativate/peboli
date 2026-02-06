@@ -43,8 +43,8 @@ export default function MyListsPage() {
 
       <main className="flex-1">
         <div className="container mx-auto px-4 lg:px-6 py-10">
-          <div className="rounded-3xl border border-gray-100 bg-white premium-shadow overflow-hidden">
-            <div className="p-6 md:p-10 premium-gradient">
+          <div className="rounded-3xl border border-gray-100 bg-white overflow-hidden">
+            <div className="p-6 md:p-10 bg-[#0B1220]">
               <div className="max-w-3xl">
                 <Link href="/account" className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-4 text-sm font-medium">
                   <ArrowLeft className="h-4 w-4" />
@@ -91,7 +91,7 @@ export default function MyListsPage() {
                   <h3 className="text-xl font-bold text-[#1A1D29] mb-2">Your wishlist is empty</h3>
                   <p className="text-gray-500 mb-6">Start adding items you love to your wishlist.</p>
                   <Link href="/">
-                    <Button className="flex items-center gap-2 h-11 px-6 rounded-xl premium-gradient text-white font-semibold mx-auto">
+                    <Button className="flex items-center gap-2 h-11 px-6 rounded-xl bg-[#0B1220] hover:bg-[#1a283a] text-white font-semibold mx-auto transition-colors">
                       <Package className="h-4 w-4" />
                       Browse Products
                     </Button>
@@ -102,7 +102,7 @@ export default function MyListsPage() {
                   {wishlistItems.map((item) => (
                     <div
                       key={item.id}
-                      className="border border-gray-200 rounded-2xl overflow-hidden hover:shadow-lg transition-shadow bg-white"
+                      className="border border-gray-200 rounded-2xl overflow-hidden hover:border-gray-400 transition-colors bg-white"
                     >
                       <Link href={item.categoryHref || `/product/${item.id}`}>
                         <div className="relative aspect-square bg-gray-100">
@@ -137,7 +137,7 @@ export default function MyListsPage() {
                         <div className="flex gap-2">
                           <Button
                             onClick={() => handleAddToCart(item)}
-                            className="flex-1 h-10 rounded-lg premium-gradient text-white font-semibold text-sm"
+                            className="flex-1 h-10 rounded-lg bg-[#0B1220] hover:bg-[#0B1220]/90 transition-colors text-white font-semibold text-sm"
                           >
                             <ShoppingCart className="h-4 w-4 mr-1" />
                             Add to Cart

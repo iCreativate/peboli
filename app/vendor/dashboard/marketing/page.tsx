@@ -56,7 +56,7 @@ export default function MarketingPage() {
   };
 
   const StatCard = ({ title, value, subtext, icon: Icon, color }: any) => (
-    <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+    <div className="bg-white p-6 rounded-2xl border border-gray-100">
       <div className="flex items-center justify-between mb-4">
         <div className={`p-3 rounded-xl ${color}`}>
           <Icon className="w-6 h-6" />
@@ -105,7 +105,7 @@ export default function MarketingPage() {
         />
       </div>
 
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
         <div className="border-b border-gray-100">
           <div className="flex gap-6 px-6">
             <button

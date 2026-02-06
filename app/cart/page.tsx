@@ -38,10 +38,10 @@ export default function CartPage() {
 
       <main className="flex-1">
         <div className="container mx-auto px-4 lg:px-6 py-10">
-          <div className="rounded-3xl border border-gray-100 bg-white premium-shadow overflow-hidden">
+          <div className="rounded-3xl border border-gray-100 bg-white overflow-hidden">
             <div className="p-6 md:p-10 border-b border-gray-100">
               <div className="flex items-center gap-3">
-                <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-[#0B1220]/10 via-[#FF6B4A]/10 to-[#00C48C]/10 flex items-center justify-center text-[#0B1220]">
+                <div className="h-11 w-11 rounded-2xl bg-gray-50 flex items-center justify-center text-[#0B1220]">
                   <ShoppingCart className="h-5 w-5" />
                 </div>
                 <div>
@@ -101,7 +101,7 @@ export default function CartPage() {
                           setDraftVendor('');
                         }}
                         disabled={!canAdd}
-                        className="inline-flex items-center justify-center rounded-xl premium-gradient px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+                        className="inline-flex items-center justify-center rounded-xl bg-[#0B1220] hover:bg-[#1a283a] transition-colors px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
                       >
                         Add to cart
                       </button>
@@ -117,7 +117,7 @@ export default function CartPage() {
                   </div>
 
                   {items.map((item) => (
-                    <div key={item.id} className="rounded-2xl border border-gray-100 bg-white premium-shadow p-5">
+                    <div key={item.id} className="rounded-2xl border border-gray-100 bg-white p-5">
                       <div className="flex items-start gap-4">
                         {item.image ? (
                           <img
@@ -129,24 +129,8 @@ export default function CartPage() {
                           <div className="h-20 w-20 rounded-2xl bg-gray-100 border border-gray-200" />
                         )}
                         <div className="flex-1">
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                            <div className="md:col-span-2">
-                              <div className="text-xs font-bold uppercase tracking-wide text-[#8B95A5]">Name</div>
-                              <input
-                                value={item.name}
-                                onChange={(e) => updateItem(item.id, { name: e.target.value })}
-                                className="mt-2 w-full h-11 rounded-xl border border-gray-200 bg-white px-4 text-sm outline-none focus:ring-2 focus:ring-[#0B1220]/20 focus:border-[#0B1220]"
-                              />
-                            </div>
-                            <div>
-                              <div className="text-xs font-bold uppercase tracking-wide text-[#8B95A5]">Price</div>
-                              <input
-                                value={String(item.price)}
-                                onChange={(e) => updateItem(item.id, { price: Number(e.target.value || 0) })}
-                                className="mt-2 w-full h-11 rounded-xl border border-gray-200 bg-white px-4 text-sm outline-none focus:ring-2 focus:ring-[#0B1220]/20 focus:border-[#0B1220]"
-                                inputMode="numeric"
-                              />
-                            </div>
+                          <div className="mb-2">
+                            <h3 className="text-lg font-bold text-[#1A1D29]">{item.name}</h3>
                           </div>
                           <div className="mt-2 text-sm text-[#8B95A5]">
                             Sold by {item.vendor || '—'}
@@ -202,7 +186,7 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                <aside className="rounded-2xl border border-gray-100 bg-white premium-shadow p-6 h-fit">
+                <aside className="rounded-2xl border border-gray-100 bg-white p-6 h-fit">
                   <div className="font-black text-[#1A1D29]">Order summary</div>
                   <div className="mt-4 space-y-2 text-sm">
                     <div className="flex items-center justify-between text-[#8B95A5]">
@@ -222,7 +206,7 @@ export default function CartPage() {
 
                   <Link
                     href="/checkout"
-                    className={`mt-6 inline-flex w-full items-center justify-center rounded-xl premium-gradient px-5 py-3 text-sm font-semibold text-white ${
+                    className={`mt-6 inline-flex w-full items-center justify-center rounded-xl bg-[#0B1220] hover:bg-[#1a283a] transition-colors px-5 py-3 text-sm font-semibold text-white ${
                       items.length === 0 ? 'pointer-events-none opacity-50' : ''
                     }`}
                   >

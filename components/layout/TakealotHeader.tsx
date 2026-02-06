@@ -249,13 +249,23 @@ export function TakealotHeader() {
                   </button>
                 </>
               ) : (
-                <div className="grid grid-cols-2 gap-4">
-                  <Button onClick={() => { openLogin(); setIsMobileMenuOpen(false); }} variant="outline" className="w-full">
-                    Login
-                  </Button>
-                  <Button onClick={() => { openRegister(); setIsMobileMenuOpen(false); }} className="w-full bg-[#0B1220]">
-                    Register
-                  </Button>
+                <div className="flex flex-col gap-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <Button onClick={() => { openLogin(); setIsMobileMenuOpen(false); }} variant="outline" className="w-full">
+                      Login
+                    </Button>
+                    <Button onClick={() => { openRegister(); setIsMobileMenuOpen(false); }} className="w-full bg-[#0B1220]">
+                      Register
+                    </Button>
+                  </div>
+                  <Link href="/wishlist" className="text-gray-700 py-2 flex items-center justify-between" onClick={() => setIsMobileMenuOpen(false)}>
+                    Wishlist
+                    {wishlistCount > 0 && (
+                      <span className="bg-pink-500 text-white text-xs px-2 py-0.5 rounded-full">
+                        {wishlistCount}
+                      </span>
+                    )}
+                  </Link>
                 </div>
               )}
               
@@ -306,24 +316,21 @@ export function TakealotHeader() {
       </AnimatePresence>
 
       {/* Search Bar */}
-      <div className="bg-gradient-to-r from-[#0B1220] via-[#1A2333] to-[#0B1220] py-4 shadow-lg relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-5 mix-blend-overlay"></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-12 translate-x-[-100%] animate-shimmer"></div>
+      <div className="bg-[#0B1220] py-4 relative overflow-hidden">
         <div className="container mx-auto px-4 relative z-10">
           <form onSubmit={onSubmit} className="flex items-center gap-3 w-full max-w-4xl mx-auto">
             <div className="relative flex-1 group">
-              <div className="absolute inset-0 bg-gradient-to-r from-[#FF6B4A] to-[#00C48C] rounded-2xl blur opacity-20 group-hover:opacity-30 transition-opacity duration-300"></div>
               <Input
                 type="search"
                 placeholder="Search for products, brands, and more..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="relative w-full h-12 bg-white/95 backdrop-blur-sm border-0 rounded-2xl text-base shadow-xl focus:ring-2 focus:ring-[#FF6B4A]/20 transition-all duration-300 pl-5 pr-4 placeholder:text-gray-400 text-gray-900"
+                className="relative w-full h-12 bg-white border-0 rounded-xl text-base focus:outline-none transition-all duration-300 pl-5 pr-4 placeholder:text-gray-400 text-gray-900"
               />
             </div>
             <Button 
               type="submit" 
-              className="h-12 w-12 md:w-auto md:px-8 bg-gradient-to-r from-[#FF6B4A] to-[#FF8A6B] hover:from-[#FF5530] hover:to-[#FF7A5B] text-white rounded-2xl font-bold shadow-lg shadow-[#FF6B4A]/20 hover:shadow-xl hover:shadow-[#FF6B4A]/30 hover:scale-105 transition-all duration-300 border-0 flex items-center justify-center"
+              className="h-12 w-12 md:w-auto md:px-8 bg-[#FF6B4A] hover:bg-[#e55a3b] text-white rounded-xl font-bold transition-all duration-300 border-0 flex items-center justify-center"
             >
               <Search className="h-5 w-5 md:mr-2" />
               <span className="hidden md:inline">Search</span>
@@ -334,7 +341,7 @@ export function TakealotHeader() {
 
       {/* Quick Navigation (Featured Collections) */}
       {collections.length > 0 && (
-        <div className="border-b border-gray-100 bg-white/80 backdrop-blur-md sticky top-0 z-40 shadow-sm">
+        <div className="border-b border-gray-100 bg-white sticky top-0 z-40">
           <div className="container mx-auto px-4">
             <div className="flex items-center gap-8 overflow-x-auto py-3 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               {collections.map((c) => (

@@ -31,8 +31,8 @@ export default function DealsPage() {
 
       <main className="flex-1">
         <div className="container mx-auto px-4 lg:px-6 py-10">
-          <div className="rounded-3xl border border-gray-100 bg-white premium-shadow overflow-hidden">
-            <div className="p-6 md:p-10 premium-gradient">
+          <div className="rounded-3xl border border-gray-100 bg-white overflow-hidden">
+            <div className="p-6 md:p-10 bg-[#0B1220]">
               <div className="max-w-3xl">
                 <div className="text-white/80 text-sm font-semibold">Deals</div>
                 <h1 className="mt-1 text-3xl md:text-4xl font-black text-white tracking-tight">Deals & promotions</h1>
@@ -63,18 +63,18 @@ export default function DealsPage() {
                   <Link
                     key={s.title}
                     href={s.href}
-                    className="group rounded-2xl border border-gray-100 bg-white premium-shadow hover:premium-shadow-lg transition-all duration-200 p-6"
+                    className="group rounded-2xl border border-gray-100 bg-white hover:border-gray-300 transition-all duration-200 p-6"
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <div className="font-black text-[#1A1D29] group-hover:text-gradient transition-all">{s.title}</div>
+                        <div className="font-black text-[#1A1D29] group-hover:text-blue-600 transition-colors">{s.title}</div>
                         <div className="mt-2 text-sm text-[#8B95A5] leading-relaxed">{s.description}</div>
                         <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[#0B1220]">
                           Explore
                           <ChevronRight className="h-4 w-4" />
                         </div>
                       </div>
-                      <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-[#0B1220]/10 via-[#FF6B4A]/10 to-[#00C48C]/10 flex items-center justify-center text-[#0B1220]">
+                      <div className="h-11 w-11 rounded-2xl bg-gray-100 flex items-center justify-center text-[#0B1220]">
                         {s.icon}
                       </div>
                     </div>
@@ -82,7 +82,7 @@ export default function DealsPage() {
                 ))}
               </div>
 
-              <div className="mt-10 rounded-2xl border border-gray-100 bg-gradient-to-br from-[#0B1220]/6 via-transparent to-[#FF6B4A]/5 p-6">
+              <div className="mt-10 rounded-2xl border border-gray-100 bg-gray-50 p-6">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <div>
                     <div className="font-black text-[#1A1D29]">Recommended next</div>
@@ -97,7 +97,7 @@ export default function DealsPage() {
                     </Link>
                     <Link
                       href="/categories/electronics"
-                      className="inline-flex items-center justify-center rounded-xl premium-gradient px-5 py-2.5 text-sm font-semibold text-white"
+                      className="inline-flex items-center justify-center rounded-xl bg-[#0B1220] hover:bg-[#1a283a] transition-colors px-5 py-2.5 text-sm font-semibold text-white"
                     >
                       Electronics
                     </Link>

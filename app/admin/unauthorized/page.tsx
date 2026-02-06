@@ -17,8 +17,8 @@ export default function UnauthorizedPage() {
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl border border-gray-200 p-8 text-center">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <div className="max-w-md w-full bg-white rounded-2xl border border-gray-200 p-8 text-center">
         <div className="h-16 w-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
           <ShieldX className="h-8 w-8 text-red-600" />
         </div>

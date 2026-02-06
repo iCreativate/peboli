@@ -82,7 +82,7 @@ export default function AdminBrandsPage() {
         </div>
         <Button 
           onClick={() => setActiveTab('Add Brand')} 
-          className="premium-gradient text-white border-0 shadow-lg shadow-blue-900/20"
+          className="bg-[#0B1220] text-white border-0 hover:bg-[#1A1D29]"
         >
           <Plus className="h-4 w-4 mr-2" />
           Add Brand
@@ -115,7 +115,7 @@ export default function AdminBrandsPage() {
       <div className="mt-6">
         {activeTab === 'Add Brand' ? (
           <div className="max-w-2xl mx-auto">
-            <div className="bg-white p-8 rounded-2xl border border-gray-100 premium-shadow">
+            <div className="bg-white p-8 rounded-2xl border border-gray-100">
               <div className="mb-6">
                 <h3 className="text-xl font-bold text-gray-900">Add New Brand</h3>
                 <p className="text-sm text-gray-500 mt-1">Create a new brand profile for the store.</p>
@@ -173,7 +173,7 @@ export default function AdminBrandsPage() {
 
                 {/* Preview */}
                 <div className="p-4 bg-gray-50 rounded-xl border border-gray-100 flex items-center gap-4">
-                   <div className="h-16 w-16 rounded-xl bg-white border border-gray-200 flex items-center justify-center overflow-hidden shadow-sm">
+                   <div className="h-16 w-16 rounded-xl bg-white border border-gray-200 flex items-center justify-center overflow-hidden">
                      {logo ? (
                        <img src={logo} className="h-full w-full object-contain p-2" />
                      ) : (
@@ -191,7 +191,7 @@ export default function AdminBrandsPage() {
                   <Button 
                     onClick={onAdd} 
                     disabled={!name}
-                    className="premium-gradient text-white font-bold px-8"
+                    className="bg-[#0B1220] text-white font-bold px-8 hover:bg-[#1A1D29]"
                   >
                     Save Brand
                   </Button>
@@ -202,7 +202,7 @@ export default function AdminBrandsPage() {
         ) : (
           <div className="space-y-6">
             {/* Search */}
-            <div className="flex items-center gap-3 bg-white p-3 rounded-2xl border border-gray-100 premium-shadow">
+            <div className="flex items-center gap-3 bg-white p-3 rounded-2xl border border-gray-100">
               <Search className="h-4 w-4 text-gray-400" />
               <input 
                 className="flex-1 bg-transparent border-none outline-none text-sm placeholder:text-gray-400"
@@ -213,7 +213,7 @@ export default function AdminBrandsPage() {
             </div>
 
             {filteredBrands.length === 0 && activeTab === 'Pending' ? (
-              <div className="text-center py-12 bg-white rounded-2xl border border-gray-100 premium-shadow">
+              <div className="text-center py-12 bg-white rounded-2xl border border-gray-100">
                 <div className="h-12 w-12 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <CheckCircle2 className="h-6 w-6" />
                 </div>
@@ -223,7 +223,7 @@ export default function AdminBrandsPage() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {filteredBrands.map((b) => (
-                  <div key={b.id} className="group relative border border-gray-100 rounded-2xl p-5 bg-white premium-shadow hover:border-blue-500/30 transition-all hover:shadow-lg hover:shadow-blue-900/5">
+                  <div key={b.id} className="group relative border border-gray-100 rounded-2xl p-5 bg-white hover:border-gray-200 transition-all">
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-center gap-4">
                          <div className="h-14 w-14 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">

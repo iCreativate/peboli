@@ -378,7 +378,7 @@ export function CatalogSettings() {
         <p className="mt-1 text-sm text-gray-500">Add, edit, and delete products.</p>
       </div>
 
-      <div className="rounded-2xl border border-gray-100 bg-white premium-shadow p-6">
+      <div className="rounded-2xl border border-gray-100 bg-white p-6">
         <div className="font-black text-[#1A1D29]">Import from URL</div>
         <div className="mt-2 text-sm text-[#8B95A5]">
           Paste a product link from an ecommerce site and we’ll try to extract title + images.
@@ -391,7 +391,7 @@ export function CatalogSettings() {
             className="h-11 rounded-xl flex-1"
             placeholder="https://www.takealot.com/... or https://www.amazon.com/..."
           />
-          <Button onClick={onImport} disabled={!importUrl.trim() || importLoading} className="h-11 rounded-xl premium-gradient text-white font-bold">
+          <Button onClick={onImport} disabled={!importUrl.trim() || importLoading} className="h-11 rounded-xl bg-[#0B1220] hover:bg-[#1a283a] transition-colors text-white font-bold">
             {importLoading ? 'Importing…' : 'Import'}
           </Button>
         </div>
@@ -433,7 +433,7 @@ export function CatalogSettings() {
                       e.stopPropagation();
                       removeImportedImage(img);
                     }}
-                    className="absolute top-2 right-2 h-8 w-8 rounded-full bg-white/95 backdrop-blur-md border border-gray-200 flex items-center justify-center hover:bg-white transition"
+                    className="absolute top-2 right-2 h-8 w-8 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition"
                   >
                     <Trash2 className="h-4 w-4 text-[#1A1D29]" />
                   </button>
@@ -483,7 +483,7 @@ export function CatalogSettings() {
               <Button onClick={onDownloadImages} disabled={downloadLoading} variant="outline" className="h-11 rounded-xl">
                 {downloadLoading ? 'Downloading…' : 'Download images'}
               </Button>
-              <Button onClick={onGenerateFromImport} className="h-11 rounded-xl premium-gradient text-white font-bold">
+              <Button onClick={onGenerateFromImport} className="h-11 rounded-xl bg-[#0B1220] hover:bg-[#1a283a] transition-colors text-white font-bold">
                 Generate product(s)
               </Button>
               <Button
@@ -713,7 +713,7 @@ export function CatalogSettings() {
         </label>
 
         <div className="mt-4">
-          <Button onClick={onAdd} disabled={!canAdd} className="h-11 rounded-xl premium-gradient text-white font-bold">
+          <Button onClick={onAdd} disabled={!canAdd} className="h-11 rounded-xl bg-[#0B1220] hover:bg-[#1a283a] transition-colors text-white font-bold">
             <Plus className="h-4 w-4 mr-2" />
             Add product
           </Button>
@@ -722,7 +722,7 @@ export function CatalogSettings() {
 
       <div className="space-y-4">
         {products.map((p) => (
-          <div key={p.id} className="rounded-2xl border border-gray-100 bg-white premium-shadow p-6">
+          <div key={p.id} className="rounded-2xl border border-gray-100 bg-white p-6">
             <div className="flex items-start gap-4">
               <div className="h-20 w-20 rounded-xl border border-gray-200 bg-gray-50 overflow-hidden flex-shrink-0">
                 <img
@@ -777,11 +777,11 @@ export function CatalogSettings() {
 
       {previewId && (
         <div
-          className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm"
+          className="fixed inset-0 z-50 bg-black/40"
           onClick={() => setPreviewId(null)}
         >
           <div className="absolute inset-0 flex items-center justify-center p-4" onClick={(e) => e.stopPropagation()}>
-            <div className="w-full max-w-2xl rounded-2xl border border-gray-100 bg-white premium-shadow p-6">
+            <div className="w-full max-w-2xl rounded-2xl border border-gray-100 bg-white p-6">
               <div className="flex items-start gap-4">
                 <div className="w-32 h-32 rounded-xl border border-gray-200 bg-gray-50 overflow-hidden">
                   <img
@@ -861,7 +861,7 @@ export function CatalogSettings() {
                 <Button variant="outline" className="h-11 rounded-xl" onClick={savePreview}>
                   Save
                 </Button>
-                <Button className="h-11 rounded-xl premium-gradient text-white font-bold" onClick={pushPreview}>
+                <Button className="h-11 rounded-xl bg-[#0B1220] hover:bg-[#1a283a] transition-colors text-white font-bold" onClick={pushPreview}>
                   Push to live
                 </Button>
               </div>

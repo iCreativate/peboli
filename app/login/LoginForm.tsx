@@ -106,7 +106,7 @@ export function LoginForm() {
 
   return (
     <div className="max-w-md mx-auto">
-      <div className="rounded-3xl border border-white/15 bg-white/90 backdrop-blur-xl premium-shadow-xl overflow-hidden">
+      <div className="rounded-3xl border border-gray-200 bg-white shadow-none overflow-hidden">
         <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
           <div>
             <h1 className="text-lg font-black text-[#1A1D29]">Login</h1>
@@ -244,7 +244,7 @@ export function LoginForm() {
             <Button
               type="submit"
               disabled={!canSubmit || submitting}
-              className="w-full h-11 rounded-xl premium-gradient text-white font-bold"
+              className="w-full h-11 rounded-xl bg-[#0B1220] hover:bg-[#1a283a] transition-colors text-white font-bold"
             >
               {submitting ? 'Verifying...' : (twoFactorStep ? 'Verify Code' : 'Login')}
             </Button>

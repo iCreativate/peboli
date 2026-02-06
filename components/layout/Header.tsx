@@ -3,10 +3,11 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Search, ShoppingCart, User, Camera, Mic, Square } from 'lucide-react';
+import { Search, ShoppingCart, User, Camera, Mic, Square, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useCartStore } from '@/lib/stores/cart';
+import { useWishlistStore } from '@/lib/stores/wishlist';
 
 type Recognition = {
   start: () => void;
@@ -28,6 +29,7 @@ export function Header() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const isMountedRef = useRef(true);
   const cartCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.qty, 0));
+  const wishlistCount = useWishlistStore((s) => s.items.length);
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -107,10 +109,24 @@ export function Header() {
 
   const startListening = () => {
     if (!recognitionRef.current) return;
-    if (isMountedRef.current) {
-      setListening(true);
+    if (listening) return;
+
+    try {
+      recognitionRef.current.start();
+      if (isMountedRef.current) {
+        setListening(true);
+      }
+    } catch (e: any) {
+      // Ignore if already started, otherwise log
+      if (e?.name !== 'InvalidStateError' && !e?.message?.includes('already started')) {
+        console.error('Speech recognition error:', e);
+      } else {
+        // If it was already started, ensure state reflects that
+        if (isMountedRef.current) {
+          setListening(true);
+        }
+      }
     }
-    recognitionRef.current.start();
   };
 
   const stopListening = () => {
@@ -122,17 +138,16 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-gray-100 bg-white/80 backdrop-blur-xl supports-[backdrop-filter]:bg-white/70 premium-shadow">
+    <header className="sticky top-0 z-50 w-full border-b border-gray-100 bg-white">
       <div className="container mx-auto px-4 lg:px-6">
         {/* Top Navigation */}
         <div className="flex h-20 items-center justify-between gap-6">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
+            <Link href="/" className="flex items-center gap-2 group">
             <div className="relative">
               <div className="text-3xl font-black tracking-tighter">
-                <span className="text-gradient">PEBOLI</span>
+                <span className="text-[#0B1220]">PEBOLI</span>
               </div>
-              <div className="absolute -inset-1 bg-gradient-to-r from-[#0B1220] to-[#FF6B4A] opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-300"></div>
             </div>
           </Link>
 
@@ -145,7 +160,7 @@ export function Header() {
                 placeholder="Search products, brands, categories..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="w-full pl-12 pr-28 h-12 rounded-xl border-gray-200 bg-gray-50/50 focus:bg-white focus:border-[#0B1220] focus:ring-2 focus:ring-[#0B1220]/20 transition-all duration-200 text-base"
+                className="w-full pl-12 pr-28 h-12 rounded-xl border-gray-200 bg-gray-50 focus:bg-white focus:border-[#0B1220] focus:outline-none transition-all duration-200 text-base"
               />
               <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
                 <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={onImageSelected} />
@@ -173,7 +188,7 @@ export function Header() {
               aria-label="Cart"
             >
               <ShoppingCart className="h-5 w-5" />
-              <span className="absolute -top-0.5 -right-0.5 h-5 w-5 rounded-full bg-gradient-to-r from-[#FF6B4A] to-[#FF8A6B] text-xs font-bold text-white flex items-center justify-center premium-shadow">
+              <span className="absolute -top-0.5 -right-0.5 h-5 w-5 rounded-full bg-[#FF6B4A] text-xs font-bold text-white flex items-center justify-center">
                 {Math.min(cartCount, 9)}
               </span>
             </Link>
@@ -194,14 +209,14 @@ export function Header() {
             className="text-sm font-semibold text-[#1A1D29] hover:text-[#0B1220] transition-all duration-200 relative group"
           >
             Deals
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-[#0B1220] to-[#FF6B4A] group-hover:w-full transition-all duration-300"></span>
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#0B1220] group-hover:w-full transition-all duration-300"></span>
           </Link>
           <Link 
             href="/sell" 
             className="text-sm font-semibold text-[#1A1D29] hover:text-[#0B1220] transition-all duration-200 relative group"
           >
             Sell
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-[#0B1220] to-[#FF6B4A] group-hover:w-full transition-all duration-300"></span>
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#0B1220] group-hover:w-full transition-all duration-300"></span>
           </Link>
           {['Electronics', 'Fashion', 'Home', 'Beauty', 'Sports', 'Baby', 'Books', 'Outlet'].map((cat) => (
             <Link
@@ -210,7 +225,7 @@ export function Header() {
               className="text-sm font-semibold text-[#1A1D29] hover:text-[#0B1220] transition-all duration-200 relative group"
             >
               {cat}
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-[#0B1220] to-[#FF6B4A] group-hover:w-full transition-all duration-300"></span>
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#0B1220] group-hover:w-full transition-all duration-300"></span>
             </Link>
           ))}
         </nav>

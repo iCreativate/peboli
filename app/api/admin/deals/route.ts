@@ -168,6 +168,19 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // Sync with Product (set isSplashDeal for any deal with a product)
+    if (deal.productId) {
+      const isActive = deal.status === 'ACTIVE';
+      try {
+        await prisma.product.update({
+          where: { id: deal.productId },
+          data: { isSplashDeal: isActive }
+        });
+      } catch (error) {
+        console.error('Error syncing product splash deal status:', error);
+      }
+    }
+
     // Notify admins about new deal
     if (status === 'ACTIVE') {
       try {

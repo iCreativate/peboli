@@ -104,7 +104,7 @@ export default function OrdersPage() {
            </div>
            <h1 className="text-2xl font-bold text-gray-900">Login Required</h1>
            <p className="text-gray-500 mt-2 mb-8 max-w-md">Please sign in to view your order history and track your purchases.</p>
-           <Button onClick={openLogin} className="h-12 px-8 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg shadow-blue-600/20 transition-all">
+           <Button onClick={openLogin} className="h-12 px-8 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-all">
              Sign In / Register
            </Button>
         </main>
@@ -137,7 +137,7 @@ export default function OrdersPage() {
 
       <main className="flex-1">
         <div className="container mx-auto px-4 lg:px-6 py-10">
-          <div className="rounded-3xl border border-gray-100 bg-white premium-shadow overflow-hidden">
+          <div className="rounded-3xl border border-gray-100 bg-white overflow-hidden">
             <div className="p-6 md:p-10 border-b border-gray-100">
               <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
                 <div>
@@ -157,7 +157,7 @@ export default function OrdersPage() {
                   </Link>
                   <Link
                     href="/deals"
-                    className="inline-flex items-center justify-center rounded-xl premium-gradient px-5 py-2.5 text-sm font-semibold text-white"
+                    className="inline-flex items-center justify-center rounded-xl bg-[#0B1220] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#1A1D29] transition-colors"
                   >
                     Shop deals
                   </Link>
@@ -195,10 +195,10 @@ export default function OrdersPage() {
                 <div className="grid grid-cols-1 gap-4">
                   {filteredOrders.length > 0 ? (
                   filteredOrders.map((o) => (
-                    <div key={o.id} className="animate-in fade-in slide-in-from-bottom-2 duration-500 rounded-2xl border border-gray-100 bg-white p-6 premium-shadow hover:border-blue-200 transition-colors">
+                    <div key={o.id} className="animate-in fade-in slide-in-from-bottom-2 duration-500 rounded-2xl border border-gray-100 bg-white p-6 hover:border-blue-200 transition-colors">
                       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                         <div className="flex items-start gap-4">
-                          <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-[#0B1220]/5 via-[#FF6B4A]/5 to-[#00C48C]/5 flex items-center justify-center text-[#0B1220] flex-shrink-0">
+                          <div className="h-12 w-12 rounded-2xl bg-gray-50 flex items-center justify-center text-[#0B1220] flex-shrink-0">
                             <Package className="h-6 w-6 opacity-70" />
                           </div>
                           <div>
@@ -242,7 +242,7 @@ export default function OrdersPage() {
                             {o.status !== 'Cancelled' && (
                               <button 
                                 onClick={() => setSelectedOrder(o)}
-                                className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 rounded-xl premium-gradient px-4 py-2 text-sm font-semibold text-white shadow-sm hover:shadow-md transition-all"
+                                className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 rounded-xl bg-[#0B1220] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1A1D29] transition-colors"
                               >
                                 <BadgeCheck className="h-4 w-4" />
                                 Invoice
@@ -281,8 +281,8 @@ export default function OrdersPage() {
 
       {/* INVOICE MODAL */}
       {selectedOrder && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl w-full max-w-lg border border-gray-200 overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50">
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600">

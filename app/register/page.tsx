@@ -74,14 +74,9 @@ export default function RegisterPage() {
       <TakealotHeader />
 
       <main className="flex-1 relative overflow-hidden">
-        <div className="absolute inset-0 premium-gradient" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,rgba(255,255,255,0.10),transparent_35%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_55%,rgba(0,196,140,0.12),transparent_45%)]" />
-        <div className="absolute inset-0 bg-black/20" />
-
         <div className="relative container mx-auto px-4 lg:px-6 py-10 md:py-14">
           <div className="max-w-lg mx-auto">
-            <div className="rounded-3xl border border-white/15 bg-white/90 backdrop-blur-xl premium-shadow-xl overflow-hidden">
+            <div className="rounded-3xl border border-gray-100 bg-white overflow-hidden">
               <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
                 <div>
                   <h1 className="text-lg font-black text-[#1A1D29]">Register</h1>
@@ -242,7 +237,7 @@ export default function RegisterPage() {
                   <Button
                     type="submit"
                     disabled={!canSubmit || submitting}
-                    className="w-full h-11 rounded-xl premium-gradient text-white font-bold"
+                    className="w-full h-11 rounded-xl bg-[#0B1220] hover:bg-[#1a283a] transition-colors text-white font-bold"
                   >
                     {submitting ? 'Creating account…' : 'Create account'}
                   </Button>

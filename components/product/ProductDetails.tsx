@@ -177,10 +177,10 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-b from-white to-gray-50/30">
+      <div className="min-h-screen bg-white">
       <div className="container mx-auto px-4 lg:px-6 py-8">
       {/* Breadcrumb */}
-      <div className="border-b border-gray-100 bg-white/80 backdrop-blur-sm mb-8">
+      <div className="border-b border-gray-100 bg-white mb-8">
         <div className="container mx-auto px-4 lg:px-6 py-4">
           <nav className="text-sm text-[#8B95A5] font-medium">
             <Link href="/" className="hover:text-[#0B1220] transition-colors">Home</Link>
@@ -197,12 +197,12 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 mb-16">
           {/* Image Gallery */}
           <div>
-            <div className="relative aspect-square mb-6 rounded-2xl overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 premium-shadow-lg">
+            <div className="relative aspect-square mb-6 rounded-2xl overflow-hidden bg-gray-50 border border-gray-100">
               <Image
                 src={product.images[selectedImage] || '/products/placeholder.svg'}
                 alt={product.name}
                 fill
-                className="object-cover"
+                className="object-contain"
                 priority
                 unoptimized={product.images[selectedImage]?.includes('blob.vercel-storage.com')}
                 onError={(e) => {
@@ -213,7 +213,6 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   }
                 }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent pointer-events-none"></div>
               {product.images.length > 1 && (
                 <>
                   <button
@@ -221,14 +220,14 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                     onClick={() =>
                       setSelectedImage((i) => (i - 1 + product.images.length) % product.images.length)
                     }
-                    className="absolute left-3 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white/90 backdrop-blur-md border border-gray-200 flex items-center justify-center premium-shadow hover:bg-white transition"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition"
                   >
                     <ChevronLeft className="h-5 w-5 text-[#1A1D29]" />
                   </button>
                   <button
                     aria-label="Next image"
                     onClick={() => setSelectedImage((i) => (i + 1) % product.images.length)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white/90 backdrop-blur-md border border-gray-200 flex items-center justify-center premium-shadow hover:bg-white transition"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition"
                   >
                     <ChevronRight className="h-5 w-5 text-[#1A1D29]" />
                   </button>
@@ -240,9 +239,9 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 <button
                   key={index}
                   onClick={() => setSelectedImage(index)}
-                  className={`relative w-24 h-24 rounded-xl overflow-hidden border-2 flex-shrink-0 transition-all duration-200 premium-shadow hover:premium-shadow-lg ${
+                  className={`relative w-24 h-24 rounded-xl overflow-hidden border-2 flex-shrink-0 transition-all duration-200 hover:border-gray-400 ${
                     selectedImage === index 
-                      ? 'border-[#0B1220] ring-2 ring-[#0B1220]/20 scale-105' 
+                      ? 'border-[#0B1220] ring-2 ring-[#0B1220]/20' 
                       : 'border-gray-200 hover:border-gray-300'
                   }`}
                 >
@@ -258,7 +257,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                         target.src = '/products/placeholder.svg';
                       }
                     }}
-                    className="object-cover"
+                    className="object-contain"
                   />
                 </button>
               ))}
@@ -303,7 +302,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             <Separator className="mb-6" />
 
             {/* Price Section */}
-            <div className="bg-gradient-to-br from-[#0B1220]/6 via-[#FF6B4A]/5 to-[#00C48C]/5 rounded-2xl p-4 md:p-8 mb-8 border border-gray-100 premium-shadow">
+            <div className="bg-gray-50 rounded-2xl p-4 md:p-8 mb-8 border border-gray-100">
               <div className="flex items-baseline gap-4 mb-3 flex-wrap">
                 <span className="text-3xl md:text-4xl lg:text-5xl font-black text-[#1A1D29] tracking-tight">
                   {formatPrice(product.price)}
@@ -316,7 +315,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               </div>
               {savings > 0 && (
                 <div className="flex items-center gap-2">
-                  <Badge className="bg-gradient-to-r from-[#00C48C] to-[#00A878] text-white font-bold text-sm px-4 py-2 premium-shadow">
+                  <Badge className="bg-[#00C48C] text-white font-bold text-sm px-4 py-2">
                     YOU SAVE {formatPrice(savings)} ({savingsPercentage}%)
                   </Badge>
                 </div>
@@ -383,7 +382,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               </div>
               <div className="flex gap-3">
                 <Button
-                  className="flex-1 bg-gradient-to-r from-[#0B1220] to-[#050A14] hover:from-[#050A14] hover:to-[#050A14] text-white font-bold h-14 rounded-xl premium-shadow-lg hover:scale-105 transition-all duration-200"
+                  className="flex-1 bg-[#0B1220] hover:bg-[#152035] text-white font-bold h-14 rounded-xl transition-all duration-200"
                   size="lg"
                   onClick={() =>
                     addCart({
@@ -446,9 +445,9 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             </div>
 
             {/* Community Chat Teaser */}
-            <div className="border border-gray-100 rounded-2xl p-6 bg-gradient-to-r from-blue-50 to-indigo-50 premium-shadow mt-6">
+            <div className="border border-gray-100 rounded-2xl p-6 bg-blue-50/50 mt-6">
               <div className="flex items-center gap-4">
-                <div className="h-12 w-12 bg-white rounded-full flex items-center justify-center shadow-sm">
+                <div className="h-12 w-12 bg-white rounded-full flex items-center justify-center">
                   <MessageCircle className="h-6 w-6 text-indigo-600" />
                 </div>
                 <div>
@@ -456,7 +455,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   <p className="text-sm text-[#8B95A5]">Connect with other buyers after purchase</p>
                 </div>
               </div>
-              <div className="mt-4 p-4 bg-white/60 rounded-xl backdrop-blur-sm border border-white/50">
+              <div className="mt-4 p-4 bg-white rounded-xl border border-gray-200">
                 <p className="text-sm text-[#1A1D29] italic">"Has anyone tried this with..."</p>
                 <div className="mt-2 text-xs text-[#8B95A5] flex items-center gap-2">
                   <div className="h-2 w-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -464,7 +463,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 </div>
               </div>
               <Button 
-                className="w-full mt-4 bg-indigo-600 hover:bg-indigo-700 text-white border-none shadow-lg shadow-indigo-200"
+                className="w-full mt-4 bg-indigo-600 hover:bg-indigo-700 text-white border-none"
                 onClick={() => setIsChatModalOpen(true)}
               >
                 Join Chat (Ask questions before you buy!)
@@ -472,7 +471,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             </div>
 
             {/* Delivery Info */}
-            <div className="border border-gray-100 rounded-2xl p-6 bg-white premium-shadow mt-6">
+            <div className="border border-gray-100 rounded-2xl p-6 bg-white mt-6">
               <h3 className="font-bold text-lg text-[#1A1D29] mb-4">Delivery Options</h3>
               
               {product.origin === 'International' ? (
@@ -534,7 +533,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             </div>
 
             {/* Vendor Info */}
-            <div className="border border-gray-100 rounded-2xl p-6 bg-white premium-shadow">
+            <div className="border border-gray-100 rounded-2xl p-6 bg-white">
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <p className="font-bold text-lg text-[#1A1D29] mb-2">{product.vendor.name}</p>
@@ -549,7 +548,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   </div>
                 </div>
                 {product.vendor.verificationTier === 'premium' && (
-                  <Badge className="bg-gradient-to-r from-[#0B1220] to-[#050A14] text-white font-bold px-4 py-2 premium-shadow">
+                  <Badge className="bg-[#0B1220] text-white font-bold px-4 py-2">
                     ★ Premium Seller
                   </Badge>
                 )}
@@ -570,13 +569,13 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         <div className="mt-16">
           <h2 className="text-3xl font-black text-[#1A1D29] mb-8 tracking-tight">Product Details</h2>
           <div className="space-y-6">
-            <div className="border border-gray-100 rounded-2xl p-8 bg-white premium-shadow">
+            <div className="border border-gray-100 rounded-2xl p-8 bg-white">
               <h3 className="font-bold text-xl text-[#1A1D29] mb-4">Description</h3>
               <p className="text-[#8B95A5] leading-relaxed text-base">{product.description}</p>
             </div>
 
             {product.specifications && (
-              <div className="border border-gray-100 rounded-2xl p-8 bg-white premium-shadow">
+              <div className="border border-gray-100 rounded-2xl p-8 bg-white">
                 <h3 className="font-bold text-xl text-[#1A1D29] mb-6">Specifications</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {Object.entries(product.specifications).map(([key, value]) => (
@@ -589,7 +588,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               </div>
             )}
 
-            <div className="border border-gray-100 rounded-2xl p-8 bg-gradient-to-br from-[#00C48C]/5 to-[#0B1220]/6 premium-shadow">
+            <div className="border border-gray-100 rounded-2xl p-8 bg-gray-50">
               <h3 className="font-bold text-xl text-[#1A1D29] mb-6">Shipping & Returns</h3>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
@@ -613,7 +612,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               </ul>
             </div>
 
-            <div className="border border-gray-100 rounded-2xl p-8 bg-white premium-shadow">
+            <div className="border border-gray-100 rounded-2xl p-8 bg-white">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="font-bold text-xl text-[#1A1D29]">Reviews</h3>
                 <Button onClick={() => setIsReviewModalOpen(true)} className="bg-[#0B1220] text-white rounded-xl">
@@ -758,7 +757,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                   <div className={`max-w-[80%] p-3 rounded-2xl ${
                     msg.userId === user?.id 
                       ? 'bg-[#0B1220] text-white rounded-tr-none' 
-                      : 'bg-white text-gray-800 shadow-sm rounded-tl-none'
+                      : 'bg-white text-gray-800 rounded-tl-none border-b border-r border-gray-200'
                   }`}>
                     <div className="text-xs opacity-70 mb-1">{msg.user?.name || 'Anonymous'}</div>
                     <p className="text-sm">{msg.message}</p>

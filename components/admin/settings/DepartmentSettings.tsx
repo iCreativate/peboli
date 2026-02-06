@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useAdminStore } from '@/lib/stores/admin';
 import Link from 'next/link';
 import { Save, Check } from 'lucide-react';
+import { IconPicker } from './IconPicker';
 
 export const DepartmentSettings = memo(function DepartmentSettings() {
   const departments = useAdminStore((s) => s.departments);
@@ -15,6 +16,7 @@ export const DepartmentSettings = memo(function DepartmentSettings() {
   const moveDepartment = useAdminStore((s) => s.moveDepartment);
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
+  const [icon, setIcon] = useState('');
   const [saved, setSaved] = useState(false);
 
   const onAdd = () => {
@@ -22,9 +24,10 @@ export const DepartmentSettings = memo(function DepartmentSettings() {
     const s = (slug.trim() || n.toLowerCase().replace(/\s+/g, '-').replace(/&/g, 'and').replace(/,+/g, ''));
     if (!n || !s) return;
     if (departments.some((d) => d.slug === s)) return;
-    addDepartment({ name: n, slug: s });
+    addDepartment({ name: n, slug: s, icon });
     setName('');
     setSlug('');
+    setIcon('');
     handleSave();
   };
 
@@ -63,13 +66,25 @@ export const DepartmentSettings = memo(function DepartmentSettings() {
         </Button>
       </div>
 
-      <div className="rounded-2xl border border-gray-100 bg-white premium-shadow p-6">
+      <div className="rounded-2xl border border-gray-100 bg-white p-6">
         <div className="font-black text-[#1A1D29]">Departments</div>
         <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
           {departments.map((d, idx) => (
             <div key={d.slug} className="border rounded-xl p-4 bg-white">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div>
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
+                <div className="md:col-span-2">
+                  <label className="text-sm font-semibold text-[#1A1D29]">Icon</label>
+                  <div className="mt-2">
+                    <IconPicker 
+                      value={d.icon} 
+                      onChange={(iconName) => {
+                        updateDepartment(d.slug, { icon: iconName });
+                        setSaved(false);
+                      }} 
+                    />
+                  </div>
+                </div>
+                <div className="md:col-span-5">
                   <label className="text-sm font-semibold text-[#1A1D29]">Name</label>
                   <Input
                     className="mt-2 h-10 rounded-xl"
@@ -80,7 +95,7 @@ export const DepartmentSettings = memo(function DepartmentSettings() {
                     }}
                   />
                 </div>
-                <div>
+                <div className="md:col-span-5">
                   <label className="text-sm font-semibold text-[#1A1D29]">Slug</label>
                   <Input
                     className="mt-2 h-10 rounded-xl"
@@ -129,20 +144,29 @@ export const DepartmentSettings = memo(function DepartmentSettings() {
 
         <div className="mt-6 border-t pt-6">
           <div className="font-black text-[#1A1D29]">Add department</div>
-          <div className="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3">
-            <Input
-              className="h-10 rounded-xl"
-              placeholder="Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <Input
-              className="h-10 rounded-xl"
-              placeholder="Slug (optional)"
-              value={slug}
-              onChange={(e) => setSlug(e.target.value)}
-            />
-            <Button onClick={onAdd}>Add</Button>
+          <div className="mt-3 grid grid-cols-1 md:grid-cols-12 gap-3">
+            <div className="md:col-span-2">
+              <IconPicker value={icon} onChange={setIcon} />
+            </div>
+            <div className="md:col-span-4">
+              <Input
+                className="h-10 rounded-xl"
+                placeholder="Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+            <div className="md:col-span-4">
+              <Input
+                className="h-10 rounded-xl"
+                placeholder="Slug (optional)"
+                value={slug}
+                onChange={(e) => setSlug(e.target.value)}
+              />
+            </div>
+            <div className="md:col-span-2">
+              <Button onClick={onAdd} className="w-full">Add</Button>
+            </div>
           </div>
           <div className="mt-2 text-xs text-[#8B95A5]">If slug is empty, it is generated from the name.</div>
         </div>

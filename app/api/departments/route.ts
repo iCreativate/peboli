@@ -23,7 +23,7 @@ export async function GET() {
     
     if (setting && setting.value !== null && setting.value !== undefined) {
       // Prisma JSON fields can be string, array, or object
-      let departments: Array<{ name: string; slug: string }> = [];
+      let departments: Array<{ name: string; slug: string; icon?: string; productCount?: number }> = [];
       
       try {
         // Handle different Prisma Json type representations
@@ -33,19 +33,19 @@ export async function GET() {
           departments = Array.isArray(parsed) ? parsed : [];
         } else if (Array.isArray(setting.value)) {
           // If it's already an array, use it directly
-          departments = setting.value as Array<{ name: string; slug: string }>;
+          departments = setting.value as Array<{ name: string; slug: string; icon?: string }>;
         } else if (typeof setting.value === 'object' && setting.value !== null) {
           // If it's an object, check if it has a departments property or is the array itself
           if (Array.isArray((setting.value as any).departments)) {
             departments = (setting.value as any).departments;
           } else if (Array.isArray(setting.value)) {
-            departments = setting.value as Array<{ name: string; slug: string }>;
+            departments = setting.value as Array<{ name: string; slug: string; icon?: string }>;
           } else {
             // Try to convert object to array if it looks like an array-like object
             const keys = Object.keys(setting.value);
             if (keys.length > 0 && keys.every(k => !isNaN(Number(k)))) {
               // It's an array-like object (e.g., {0: {...}, 1: {...}})
-              departments = Object.values(setting.value) as Array<{ name: string; slug: string }>;
+              departments = Object.values(setting.value) as Array<{ name: string; slug: string; icon?: string }>;
             }
           }
         }
@@ -57,6 +57,31 @@ export async function GET() {
         } else {
           // Filter out invalid entries
           departments = departments.filter(d => d && typeof d === 'object' && d.name && d.slug);
+
+          // Get product counts for each department
+          try {
+            const departmentsWithCounts = await Promise.all(departments.map(async (dept) => {
+              try {
+                // Count active products in this category
+                // using 'as any' for where clause to handle potential type mismatches with enum
+                const count = await prisma.product.count({
+                  where: {
+                    category: { slug: dept.slug },
+                    status: 'ACTIVE'
+                  } as any
+                });
+                return { ...dept, productCount: count };
+              } catch (countError) {
+                console.warn(`[API /api/departments] Failed to count products for ${dept.slug}:`, countError);
+                return { ...dept, productCount: 0 };
+              }
+            }));
+            
+            departments = departmentsWithCounts;
+          } catch (e) {
+            console.error('[API /api/departments] Failed to process product counts:', e);
+            // Continue with original departments if parallel fetching fails
+          }
         }
       } catch (e: any) {
         console.error('[API /api/departments] Failed to parse setting value:', e);
@@ -76,8 +101,8 @@ export async function GET() {
       }
     }
 
-    // Return empty array if not found (no mock data)
-    console.log('[API /api/departments] No setting found, returning empty array');
+    // Return empty array if not found or empty (NO MOCK DATA)
+    console.log('[API /api/departments] No setting found or empty, returning empty array');
     return NextResponse.json([], { headers });
   } catch (error: any) {
     console.error('[API /api/departments] Error fetching departments:', error);

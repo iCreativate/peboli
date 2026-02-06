@@ -77,8 +77,8 @@ export default async function NewArrivalsPage() {
       <TakealotHeader />
       <main className="flex-1">
         <div className="container mx-auto px-4 lg:px-6 py-10">
-          <div className="rounded-3xl border border-gray-100 bg-white premium-shadow overflow-hidden">
-            <div className="p-6 md:p-10 premium-gradient">
+          <div className="rounded-3xl border border-gray-100 bg-white overflow-hidden">
+            <div className="p-6 md:p-10 bg-[#0B1220]">
               <div className="max-w-3xl">
                 <div className="text-white/80 text-sm font-semibold">Collections</div>
                 <h1 className="mt-1 text-3xl md:text-4xl font-black text-white tracking-tight">New arrivals</h1>
@@ -86,7 +86,7 @@ export default async function NewArrivalsPage() {
               </div>
             </div>
             <div className="p-6 md:p-10">
-              <div className="rounded-2xl border border-gray-100 bg-gradient-to-br from-[#0B1220]/6 via-transparent to-[#00C48C]/8 p-6 mb-8">
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-6 mb-8">
                 <div className="flex items-start gap-4">
                   <div className="h-11 w-11 rounded-2xl bg-white border border-gray-200 flex items-center justify-center">
                     <Sparkles className="h-5 w-5 text-[#0B1220]" />

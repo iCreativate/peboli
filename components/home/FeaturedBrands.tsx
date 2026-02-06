@@ -21,7 +21,7 @@ export function FeaturedBrands() {
             {brands.map((brand, index) => (
               <div
                 key={index}
-                className="flex-shrink-0 w-48 h-24 border border-gray-200 rounded-lg flex items-center justify-center bg-white hover:shadow-md transition-shadow"
+                className="flex-shrink-0 w-48 h-24 border border-gray-200 rounded-lg flex items-center justify-center bg-white hover:border-gray-400 transition-colors"
               >
                 <span className={`font-bold text-lg ${brand.color}`}>{brand.name}</span>
               </div>
@@ -32,14 +32,14 @@ export function FeaturedBrands() {
           <Button
             variant="ghost"
             size="icon"
-            className="absolute left-0 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white shadow-md hover:shadow-lg border border-gray-200"
+            className="absolute left-0 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white border border-gray-200"
           >
             <ChevronLeft className="h-5 w-5" />
           </Button>
           <Button
             variant="ghost"
             size="icon"
-            className="absolute right-0 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white shadow-md hover:shadow-lg border border-gray-200"
+            className="absolute right-0 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white border border-gray-200"
           >
             <ChevronRight className="h-5 w-5" />
           </Button>

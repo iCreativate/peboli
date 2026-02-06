@@ -26,14 +26,14 @@ export default function AdminDebugPage() {
       <div className="max-w-4xl mx-auto">
         <h1 className="text-2xl font-bold mb-6">Admin Debug Page</h1>
         
-        <div className="bg-white rounded-lg p-6 shadow mb-6">
+        <div className="bg-white rounded-lg p-6 border border-gray-200 mb-6">
           <h2 className="text-lg font-semibold mb-4">Client Store (Zustand)</h2>
           <pre className="bg-gray-100 p-4 rounded overflow-auto">
             {JSON.stringify(user, null, 2)}
           </pre>
         </div>
 
-        <div className="bg-white rounded-lg p-6 shadow">
+        <div className="bg-white rounded-lg p-6 border border-gray-200">
           <h2 className="text-lg font-semibold mb-4">Server Session (NextAuth)</h2>
           {loading ? (
             <p>Loading...</p>

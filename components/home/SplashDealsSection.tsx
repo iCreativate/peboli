@@ -47,7 +47,7 @@ export function SplashDealsSection() {
 
   if (loading) {
     return (
-      <section className="py-16 md:py-20 bg-gradient-to-b from-white via-gray-50/50 to-white">
+      <section className="py-16 md:py-20 bg-white">
         <div className="container mx-auto px-4 lg:px-6">
            <div className="animate-pulse space-y-8">
              <div className="h-12 w-64 bg-gray-200 rounded"></div>
@@ -75,7 +75,7 @@ export function SplashDealsSection() {
   const advertDeals = deals.filter(d => d.type === 'ADVERT');
 
   return (
-    <section className="py-16 md:py-20 bg-gradient-to-b from-white via-gray-50/50 to-white">
+    <section className="py-16 md:py-20 bg-white">
       <div className="container mx-auto px-4 lg:px-6">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4">
@@ -119,7 +119,7 @@ export function SplashDealsSection() {
                       transition={{ duration: 0.5, delay: index * 0.1 }}
                     >
                       <Link href={`/products/${deal.product.slug}`} className="block">
-                        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
+                        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-gray-300 transition-colors">
                           {deal.product.images && deal.product.images.length > 0 && (
                             <div className="relative aspect-square">
                               <img

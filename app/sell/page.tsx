@@ -88,8 +88,8 @@ export default function SellPage() {
         <div className="container mx-auto px-4 lg:px-6 py-10">
           
           {/* Hero Section */}
-          <div className="rounded-3xl border border-gray-100 bg-white premium-shadow overflow-hidden mb-8">
-            <div className="p-8 md:p-12 premium-gradient text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="rounded-3xl border border-gray-100 bg-white shadow-none overflow-hidden mb-8">
+            <div className="p-8 md:p-12 bg-[#0B1220] text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-8">
               <div className="max-w-2xl">
                 <div className="text-white/80 text-sm font-semibold mb-2">Seller Solution</div>
                 <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight leading-tight">
@@ -103,7 +103,7 @@ export default function SellPage() {
               </div>
               
               {/* Abstract Graphic/Illustration Placeholder */}
-              <div className="hidden md:block relative w-64 h-64 bg-white/10 rounded-full backdrop-blur-sm border border-white/10 flex items-center justify-center">
+              <div className="hidden md:block relative w-64 h-64 bg-white/10 rounded-full border border-white/10 flex items-center justify-center">
                 <Store className="h-32 w-32 text-white/80" />
               </div>
             </div>
@@ -112,7 +112,7 @@ export default function SellPage() {
           {/* Value Props Section */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             {VALUE_PROPS.map((prop) => (
-              <div key={prop.title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+              <div key={prop.title} className="bg-white rounded-2xl p-6 border border-gray-100 hover:border-gray-300 transition-colors">
                 <div className={`h-14 w-14 rounded-2xl ${prop.bg} flex items-center justify-center mb-4`}>
                   {prop.icon}
                 </div>
@@ -123,7 +123,7 @@ export default function SellPage() {
           </div>
 
           {/* Process Steps Section */}
-          <div className="bg-white rounded-3xl border border-gray-100 premium-shadow p-8 md:p-12 mb-12">
+          <div className="bg-white rounded-3xl border border-gray-100 p-8 md:p-12 mb-12">
             <div className="text-center max-w-2xl mx-auto mb-12">
               <h2 className="text-3xl font-black text-[#1A1D29] mb-4">Start selling online in just a few easy steps</h2>
               <p className="text-gray-500">Join thousands of businesses growing with Peboli.</p>
@@ -135,7 +135,7 @@ export default function SellPage() {
               
               {PROCESS_STEPS.map((step, idx) => (
                 <div key={step.title} className="relative bg-white flex flex-col items-center text-center group">
-                  <div className="h-16 w-16 rounded-2xl bg-[#1A1D29] text-white flex items-center justify-center shadow-lg mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <div className="h-16 w-16 rounded-2xl bg-[#1A1D29] text-white flex items-center justify-center mb-6 border border-gray-100">
                     {step.icon}
                   </div>
                   <h3 className="font-bold text-[#1A1D29] text-lg mb-2">{step.title}</h3>
@@ -152,10 +152,6 @@ export default function SellPage() {
 
           {/* Pricing Section */}
           <div className="bg-[#1A1D29] rounded-3xl p-8 md:p-12 text-white overflow-hidden relative">
-            {/* Background Decoration */}
-            <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl -mr-32 -mt-32"></div>
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl -ml-32 -mb-32"></div>
-
             <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
               <div className="max-w-xl">
                 <h2 className="text-3xl font-black mb-4">Simple, Transparent Pricing</h2>
@@ -178,7 +174,7 @@ export default function SellPage() {
                 </ul>
               </div>
 
-              <div className="bg-white text-[#1A1D29] rounded-2xl p-8 max-w-sm w-full shadow-2xl">
+              <div className="bg-white text-[#1A1D29] rounded-2xl p-8 max-w-sm w-full border border-gray-200">
                 <div className="text-center">
                   <div className="text-sm font-bold text-gray-500 uppercase tracking-wide mb-2">Subscription Fee</div>
                   <div className="flex items-baseline justify-center gap-1 mb-4">

@@ -27,7 +27,7 @@ export async function GET() {
       }, { headers });
     }
 
-    // Return empty array if not found (no mock data)
+    // Return empty array if not found (NO MOCK DATA)
     return NextResponse.json({
       success: true,
       departments: [],
@@ -142,11 +142,36 @@ export async function PUT(request: NextRequest) {
       'Expires': '0',
     };
 
-    return NextResponse.json({
+    // Ensure we return the data in the correct format
+    let savedDepartments: Array<{ name: string; slug: string }> = [];
+    
+    if (saved.value) {
+      if (Array.isArray(saved.value)) {
+        savedDepartments = saved.value as Array<{ name: string; slug: string }>;
+      } else if (typeof saved.value === 'string') {
+        try {
+          savedDepartments = JSON.parse(saved.value);
+        } catch (e) {
+          console.error('[API /api/admin/departments PUT] Failed to parse saved value:', e);
+          savedDepartments = departments;
+        }
+      } else {
+        savedDepartments = departments;
+      }
+    } else {
+      savedDepartments = departments;
+    }
+
+    const responseData = {
       success: true,
       message: 'Departments saved successfully',
-      departments: (saved.value as Array<{ name: string; slug: string }>) || departments,
-    }, { headers });
+      departments: savedDepartments,
+      count: savedDepartments.length,
+    };
+
+    console.log('[API /api/admin/departments PUT] Returning success response:', JSON.stringify(responseData, null, 2));
+    
+    return NextResponse.json(responseData, { headers });
   } catch (error: any) {
     console.error('[API /api/admin/departments PUT] Error saving departments:', error);
     console.error('[API /api/admin/departments PUT] Error message:', error.message);

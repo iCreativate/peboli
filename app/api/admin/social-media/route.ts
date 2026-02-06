@@ -1,39 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { readFile, writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
+import { prisma } from '@/lib/prisma';
 
-const SOCIAL_MEDIA_FILE = join(process.cwd(), 'data', 'social-media.json');
-
-async function ensureDataDir() {
-  try {
-    const dataDir = join(process.cwd(), 'data');
-    await mkdir(dataDir, { recursive: true });
-  } catch {
-    // Directory might already exist
-  }
-}
-
-async function getSocialMedia(): Promise<Record<string, string>> {
-  try {
-    await ensureDataDir();
-    const content = await readFile(SOCIAL_MEDIA_FILE, 'utf-8');
-    return JSON.parse(content);
-  } catch {
-    return {};
-  }
-}
-
-async function saveSocialMedia(socialMedia: Record<string, string>): Promise<void> {
-  try {
-    await ensureDataDir();
-    await writeFile(SOCIAL_MEDIA_FILE, JSON.stringify(socialMedia, null, 2), 'utf-8');
-  } catch (error) {
-    console.error('Error saving social media:', error);
-    throw error;
-  }
-}
+const SETTING_KEY = 'social_media';
 
 export async function GET() {
   try {
@@ -55,7 +25,11 @@ export async function GET() {
       );
     }
 
-    const socialMedia = await getSocialMedia();
+    const setting = await prisma.setting.findUnique({
+      where: { key: SETTING_KEY },
+    });
+    
+    const socialMedia = setting?.value || {};
     
     return NextResponse.json({ 
       success: true,
@@ -99,18 +73,22 @@ export async function PUT(request: Request) {
       );
     }
 
-    await saveSocialMedia(socialMedia);
-
-    return NextResponse.json({ 
-      success: true,
-      message: 'Social media handles updated successfully.'
+    await prisma.setting.upsert({
+      where: { key: SETTING_KEY },
+      update: { value: socialMedia },
+      create: { key: SETTING_KEY, value: socialMedia },
     });
+
+    return NextResponse.json({
+      success: true,
+      message: 'Social media settings updated successfully.'
+    });
+
   } catch (error) {
     console.error('Error updating social media:', error);
     return NextResponse.json(
-      { error: 'An error occurred while updating social media.', success: false },
+      { error: 'An error occurred.', success: false },
       { status: 500 }
     );
   }
 }
-

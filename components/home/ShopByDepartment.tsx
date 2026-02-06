@@ -2,13 +2,74 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { MAIN_CATEGORIES } from '@/lib/constants/categories';
 import { motion } from 'framer-motion';
+import * as Icons from 'lucide-react';
+import { 
+  Smartphone, 
+  Shirt, 
+  Home, 
+  Sparkles, 
+  Dumbbell, 
+  Baby, 
+  Wine, 
+  Gamepad2, 
+  Book, 
+  Car, 
+  Dog, 
+  Briefcase, 
+  Package,
+  Laptop,
+  Tv,
+  Utensils,
+  Sofa,
+  Hammer,
+  Music,
+  Camera,
+  Watch
+} from 'lucide-react';
 
-type Department = { name: string; slug: string };
+type Department = { 
+  name: string; 
+  slug: string; 
+  icon?: string; 
+  id?: string;
+  productCount?: number;
+};
+
+const getDepartmentIcon = (dept: Department) => {
+  // Use admin-selected icon if available
+  if (dept.icon && (Icons as any)[dept.icon]) {
+    const Icon = (Icons as any)[dept.icon];
+    return <Icon className="h-6 w-6 text-[#1A1D29]" />;
+  }
+
+  const s = dept.slug?.toLowerCase() || '';
+  if (s.includes('electronic') || s.includes('tech') || s.includes('phone')) return <Smartphone className="h-6 w-6 text-[#1A1D29]" />;
+  if (s.includes('fashion') || s.includes('cloth')) return <Shirt className="h-6 w-6 text-[#1A1D29]" />;
+  if (s.includes('home') || s.includes('living')) return <Home className="h-6 w-6 text-[#1A1D29]" />;
+  if (s.includes('beauty') || s.includes('health') || s.includes('care')) return <Sparkles className="h-6 w-6 text-[#1A1D29]" />;
+  if (s.includes('sport') || s.includes('fitness') || s.includes('gym')) return <Dumbbell className="h-6 w-6 text-[#1A1D29]" />;
+  if (s.includes('baby') || s.includes('kid') || s.includes('toy')) return <Baby className="h-6 w-6 text-[#1A1D29]" />;
+  if (s.includes('liquor') || s.includes('wine') || s.includes('beer') || s.includes('alcohol')) return <Wine className="h-6 w-6 text-[#1A1D29]" />;
+  if (s.includes('game') || s.includes('gaming') || s.includes('console')) return <Gamepad2 className="h-6 w-6 text-[#1A1D29]" />;
+  if (s.includes('book') || s.includes('read')) return <Book className="h-6 w-6 text-[#1A1D29]" />;
+  if (s.includes('auto') || s.includes('car') || s.includes('vehicle')) return <Car className="h-6 w-6 text-[#1A1D29]" />;
+  if (s.includes('pet') || s.includes('dog') || s.includes('cat')) return <Dog className="h-6 w-6 text-[#1A1D29]" />;
+  if (s.includes('office') || s.includes('work') || s.includes('desk')) return <Briefcase className="h-6 w-6 text-[#1A1D29]" />;
+  if (s.includes('computer') || s.includes('laptop') || s.includes('pc')) return <Laptop className="h-6 w-6 text-[#1A1D29]" />;
+  if (s.includes('tv') || s.includes('audio') || s.includes('sound')) return <Tv className="h-6 w-6 text-[#1A1D29]" />;
+  if (s.includes('kitchen') || s.includes('cook') || s.includes('food')) return <Utensils className="h-6 w-6 text-[#1A1D29]" />;
+  if (s.includes('furniture') || s.includes('decor')) return <Sofa className="h-6 w-6 text-[#1A1D29]" />;
+  if (s.includes('diy') || s.includes('tool') || s.includes('garden')) return <Hammer className="h-6 w-6 text-[#1A1D29]" />;
+  if (s.includes('music') || s.includes('instrument')) return <Music className="h-6 w-6 text-[#1A1D29]" />;
+  if (s.includes('camera') || s.includes('photo')) return <Camera className="h-6 w-6 text-[#1A1D29]" />;
+  if (s.includes('watch') || s.includes('wearable')) return <Watch className="h-6 w-6 text-[#1A1D29]" />;
+  
+  return <Package className="h-6 w-6 text-[#1A1D29]" />;
+};
 
 export function ShopByDepartment() {
-  const [departments, setDepartments] = useState<typeof MAIN_CATEGORIES>([]);
+  const [departments, setDepartments] = useState<Department[]>([]);
   const [loading, setLoading] = useState(true);
   
   // Fetch departments from API
@@ -51,8 +112,8 @@ export function ShopByDepartment() {
               id: dept.slug || dept.name?.toLowerCase().replace(/\s+/g, '-'),
               name: dept.name,
               slug: dept.slug || dept.name?.toLowerCase().replace(/\s+/g, '-'),
-              icon: '📦', // Default icon, could be enhanced later
-              productCount: 0, // Could be calculated from products
+              icon: dept.icon || '📦', // Use icon from API or default
+              productCount: (dept as any).productCount || 0,
             }));
             console.log('[ShopByDepartment] Mapped departments:', mapped);
             setDepartments(mapped);
@@ -170,10 +231,10 @@ export function ShopByDepartment() {
               >
                 <Link
                   href={`/categories/${dept.slug}`}
-                  className="flex items-center gap-3 rounded-2xl border border-gray-100 bg-white px-4 py-3 premium-shadow hover:premium-shadow-lg hover:bg-gray-50 transition-all duration-200"
+                  className="flex items-center gap-3 rounded-2xl border border-gray-100 bg-white px-4 py-3 hover:bg-gray-50 transition-all duration-200"
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#0B1220]/10 via-[#FF6B4A]/10 to-[#00C48C]/10 text-2xl">
-                    <span>{dept.icon}</span>
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-50">
+                    {getDepartmentIcon(dept)}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-[#1A1D29] truncate">

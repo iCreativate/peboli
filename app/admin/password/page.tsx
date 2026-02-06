@@ -59,8 +59,8 @@ export default function AdminPasswordPage() {
 
       <main className="flex-1 flex items-center justify-center p-4">
         <div className="w-full max-w-md">
-          <div className="bg-white rounded-3xl border border-gray-100 premium-shadow overflow-hidden">
-            <div className="p-8 md:p-10 premium-gradient">
+          <div className="bg-white rounded-3xl border border-gray-100 overflow-hidden">
+            <div className="p-8 md:p-10 bg-[#0B1220]">
               <div className="text-center">
                 <div className="h-16 w-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Shield className="h-8 w-8 text-white" />
@@ -108,7 +108,7 @@ export default function AdminPasswordPage() {
                 <Button
                   type="submit"
                   disabled={loading || !password.trim()}
-                  className="w-full h-12 rounded-xl premium-gradient text-white font-semibold shadow-lg disabled:opacity-50"
+                  className="w-full h-12 rounded-xl bg-[#0B1220] hover:bg-[#1a283a] transition-all text-white font-semibold disabled:opacity-50"
                 >
                   {loading ? 'Verifying...' : 'Access Admin Dashboard'}
                 </Button>

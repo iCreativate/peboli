@@ -39,7 +39,7 @@ export default function VendorSettingsPage() {
 
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+          <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 p-6">
             <div className="space-y-4">
               <h2 className="text-lg font-semibold text-gray-900">General Information</h2>
               <div className="grid gap-2">
@@ -71,7 +71,7 @@ export default function VendorSettingsPage() {
               </Button>
             </div>
           </div>
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 h-fit">
+          <div className="bg-white rounded-2xl border border-gray-100 p-6 h-fit">
             <div className="space-y-4">
               <h2 className="text-lg font-semibold text-gray-900">Contact Details</h2>
               <div className="grid gap-2">

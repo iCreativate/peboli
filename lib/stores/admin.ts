@@ -31,6 +31,7 @@ export type HeroSettings = {
 export type Department = {
   name: string;
   slug: string;
+  icon?: string;
 };
 
 export type Brand = {
@@ -42,6 +43,11 @@ export type Brand = {
   website?: string;
   description?: string;
   category?: string; // e.g. Electronics, Fashion
+};
+
+export type SystemSettings = {
+  platformName: string;
+  maintenanceMode: boolean;
 };
 
 export type Collection = {
@@ -62,6 +68,7 @@ type AdminState = {
     accentColor: string;
     successColor: string;
   };
+  system: SystemSettings;
   setHero: (patch: Partial<HeroSettings>) => void;
   addProduct: (p: AdminProduct) => void;
   updateProduct: (id: string, patch: Partial<Omit<AdminProduct, 'id'>>) => void;
@@ -80,6 +87,7 @@ type AdminState = {
   deleteBrand: (id: string) => void;
   
   updateTheme: (updates: Partial<{ primaryColor: string; accentColor: string; successColor: string }>) => void;
+  updateSystem: (updates: Partial<SystemSettings>) => void;
 };
 
 const DEFAULT_HERO: HeroSettings = {
@@ -101,26 +109,12 @@ const DEFAULT_COLLECTIONS: Collection[] = [
   { id: 'clearance', name: 'Clearance', href: '/clearance' },
 ];
 
-const DEFAULT_DEPARTMENTS: Department[] = [
-  { name: 'Appliances', slug: 'appliances' },
-  { name: 'Automotive & DIY', slug: 'automotive-diy' },
-  { name: 'Baby & Toddler', slug: 'baby-toddler' },
-  { name: 'Beauty', slug: 'beauty' },
-  { name: 'Books & Courses', slug: 'books-courses' },
-  { name: 'Camping & Outdoor', slug: 'camping-outdoor' },
-  { name: 'Clothing & Shoes', slug: 'clothing-shoes' },
-  { name: 'Electronics', slug: 'electronics' },
-  { name: 'Gaming & Media', slug: 'gaming-media' },
-  { name: 'Garden, Pool & Patio', slug: 'garden-pool-patio' },
-  { name: 'Groceries & Household', slug: 'groceries-household' },
-  { name: 'Health & Personal Care', slug: 'health-personal-care' },
-  { name: 'Homeware', slug: 'homeware' },
-  { name: 'Liquor', slug: 'liquor' },
-  { name: 'Office & Stationery', slug: 'office-stationery' },
-  { name: 'Pets', slug: 'pets' },
-  { name: 'Sport & Training', slug: 'sport-training' },
-  { name: 'Toys', slug: 'toys' },
-];
+const DEFAULT_DEPARTMENTS: Department[] = [];
+
+const DEFAULT_SYSTEM_SETTINGS: SystemSettings = {
+  platformName: 'Peboli',
+  maintenanceMode: false,
+};
 
 const DEFAULT_BRANDS: Brand[] = [
   'Samsung', 'Apple', 'Sony', 'LG', 'Nike', 'Adidas', 'Dyson', 'Canon', 'Maybelline', "L'Oréal"
@@ -143,6 +137,7 @@ export const useAdminStore = create<AdminState>()(
         accentColor: '#FF6B4A',  // Default Coral
         successColor: '#00C48C', // Default Green
       },
+      system: DEFAULT_SYSTEM_SETTINGS,
       setHero: (patch) => set({ hero: { ...get().hero, ...patch } }),
       addProduct: (p) => set({ products: [p, ...get().products] }),
       updateProduct: (id, patch) =>
@@ -219,10 +214,11 @@ export const useAdminStore = create<AdminState>()(
         set((state) => ({ brands: state.brands.filter((b) => b.id !== id) })),
 
       updateTheme: (updates) => set({ theme: { ...get().theme, ...updates } }),
+      updateSystem: (updates) => set({ system: { ...get().system, ...updates } }),
     }),
     {
       name: 'peboli_admin',
-      version: 8,
+      version: 10,
       storage: typeof window !== 'undefined' ? {
         getItem: (name) => {
           const str = localStorage.getItem(name);
@@ -283,6 +279,7 @@ export const useAdminStore = create<AdminState>()(
           }),
           departments,
           collections,
+          system: (stateObj as any).system || DEFAULT_SYSTEM_SETTINGS,
         };
       },
     }

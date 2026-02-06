@@ -14,9 +14,9 @@ export function PromotionSettings() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="rounded-2xl border border-gray-100 bg-white premium-shadow p-6">
+        <div className="rounded-2xl border border-gray-100 bg-white p-6">
           <div className="flex items-start gap-4">
-            <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-[#0B1220]/10 via-[#FF6B4A]/10 to-[#00C48C]/10 flex items-center justify-center text-[#0B1220]">
+            <div className="h-11 w-11 rounded-2xl bg-gray-50 flex items-center justify-center text-[#0B1220]">
               <BadgeCheck className="h-5 w-5" />
             </div>
             <div>
@@ -26,9 +26,9 @@ export function PromotionSettings() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-gray-100 bg-white premium-shadow p-6">
+        <div className="rounded-2xl border border-gray-100 bg-white p-6">
           <div className="flex items-start gap-4">
-            <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-[#0B1220]/10 via-[#FF6B4A]/10 to-[#00C48C]/10 flex items-center justify-center text-[#0B1220]">
+            <div className="h-11 w-11 rounded-2xl bg-gray-50 flex items-center justify-center text-[#0B1220]">
               <Tag className="h-5 w-5" />
             </div>
             <div>
@@ -38,9 +38,9 @@ export function PromotionSettings() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-gray-100 bg-white premium-shadow p-6">
+        <div className="rounded-2xl border border-gray-100 bg-white p-6">
           <div className="flex items-start gap-4">
-            <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-[#0B1220]/10 via-[#FF6B4A]/10 to-[#00C48C]/10 flex items-center justify-center text-[#0B1220]">
+            <div className="h-11 w-11 rounded-2xl bg-gray-50 flex items-center justify-center text-[#0B1220]">
               <Sparkles className="h-5 w-5" />
             </div>
             <div>

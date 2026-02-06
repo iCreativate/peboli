@@ -174,7 +174,7 @@ export function AdminNotificationList() {
       </div>
 
       {/* Search and Filters */}
-      <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm space-y-4">
+      <div className="bg-white p-4 rounded-2xl border border-gray-100 space-y-4">
         <div className="flex flex-col sm:flex-row gap-4">
           {/* Search */}
           <div className="relative flex-1">
@@ -263,7 +263,7 @@ export function AdminNotificationList() {
       </div>
 
       {/* Notifications List */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         {notifications.length === 0 ? (
           <div className="p-8 text-center text-gray-500">
             <Bell className="h-12 w-12 mx-auto mb-3 text-gray-300" />
@@ -277,7 +277,7 @@ export function AdminNotificationList() {
                 className={`p-4 transition-colors hover:bg-gray-50 flex gap-4 cursor-pointer ${!notification.isRead ? 'bg-blue-50/50' : ''}`}
                 onClick={() => handleOpen(notification)}
               >
-                <div className={`flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center ${!notification.isRead ? 'bg-white shadow-sm' : 'bg-gray-100'}`}>
+                <div className={`flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center ${!notification.isRead ? 'bg-white border border-gray-100' : 'bg-gray-100'}`}>
                   {getIcon(notification.type)}
                 </div>
                 

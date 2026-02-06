@@ -93,7 +93,7 @@ export async function GET(request: Request) {
             deliveryTime: undefined,
             isFlashSale: p.isFlashSale ?? undefined,
             flashSaleEndsAt: p.flashSaleEndsAt ?? undefined,
-            isSplashDeal: p.isFlashSale ?? false,
+            isSplashDeal: p.isSplashDeal ?? false,
             splashSaleEndsAt: p.flashSaleEndsAt ?? undefined,
             createdAt: p.createdAt,
             updatedAt: p.updatedAt,

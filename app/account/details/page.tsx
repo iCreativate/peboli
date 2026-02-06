@@ -131,8 +131,8 @@ export default function PersonalDetailsPage() {
 
       <main className="flex-1">
         <div className="container mx-auto px-4 lg:px-6 py-10">
-          <div className="rounded-3xl border border-gray-100 bg-white premium-shadow overflow-hidden">
-            <div className="p-6 md:p-10 premium-gradient">
+          <div className="rounded-3xl border border-gray-100 bg-white overflow-hidden">
+            <div className="p-6 md:p-10 bg-[#0B1220]">
               <div className="max-w-3xl">
                 <Link href="/account" className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-4 text-sm font-medium">
                   <ArrowLeft className="h-4 w-4" />
@@ -219,7 +219,7 @@ export default function PersonalDetailsPage() {
                     <Button
                       type="submit"
                       disabled={saving}
-                      className="flex items-center gap-2 h-12 px-8 rounded-xl premium-gradient text-white font-semibold shadow-lg disabled:opacity-50"
+                      className="flex items-center gap-2 h-12 px-8 rounded-xl bg-[#0B1220] hover:bg-[#1a283a] transition-all text-white font-semibold disabled:opacity-50"
                     >
                       {saving ? (
                         <>Saving...</>

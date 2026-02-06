@@ -101,7 +101,7 @@ export default function AccountPage() {
            </div>
            <h1 className="text-2xl font-bold text-gray-900">Login Required</h1>
            <p className="text-gray-500 mt-2 mb-8 max-w-md">Please sign in to manage your account settings and preferences.</p>
-           <Button onClick={openLogin} className="h-12 px-8 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg shadow-blue-600/20 transition-all">
+           <Button onClick={openLogin} className="h-12 px-8 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-all">
              Sign In / Register
            </Button>
         </main>
@@ -116,8 +116,8 @@ export default function AccountPage() {
 
       <main className="flex-1">
         <div className="container mx-auto px-4 lg:px-6 py-10">
-          <div className="rounded-3xl border border-gray-100 bg-white premium-shadow overflow-hidden">
-            <div className="p-6 md:p-10 premium-gradient">
+          <div className="rounded-3xl border border-gray-100 bg-white overflow-hidden">
+            <div className="p-6 md:p-10 bg-[#0B1220]">
               <div className="max-w-3xl">
                 <div className="text-white/80 text-sm font-semibold">My Account</div>
                 <h1 className="mt-1 text-3xl md:text-4xl font-black text-white tracking-tight">
@@ -161,16 +161,16 @@ export default function AccountPage() {
                   <Link
                     key={tile.title}
                     href={tile.href}
-                    className="group rounded-2xl border border-gray-100 bg-white premium-shadow hover:premium-shadow-lg transition-all duration-200 p-6"
+                    className="group rounded-2xl border border-gray-100 bg-white hover:border-gray-200 transition-all duration-200 p-6"
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <div className="text-sm font-bold text-[#1A1D29] group-hover:text-gradient transition-all">
+                        <div className="text-sm font-bold text-[#1A1D29] transition-all">
                           {tile.title}
                         </div>
                         <div className="mt-2 text-sm text-[#8B95A5] leading-relaxed">{tile.description}</div>
                       </div>
-                      <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-[#0B1220]/10 via-[#FF6B4A]/10 to-[#00C48C]/10 flex items-center justify-center text-[#0B1220]">
+                      <div className="h-11 w-11 rounded-2xl bg-gray-50 flex items-center justify-center text-[#0B1220]">
                         {tile.icon}
                       </div>
                     </div>

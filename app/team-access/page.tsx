@@ -10,13 +10,13 @@ export default function TeamAccessPage() {
     <div className="min-h-screen flex flex-col bg-gray-50">
       <TakealotHeader />
       <main className="flex-1 relative overflow-hidden">
-        <div className="absolute inset-0 premium-gradient" />
+        <div className="absolute inset-0 bg-[#0B1220]" />
         <div className="absolute inset-0 bg-black/20" />
         <div className="relative container mx-auto px-4 lg:px-6 py-12">
-          <div className="max-w-xl mx-auto rounded-3xl border border-white/15 bg-white/90 backdrop-blur-xl premium-shadow-xl overflow-hidden">
+          <div className="max-w-xl mx-auto rounded-3xl border border-gray-200 bg-white overflow-hidden">
             <div className="p-6 md:p-8">
               <div className="flex items-start gap-4">
-                <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-[#0B1220]/10 via-[#FF6B4A]/10 to-[#00C48C]/10 flex items-center justify-center text-[#0B1220]">
+                <div className="h-12 w-12 rounded-2xl bg-gray-100 flex items-center justify-center text-[#0B1220]">
                   <KeyRound className="h-6 w-6" />
                 </div>
                 <div>
@@ -30,9 +30,9 @@ export default function TeamAccessPage() {
 
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link
-                  href="/admin"
-                  className="inline-flex items-center justify-center rounded-xl premium-gradient px-5 py-3 text-sm font-semibold text-white"
-                >
+          href="/admin"
+          className="inline-flex items-center justify-center rounded-xl bg-[#0B1220] hover:bg-[#1a283a] transition-colors px-5 py-3 text-sm font-semibold text-white"
+        >
                   Go to Admin
                 </Link>
                 <Link

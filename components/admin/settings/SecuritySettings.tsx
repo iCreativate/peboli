@@ -68,7 +68,7 @@ export function SecuritySettings() {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-2xl border border-gray-100 bg-white premium-shadow p-6">
+      <div className="rounded-2xl border border-gray-100 bg-white p-6">
         <div className="flex items-start justify-between gap-4 mb-6">
           <div>
             <div className="font-black text-[#1A1D29] flex items-center gap-2">
@@ -173,7 +173,7 @@ export function SecuritySettings() {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full h-12 rounded-xl premium-gradient text-white font-semibold shadow-lg disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full h-12 rounded-xl bg-[#0B1220] hover:bg-[#0B1220]/90 text-white font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {loading ? (
               <>Updating...</>

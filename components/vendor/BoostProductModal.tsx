@@ -107,8 +107,8 @@ export function BoostProductModal({ product, isOpen, onClose, onSuccess, walletB
   const selected = BOOST_OPTIONS.find(o => o.id === selectedOption);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-      <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-in fade-in duration-200">
+      <div className="bg-white w-full max-w-lg rounded-3xl border border-gray-200 overflow-hidden animate-in zoom-in-95 duration-200">
         {/* Header */}
         <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
           <div>
@@ -153,7 +153,7 @@ export function BoostProductModal({ product, isOpen, onClose, onSuccess, walletB
                        <div className="text-xs font-medium text-gray-500">{option.durationLabel}</div>
                     </div>
                     {selectedOption === option.id && (
-                      <div className="absolute top-1/2 -translate-y-1/2 -left-3 h-6 w-6 bg-blue-600 rounded-full border-2 border-white flex items-center justify-center shadow-sm">
+                      <div className="absolute top-1/2 -translate-y-1/2 -left-3 h-6 w-6 bg-blue-600 rounded-full border-2 border-white flex items-center justify-center">
                         <Check className="h-3 w-3 text-white" />
                       </div>
                     )}
@@ -168,7 +168,7 @@ export function BoostProductModal({ product, isOpen, onClose, onSuccess, walletB
 
               <Button 
                 onClick={() => setStep('payment')}
-                className="w-full h-12 text-base font-semibold bg-gray-900 hover:bg-black text-white rounded-xl shadow-lg"
+                className="w-full h-12 text-base font-semibold bg-gray-900 hover:bg-black text-white rounded-xl"
               >
                 Continue to Payment
               </Button>
@@ -291,7 +291,7 @@ export function BoostProductModal({ product, isOpen, onClose, onSuccess, walletB
                <Button 
                  onClick={handleBoost}
                  disabled={isSubmitting}
-                 className="w-full h-12 text-base font-semibold bg-gray-900 hover:bg-black text-white rounded-xl shadow-lg mt-6"
+                 className="w-full h-12 text-base font-semibold bg-gray-900 hover:bg-black text-white rounded-xl mt-6"
                >
                  {isSubmitting ? 'Processing...' : `Pay R ${selected?.price}`}
                </Button>

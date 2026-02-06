@@ -27,6 +27,7 @@ export async function GET() {
       products = await prisma.product.findMany({
         include: {
           category: true,
+          images: true,
         },
         orderBy: {
           createdAt: 'desc',
@@ -38,16 +39,8 @@ export async function GET() {
 
     // 2. Fallback to JSON if DB is empty or failed
     if (products.length === 0) {
-      const filePath = path.join(process.cwd(), 'public', 'live-products.json');
-      try {
-        const raw = await fs.readFile(filePath, 'utf8');
-        const jsonProducts = JSON.parse(raw);
-        if (Array.isArray(jsonProducts)) {
-          products = jsonProducts;
-        }
-      } catch (fileError) {
-        console.error('JSON fallback failed:', fileError);
-      }
+      // No products found in DB, and mock data is removed.
+      console.warn('No products found in database for mega menu.');
     }
 
     // 3. Process products into Mega Menu structure
@@ -128,7 +121,7 @@ export async function GET() {
                   name: feature.name,
                   slug: feature.slug,
                   price: `R${Number(feature.price).toLocaleString()}`,
-                  image: (feature.images && feature.images.length > 0) ? feature.images[0] : '/products/placeholder.svg',
+                  image: (feature.images && feature.images.length > 0) ? feature.images[0].url : '/products/placeholder.svg',
                   model: feature.sku || feature.model,
                   validUntil: (feature.isFlashSale || feature.isSplashDeal) ? 'While stocks last' : undefined
               }

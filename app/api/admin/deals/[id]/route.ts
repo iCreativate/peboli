@@ -161,6 +161,34 @@ export async function PUT(
       },
     });
 
+    // Sync with Product (set isSplashDeal for any deal with a product)
+    // 1. Handle product change or status change for the current deal
+    if (deal.productId) {
+      const isActive = deal.status === 'ACTIVE';
+      try {
+        await prisma.product.update({
+          where: { id: deal.productId },
+          data: { isSplashDeal: isActive }
+        });
+      } catch (error) {
+        console.error('Error syncing product splash deal status (update):', error);
+      }
+    }
+
+    // 2. Handle case where productId changed (unset old product)
+    // If the previous deal had a product ID that is different from the new one
+    if (existingDeal.productId && existingDeal.productId !== deal.productId) {
+      try {
+        await prisma.product.update({
+          where: { id: existingDeal.productId },
+          data: { isSplashDeal: false }
+        });
+      } catch (error) {
+        console.error('Error unsetting old product splash deal status:', error);
+      }
+    }
+
+
     return NextResponse.json({
       success: true,
       deal,
@@ -211,6 +239,18 @@ export async function DELETE(
         { error: 'Deal not found.', success: false },
         { status: 404 }
       );
+    }
+
+    // Sync with Product (delete)
+    if (deal.productId) {
+      try {
+        await prisma.product.update({
+          where: { id: deal.productId },
+          data: { isSplashDeal: false }
+        });
+      } catch (error) {
+        console.error('Error unsetting product splash deal status (delete):', error);
+      }
     }
 
     await prisma.deal.delete({

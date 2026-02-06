@@ -194,8 +194,8 @@ export default function AddressesPage() {
 
       <main className="flex-1">
         <div className="container mx-auto px-4 lg:px-6 py-10">
-          <div className="rounded-3xl border border-gray-100 bg-white premium-shadow overflow-hidden">
-            <div className="p-6 md:p-10 premium-gradient">
+          <div className="rounded-3xl border border-gray-100 bg-white overflow-hidden">
+            <div className="p-6 md:p-10 bg-[#0B1220]">
               <div className="max-w-3xl">
                 <Link href="/account" className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-4 text-sm font-medium">
                   <ArrowLeft className="h-4 w-4" />
@@ -214,7 +214,7 @@ export default function AddressesPage() {
                 <h2 className="text-xl font-bold text-[#1A1D29]">Saved Addresses</h2>
                 <Button
                   onClick={openModal}
-                  className="flex items-center gap-2 h-11 px-6 rounded-xl premium-gradient text-white font-semibold"
+                  className="flex items-center gap-2 h-11 px-6 rounded-xl bg-[#0B1220] hover:bg-[#1a283a] transition-all text-white font-semibold"
                 >
                   <Plus className="h-4 w-4" />
                   Add New Address
@@ -235,7 +235,7 @@ export default function AddressesPage() {
                   <p className="text-gray-500 mb-6">Add your first delivery address to get started.</p>
                   <Button
                     onClick={openModal}
-                    className="flex items-center gap-2 h-11 px-6 rounded-xl premium-gradient text-white font-semibold mx-auto"
+                    className="flex items-center gap-2 h-11 px-6 rounded-xl bg-[#0B1220] hover:bg-[#1a283a] transition-colors text-white font-semibold mx-auto"
                   >
                     <Plus className="h-4 w-4" />
                     Add Address
@@ -432,7 +432,7 @@ export default function AddressesPage() {
             <Button
               type="submit"
               disabled={saving}
-              className="flex-1 h-11 rounded-xl premium-gradient text-white font-semibold disabled:opacity-50"
+              className="flex-1 h-11 rounded-xl bg-[#0B1220] hover:bg-[#0B1220]/90 transition-colors text-white font-semibold disabled:opacity-50"
             >
               {saving ? 'Saving...' : editingAddress ? 'Update Address' : 'Save Address'}
             </Button>

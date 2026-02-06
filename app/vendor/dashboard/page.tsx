@@ -40,7 +40,7 @@ export default function VendorDashboardPage() {
         {STATS.map((stat) => {
           const Icon = stat.icon;
           return (
-            <div key={stat.label} className="p-6 bg-white rounded-2xl border border-gray-100 shadow-sm transition-shadow hover:shadow-md">
+            <div key={stat.label} className="p-6 bg-white rounded-2xl border border-gray-100 hover:border-gray-200 transition-colors">
               <div className="flex items-center justify-between space-y-0 pb-2">
                 <p className="text-sm font-medium text-gray-500">{stat.label}</p>
                 <Icon className="h-4 w-4 text-gray-400" />
@@ -57,7 +57,7 @@ export default function VendorDashboardPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <div className="col-span-4 bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+        <div className="col-span-4 bg-white rounded-2xl border border-gray-100 p-6">
           <h3 className="font-semibold text-gray-900 mb-4">Revenue Overview</h3>
           <div className="h-[300px] flex items-end gap-2 p-4 bg-gray-50 rounded-xl border border-gray-100">
             {/* Real Chart Data */}
@@ -93,7 +93,7 @@ export default function VendorDashboardPage() {
             <span>Dec</span>
           </div>
         </div>
-        <div className="col-span-3 bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+        <div className="col-span-3 bg-white rounded-2xl border border-gray-100 p-6">
           <h3 className="font-semibold text-gray-900 mb-4">Recent Sales</h3>
           <div className="space-y-6">
              {stats.recentSales.length > 0 ? stats.recentSales.map((sale) => (

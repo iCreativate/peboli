@@ -15,8 +15,8 @@ export default function BrandsPage() {
 
       <main className="flex-1">
         <div className="container mx-auto px-4 lg:px-6 py-10">
-          <div className="rounded-3xl border border-gray-100 bg-white premium-shadow overflow-hidden">
-            <div className="p-6 md:p-10 premium-gradient">
+          <div className="rounded-3xl border border-gray-100 bg-white overflow-hidden">
+            <div className="p-6 md:p-10 bg-[#0B1220]">
               <div className="max-w-3xl">
                 <div className="text-white/80 text-sm font-semibold">Brands</div>
                 <h1 className="mt-1 text-3xl md:text-4xl font-black text-white tracking-tight">Brand store</h1>
@@ -47,12 +47,12 @@ export default function BrandsPage() {
                   <Link
                     key={b.id}
                     href={`/brands/${b.slug}`}
-                    className="group rounded-2xl border border-gray-100 bg-white premium-shadow hover:premium-shadow-lg transition-all duration-200 p-5 flex flex-col justify-between"
+                    className="group rounded-2xl border border-gray-100 bg-white hover:border-gray-300 transition-colors p-5 flex flex-col justify-between"
                   >
                     <div>
                       <div className="flex items-center justify-between gap-3">
-                        <div className="font-bold text-[#1A1D29] group-hover:text-gradient transition-all line-clamp-1">{b.name}</div>
-                        <div className="h-10 w-10 flex-shrink-0 rounded-2xl bg-gradient-to-br from-[#0B1220]/10 via-[#FF6B4A]/10 to-[#00C48C]/10 flex items-center justify-center text-[#0B1220] overflow-hidden">
+                        <div className="font-bold text-[#1A1D29] group-hover:text-[#0B1220] transition-colors line-clamp-1">{b.name}</div>
+                        <div className="h-10 w-10 flex-shrink-0 rounded-2xl bg-gray-50 flex items-center justify-center text-[#0B1220] overflow-hidden">
                           {b.logo ? (
                              <img src={b.logo} alt={b.name} className="w-full h-full object-contain p-1.5" />
                           ) : (
@@ -73,7 +73,7 @@ export default function BrandsPage() {
               </div>
 
 
-              <div className="mt-10 rounded-2xl border border-gray-100 bg-gradient-to-br from-[#0B1220]/6 via-transparent to-[#00C48C]/8 p-6">
+              <div className="mt-10 rounded-2xl border border-gray-100 bg-gray-50 p-6">
                 <div className="flex items-start gap-4">
                   <div className="h-11 w-11 rounded-2xl bg-white border border-gray-200 flex items-center justify-center">
                     <Sparkles className="h-5 w-5 text-[#0B1220]" />
@@ -96,7 +96,7 @@ export default function BrandsPage() {
                 </Link>
                 <Link
                   href="/categories/electronics"
-                  className="inline-flex items-center justify-center rounded-xl premium-gradient px-5 py-2.5 text-sm font-semibold text-white"
+                  className="inline-flex items-center justify-center rounded-xl bg-[#0B1220] hover:bg-[#1a283a] transition-colors px-5 py-2.5 text-sm font-semibold text-white"
                 >
                   Browse electronics
                 </Link>

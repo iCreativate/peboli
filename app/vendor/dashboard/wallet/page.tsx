@@ -104,7 +104,7 @@ export default function VendorWalletPage() {
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Available Balance Card */}
-        <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
+        <div className="bg-white rounded-xl border border-gray-100 p-6">
           <div className="flex items-center gap-4 mb-4">
             <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
               <Wallet className="h-6 w-6" />
@@ -120,7 +120,7 @@ export default function VendorWalletPage() {
         </div>
 
         {/* Pending Balance Card */}
-        <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
+        <div className="bg-white rounded-xl border border-gray-100 p-6">
           <div className="flex items-center gap-4 mb-4">
             <div className="h-12 w-12 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
               <Clock className="h-6 w-6" />
@@ -138,7 +138,7 @@ export default function VendorWalletPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
          {/* Transaction History */}
-         <div className="bg-white rounded-xl border border-gray-100 shadow-sm lg:col-span-2 overflow-hidden">
+         <div className="bg-white rounded-xl border border-gray-100 lg:col-span-2 overflow-hidden">
             <div className="p-6 border-b border-gray-100">
                 <h3 className="font-semibold text-gray-900">Transaction History</h3>
             </div>
@@ -185,7 +185,7 @@ export default function VendorWalletPage() {
          </div>
 
         {/* Top Up Section */}
-        <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm lg:col-span-1 h-fit">
+        <div className="bg-white rounded-xl border border-gray-100 p-6 lg:col-span-1 h-fit">
           <h3 className="font-semibold text-gray-900 mb-6">Top Up Wallet</h3>
           
           <div className="space-y-6">

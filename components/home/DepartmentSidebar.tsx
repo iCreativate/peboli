@@ -2,9 +2,66 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { ChevronRight, ChevronDown } from 'lucide-react';
-import { MAIN_CATEGORIES } from '@/lib/constants/categories';
+import * as Icons from 'lucide-react';
+import { 
+  ChevronRight, 
+  ChevronDown,
+  Smartphone, 
+  Shirt, 
+  Home, 
+  Sparkles, 
+  Dumbbell, 
+  Baby, 
+  Wine, 
+  Gamepad2, 
+  Book, 
+  Car, 
+  Dog, 
+  Briefcase, 
+  Package,
+  Laptop, 
+  Tv, 
+  Utensils, 
+  Sofa, 
+  Hammer, 
+  Music, 
+  Camera, 
+  Watch 
+} from 'lucide-react';
 import { useAdminStore } from '@/lib/stores/admin';
+
+const getDepartmentIcon = (category: { name: string; slug: string; icon?: string } | string) => {
+  // Use admin-selected icon if available
+  if (typeof category === 'object' && category.icon && (Icons as any)[category.icon]) {
+    const Icon = (Icons as any)[category.icon];
+    return <Icon className="h-5 w-5 text-gray-500 group-hover:text-[#0B1220]" />;
+  }
+
+  const slug = typeof category === 'string' ? category : category.slug;
+  const s = slug?.toLowerCase() || '';
+  if (s.includes('electronic') || s.includes('tech') || s.includes('phone')) return <Smartphone className="h-5 w-5 text-gray-500 group-hover:text-[#0B1220]" />;
+  if (s.includes('fashion') || s.includes('cloth')) return <Shirt className="h-5 w-5 text-gray-500 group-hover:text-[#0B1220]" />;
+  if (s.includes('home') || s.includes('living')) return <Home className="h-5 w-5 text-gray-500 group-hover:text-[#0B1220]" />;
+  if (s.includes('beauty') || s.includes('health') || s.includes('care')) return <Sparkles className="h-5 w-5 text-gray-500 group-hover:text-[#0B1220]" />;
+  if (s.includes('sport') || s.includes('fitness') || s.includes('gym')) return <Dumbbell className="h-5 w-5 text-gray-500 group-hover:text-[#0B1220]" />;
+  if (s.includes('baby') || s.includes('kid') || s.includes('toy')) return <Baby className="h-5 w-5 text-gray-500 group-hover:text-[#0B1220]" />;
+  if (s.includes('liquor') || s.includes('wine') || s.includes('beer') || s.includes('alcohol')) return <Wine className="h-5 w-5 text-gray-500 group-hover:text-[#0B1220]" />;
+  if (s.includes('game') || s.includes('gaming') || s.includes('console')) return <Gamepad2 className="h-5 w-5 text-gray-500 group-hover:text-[#0B1220]" />;
+  if (s.includes('book') || s.includes('read')) return <Book className="h-5 w-5 text-gray-500 group-hover:text-[#0B1220]" />;
+  if (s.includes('auto') || s.includes('car') || s.includes('vehicle')) return <Car className="h-5 w-5 text-gray-500 group-hover:text-[#0B1220]" />;
+  if (s.includes('pet') || s.includes('dog') || s.includes('cat')) return <Dog className="h-5 w-5 text-gray-500 group-hover:text-[#0B1220]" />;
+  if (s.includes('office') || s.includes('work') || s.includes('desk')) return <Briefcase className="h-5 w-5 text-gray-500 group-hover:text-[#0B1220]" />;
+  if (s.includes('computer') || s.includes('laptop') || s.includes('pc')) return <Laptop className="h-5 w-5 text-gray-500 group-hover:text-[#0B1220]" />;
+  if (s.includes('tv') || s.includes('audio') || s.includes('sound')) return <Tv className="h-5 w-5 text-gray-500 group-hover:text-[#0B1220]" />;
+  if (s.includes('kitchen') || s.includes('cook') || s.includes('food')) return <Utensils className="h-5 w-5 text-gray-500 group-hover:text-[#0B1220]" />;
+  if (s.includes('furniture') || s.includes('decor')) return <Sofa className="h-5 w-5 text-gray-500 group-hover:text-[#0B1220]" />;
+  if (s.includes('diy') || s.includes('tool') || s.includes('garden')) return <Hammer className="h-5 w-5 text-gray-500 group-hover:text-[#0B1220]" />;
+  if (s.includes('music') || s.includes('instrument')) return <Music className="h-5 w-5 text-gray-500 group-hover:text-[#0B1220]" />;
+  if (s.includes('camera') || s.includes('photo')) return <Camera className="h-5 w-5 text-gray-500 group-hover:text-[#0B1220]" />;
+  if (s.includes('watch') || s.includes('wearable')) return <Watch className="h-5 w-5 text-gray-500 group-hover:text-[#0B1220]" />;
+  
+  return <Package className="h-5 w-5 text-gray-500 group-hover:text-[#0B1220]" />;
+};
 
 export function DepartmentSidebar() {
   const [isOpen, setIsOpen] = useState(true);
@@ -121,7 +178,7 @@ export function DepartmentSidebar() {
       });
   }, []);
 
-  const [categories, setCategories] = useState<Array<{ name: string; slug: string }>>([]);
+  const [categories, setCategories] = useState<Array<{ name: string; slug: string; icon?: string }>>([]);
   
   // Fetch departments from API
   useEffect(() => {
@@ -183,7 +240,7 @@ export function DepartmentSidebar() {
         {/* Shop by Department Button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full premium-gradient text-white font-semibold py-3 px-4 flex items-center justify-between transition-colors flex-shrink-0"
+          className="w-full bg-[#0B1220] text-white font-semibold py-3 px-4 flex items-center justify-between transition-colors flex-shrink-0"
         >
           <span>Shop by Department</span>
           <ChevronDown className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
@@ -207,7 +264,10 @@ export function DepartmentSidebar() {
                   href={`/categories/${category.slug}`}
                   className="flex items-center justify-between py-2.5 px-4 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#0B1220] transition-colors group"
                 >
-                  <span>{category.name}</span>
+                  <span className="flex items-center">
+                    <span className="mr-3">{getDepartmentIcon(category)}</span>
+                    <span>{category.name}</span>
+                  </span>
                   <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-[#0B1220] transition-colors" />
                 </Link>
               </div>
@@ -229,7 +289,7 @@ export function DepartmentSidebar() {
 
       {/* Mega Menu Panel */}
       <div 
-        className={`hidden lg:block absolute left-64 top-0 h-[600px] w-[800px] bg-white shadow-2xl border border-gray-200 z-50 overflow-y-auto transition-opacity ${
+        className={`hidden lg:block absolute left-64 top-0 h-[600px] w-[800px] bg-white border border-gray-200 z-50 overflow-y-auto transition-opacity ${
           hoveredCategory && activeMenu ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
         style={{ marginLeft: '-1px' }}

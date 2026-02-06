@@ -102,7 +102,7 @@ export function LoginModal() {
     <Modal isOpen={isLoginOpen} onClose={closeLogin}>
       <div className="relative overflow-hidden bg-white">
         {/* Decorative background element */}
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-indigo-600" />
+        <div className="absolute top-0 left-0 w-full h-1 bg-[#0B1220]" />
         
         <div className="px-8 pt-8 pb-6">
           <div className="text-center mb-8">
@@ -233,7 +233,7 @@ export function LoginModal() {
 
             <Button
               type="submit"
-              className="w-full h-12 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg shadow-blue-600/20 transition-all duration-200"
+              className="w-full h-12 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-all duration-200"
               disabled={!canSubmit || submitting}
             >
               {submitting ? (

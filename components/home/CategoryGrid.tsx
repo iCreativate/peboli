@@ -3,13 +3,12 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { MAIN_CATEGORIES } from '@/lib/constants/categories';
 import { motion } from 'framer-motion';
 
 type Department = { name: string; slug: string };
 
 export function CategoryGrid() {
-  const [categories, setCategories] = useState<typeof MAIN_CATEGORIES>([]);
+  const [categories, setCategories] = useState<any[]>([]);
   
   // Fetch departments from API
   useEffect(() => {
@@ -64,7 +63,7 @@ export function CategoryGrid() {
   }
 
   return (
-    <section className="py-16 md:py-20 bg-gradient-to-b from-[#F7F8FA] to-white">
+    <section className="py-16 md:py-20 bg-[#F7F8FA]">
       <div className="container mx-auto px-4 lg:px-6">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-black text-[#1A1D29] mb-3 tracking-tight">Shop by Category</h2>
@@ -77,19 +76,17 @@ export function CategoryGrid() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: index * 0.05 }}
-              whileHover={{ y: -8, scale: 1.03 }}
               className="h-full"
             >
               <Link
                 href={`/categories/${category.slug}`}
-                className="block h-full bg-white rounded-2xl border border-gray-100 overflow-hidden premium-shadow hover:premium-shadow-xl transition-all duration-300 group"
+                className="block h-full bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-gray-400 transition-colors duration-200 group"
               >
-                <div className="aspect-square relative bg-gradient-to-br from-[#0B1220]/6 via-[#FF6B4A]/5 to-[#00C48C]/5 flex items-center justify-center group-hover:from-[#0B1220]/10 group-hover:via-[#FF6B4A]/10 group-hover:to-[#00C48C]/10 transition-all duration-300">
-                  <span className="text-6xl group-hover:scale-110 transition-transform duration-300">{category.icon}</span>
-                  <div className="absolute inset-0 bg-gradient-to-t from-white/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="aspect-square relative bg-gray-50 flex items-center justify-center group-hover:bg-gray-100 transition-all duration-300">
+                  <span className="text-6xl transition-transform duration-300">{category.icon}</span>
                 </div>
                 <div className="p-5 text-center">
-                  <h3 className="font-bold text-[#1A1D29] group-hover:text-gradient transition-all duration-200 text-base mb-1">
+                  <h3 className="font-bold text-[#1A1D29] transition-all duration-200 text-base mb-1">
                     {category.name}
                   </h3>
                   <p className="text-xs text-[#8B95A5] font-medium">

@@ -89,8 +89,8 @@ export default function ReturnsPage() {
 
       <main className="flex-1">
         <div className="container mx-auto px-4 lg:px-6 py-10">
-          <div className="rounded-3xl border border-gray-100 bg-white premium-shadow overflow-hidden">
-            <div className="p-6 md:p-10 premium-gradient">
+            <div className="rounded-3xl border border-gray-100 bg-white overflow-hidden">
+              <div className="p-6 md:p-10 bg-[#0B1220]">
               <div className="max-w-3xl">
                 <div className="text-white/80 text-sm font-semibold">Returns Center</div>
                 <h1 className="mt-1 text-3xl md:text-4xl font-black text-white tracking-tight">Returns & Refunds</h1>
@@ -107,7 +107,7 @@ export default function ReturnsPage() {
                       className={cn(
                         "px-6 py-3 rounded-xl text-sm font-bold transition-all",
                         activeTab === tab.id
-                          ? "bg-white text-[#1A1D29] shadow-lg"
+                          ? "bg-white text-[#1A1D29]"
                           : "bg-white/10 text-white hover:bg-white/20"
                       )}
                     >
@@ -240,9 +240,9 @@ export default function ReturnsPage() {
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
                     {STEPS.map((s) => (
-                      <div key={s.title} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+                      <div key={s.title} className="rounded-2xl border border-gray-100 bg-white p-6 hover:border-gray-300 transition-colors">
                         <div className="flex items-start gap-4">
-                          <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-[#0B1220]/10 via-[#FF6B4A]/10 to-[#00C48C]/10 flex items-center justify-center text-[#0B1220]">
+                          <div className="h-11 w-11 rounded-2xl bg-gray-50 flex items-center justify-center text-[#0B1220]">
                             {s.icon}
                           </div>
                           <div>

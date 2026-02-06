@@ -344,12 +344,12 @@ function getPageDefinition(path: string): PageDefinition {
       subtitle: 'Explore curated picks and popular categories — updated regularly.',
       ctas: [
         { label: 'Shop deals', href: '/deals', variant: 'primary' },
-        { label: 'Browse categories', href: '/categories/electronics', variant: 'secondary' },
+        { label: 'Browse categories', href: '/', variant: 'secondary' },
       ],
       sections: [
         {
           title: 'Recommended categories',
-          items: ['Electronics & Tech', 'Fashion & Accessories', 'Home & Kitchen', 'Beauty & Personal Care'],
+          items: [],
         },
         {
           title: 'What you’ll find here',
@@ -457,7 +457,7 @@ export default async function CatchAllPage({
               {primaryCta && (
                 <Link
                   href={primaryCta.href}
-                  className="inline-flex items-center justify-center rounded-lg premium-gradient px-5 py-2.5 text-sm font-semibold text-white transition-colors"
+                  className="inline-flex items-center justify-center rounded-lg bg-[#0B1220] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#1A1D29] transition-colors"
                 >
                   {primaryCta.label}
                 </Link>
@@ -476,7 +476,7 @@ export default async function CatchAllPage({
             {page.sections && page.sections.length > 0 && (
               <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
                 {page.sections.map((section) => (
-                  <div key={section.title} className="rounded-2xl border border-gray-200 bg-white p-6 premium-shadow">
+                  <div key={section.title} className="rounded-2xl border border-gray-200 bg-white p-6">
                     <h2 className="text-base font-bold text-[#1A1D29]">{section.title}</h2>
                     <ul className="mt-4 space-y-2 text-sm text-[#8B95A5]">
                       {section.items.map((item) => (

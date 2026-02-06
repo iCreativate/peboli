@@ -27,7 +27,7 @@ export function ThemeSettings() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Settings Panel */}
         <div className="space-y-6">
-          <div className="rounded-2xl border border-gray-200 bg-white shadow-sm p-6">
+          <div className="rounded-2xl border border-gray-200 bg-white p-6">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2">
                 <div className="h-8 w-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
@@ -50,7 +50,7 @@ export function ThemeSettings() {
               <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
                 <label className="block text-sm font-bold text-gray-900 mb-2">Primary Color</label>
                 <div className="flex items-center gap-3">
-                  <div className="relative w-12 h-12 rounded-xl overflow-hidden shadow-sm border border-gray-200 ring-2 ring-white">
+                  <div className="relative w-12 h-12 rounded-xl overflow-hidden border border-gray-200 ring-2 ring-white">
                     <input
                       type="color"
                       value={theme.primaryColor}
@@ -71,7 +71,7 @@ export function ThemeSettings() {
               <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
                 <label className="block text-sm font-bold text-gray-900 mb-2">Accent Color</label>
                 <div className="flex items-center gap-3">
-                  <div className="relative w-12 h-12 rounded-xl overflow-hidden shadow-sm border border-gray-200 ring-2 ring-white">
+                  <div className="relative w-12 h-12 rounded-xl overflow-hidden border border-gray-200 ring-2 ring-white">
                     <input
                       type="color"
                       value={theme.accentColor}
@@ -92,7 +92,7 @@ export function ThemeSettings() {
               <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
                 <label className="block text-sm font-bold text-gray-900 mb-2">Success Color</label>
                 <div className="flex items-center gap-3">
-                  <div className="relative w-12 h-12 rounded-xl overflow-hidden shadow-sm border border-gray-200 ring-2 ring-white">
+                  <div className="relative w-12 h-12 rounded-xl overflow-hidden border border-gray-200 ring-2 ring-white">
                     <input
                       type="color"
                       value={theme.successColor}
@@ -116,7 +116,7 @@ export function ThemeSettings() {
         {/* Live Preview */}
         <div className="space-y-6">
           <div className="sticky top-6">
-             <div className="rounded-2xl border border-gray-200 bg-white shadow-sm p-6 overflow-hidden">
+             <div className="rounded-2xl border border-gray-200 bg-white p-6 overflow-hidden">
               <h3 className="font-bold text-gray-900 mb-4">Live Preview</h3>
               
               <div className="space-y-4 rounded-xl border border-gray-100 p-4 bg-gray-50/50">
@@ -125,13 +125,13 @@ export function ThemeSettings() {
                   <label className="text-xs font-semibold text-gray-500 uppercase">Buttons</label>
                   <div className="flex flex-wrap gap-2">
                     <button 
-                      className="px-4 py-2 rounded-lg text-sm font-medium text-white shadow-sm transition-transform active:scale-95"
+                      className="px-4 py-2 rounded-lg text-sm font-medium text-white transition-transform active:scale-95"
                       style={{ backgroundColor: theme.primaryColor }}
                     >
                       Primary Button
                     </button>
                     <button 
-                      className="px-4 py-2 rounded-lg text-sm font-medium text-white shadow-sm transition-transform active:scale-95"
+                      className="px-4 py-2 rounded-lg text-sm font-medium text-white transition-transform active:scale-95"
                       style={{ backgroundColor: theme.accentColor }}
                     >
                       Accent Button

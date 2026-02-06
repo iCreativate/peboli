@@ -54,7 +54,7 @@ export function VendorOrderList() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4">
+        <div className="bg-white p-4 rounded-xl border border-gray-100 flex items-center gap-4">
           <div className="h-10 w-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center">
             <Clock className="h-5 w-5" />
           </div>
@@ -63,7 +63,7 @@ export function VendorOrderList() {
             <div className="text-xs text-gray-500">Total Orders</div>
           </div>
         </div>
-        <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4">
+        <div className="bg-white p-4 rounded-xl border border-gray-100 flex items-center gap-4">
            <div className="h-10 w-10 bg-orange-50 text-orange-600 rounded-lg flex items-center justify-center">
             <Truck className="h-5 w-5" />
           </div>
@@ -72,7 +72,7 @@ export function VendorOrderList() {
             <div className="text-xs text-gray-500">Pending Delivery</div>
           </div>
         </div>
-         <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4">
+         <div className="bg-white p-4 rounded-xl border border-gray-100 flex items-center gap-4">
            <div className="h-10 w-10 bg-green-50 text-green-600 rounded-lg flex items-center justify-center">
             <CheckCircle2 className="h-5 w-5" />
           </div>
@@ -83,7 +83,7 @@ export function VendorOrderList() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
         {orders.length === 0 ? (
           <div className="p-12 text-center">
              <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">

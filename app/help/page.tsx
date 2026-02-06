@@ -16,7 +16,10 @@ import {
   HelpCircle,
   MapPin,
   Clock,
-  AlertCircle
+  AlertCircle,
+  Phone,
+  Mail,
+  MessageCircle
 } from 'lucide-react';
 import { TakealotHeader } from '@/components/layout/TakealotHeader';
 import { Footer } from '@/components/layout/Footer';
@@ -161,15 +164,9 @@ export default function HelpPage() {
 
       <main className="flex-1">
         {/* Hero Search Section */}
-        <div className="relative overflow-hidden bg-[#0B1220] pb-24 pt-16 px-4">
-          {/* Background Decorative Elements */}
-          <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-            <div className="absolute -top-[20%] -left-[10%] w-[600px] h-[600px] bg-blue-600/20 rounded-full blur-[120px]" />
-            <div className="absolute top-[10%] right-[5%] w-[400px] h-[400px] bg-[#FF6B4A]/10 rounded-full blur-[100px]" />
-          </div>
-
-          <div className="container mx-auto max-w-4xl text-center relative z-10">
-            <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight mb-4">
+        <div className="bg-[#0B1220] px-4 py-20 text-center relative overflow-hidden">
+          <div className="bg-white rounded-2xl border border-gray-100 p-8 mb-16 max-w-6xl mx-auto hover:border-gray-300 transition-colors duration-300">
+            <h1 className="text-3xl md:text-5xl font-black text-white mb-6 tracking-tight">
               Hi, how can we help?
             </h1>
             <p className="text-lg text-blue-100 mb-10 max-w-2xl mx-auto">
@@ -177,8 +174,7 @@ export default function HelpPage() {
             </p>
             
             <div className="relative max-w-2xl mx-auto group">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-[#FF6B4A] rounded-2xl opacity-50 group-hover:opacity-100 blur transition duration-200" />
-              <div className="relative flex items-center bg-white rounded-2xl shadow-2xl">
+              <div className="relative flex items-center bg-white rounded-2xl border border-gray-200">
                 <div className="pl-6 text-gray-400">
                   <Search className="h-6 w-6" />
                 </div>
@@ -193,7 +189,7 @@ export default function HelpPage() {
 
               {/* Search Results Dropdown */}
               {searchQuery && (
-                 <div className="absolute top-full left-0 right-0 mt-4 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50">
+                 <div className="absolute top-full left-0 right-0 mt-4 bg-white rounded-2xl border border-gray-200 overflow-hidden z-50">
                     {filteredResults.length > 0 ? (
                       <ul className="divide-y divide-gray-50 max-h-[400px] overflow-y-auto">
                         {filteredResults.map((result, idx) => (
@@ -225,7 +221,7 @@ export default function HelpPage() {
 
         <div className="container mx-auto px-4 lg:px-6 -mt-12 pb-20 relative z-20">
           {/* Quick Actions Card */}
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 mb-16 max-w-6xl mx-auto transform hover:-translate-y-1 transition-transform duration-300">
+          <div className="bg-white rounded-2xl border border-gray-100 p-8 mb-16 max-w-6xl mx-auto hover:border-gray-300 transition-colors duration-300">
              <div className="flex items-center gap-3 mb-6">
                <div className="h-8 w-1 bg-[#FF6B4A] rounded-full" />
                <h2 className="text-lg font-bold text-[#1A1D29] uppercase tracking-wide">Quick Actions</h2>
@@ -238,7 +234,7 @@ export default function HelpPage() {
                     href={action.href}
                     className="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl bg-gray-50 hover:bg-blue-50 transition-all duration-200 group border border-transparent hover:border-blue-100"
                   >
-                    <div className="h-12 w-12 rounded-xl bg-white shadow-sm text-gray-600 group-hover:text-blue-600 flex items-center justify-center transition-colors group-hover:scale-110 duration-200">
+                    <div className="h-12 w-12 rounded-xl bg-white text-gray-600 group-hover:text-blue-600 flex items-center justify-center transition-colors duration-200">
                       {action.icon}
                     </div>
                     <span className="text-sm font-bold text-gray-700 group-hover:text-blue-700">{action.label}</span>
@@ -252,7 +248,7 @@ export default function HelpPage() {
             <h2 className="text-2xl font-bold text-[#1A1D29] mb-6">Browse Help Topics</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {CATEGORIES.map((cat) => (
-                <div key={cat.id} className="group bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200">
+                <div key={cat.id} className="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-blue-200 transition-all duration-200">
                   <div className="flex items-center gap-4 mb-4">
                     <div className="h-12 w-12 rounded-xl bg-gray-50 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
                       {cat.icon}
@@ -289,7 +285,7 @@ export default function HelpPage() {
                 <Link 
                   key={idx} 
                   href={article.href}
-                  className="flex flex-col p-6 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-blue-200 transition-all duration-200 group relative overflow-hidden"
+                  className="flex flex-col p-6 bg-white rounded-2xl border border-gray-100 hover:border-blue-200 transition-all duration-200 group relative overflow-hidden"
                 >
                   <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity transform translate-x-2 group-hover:translate-x-0">
                     <ChevronRight className="h-5 w-5 text-blue-500" />
@@ -319,32 +315,57 @@ export default function HelpPage() {
           </div>
 
           {/* Still Need Help? */}
-          <div className="max-w-6xl mx-auto mt-20 mb-10 text-center">
-             <div className="bg-gradient-to-r from-orange-500 to-[#FF6B4A] rounded-[2.5rem] p-10 md:p-16 text-white overflow-hidden relative shadow-2xl">
-                {/* Decorative Circles */}
-                <div className="absolute top-0 right-0 -mt-20 -mr-20 h-96 w-96 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
-                <div className="absolute bottom-0 left-0 -mb-20 -ml-20 h-96 w-96 bg-black/5 rounded-full blur-3xl"></div>
-                
-                <div className="relative z-10 flex flex-col items-center">
-                  <div className="h-16 w-16 bg-white/20 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-sm">
-                    <AlertCircle className="h-8 w-8 text-white" />
+          <div className="max-w-6xl mx-auto mt-20 mb-10">
+            <h2 className="text-2xl font-bold text-[#1A1D29] mb-6 text-center">Still need help?</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-gray-50 rounded-2xl p-8 border border-gray-100">
+                <div className="flex items-center space-x-4 mb-6">
+                  <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center border border-gray-100">
+                    <Phone className="w-6 h-6 text-[#0B1220]" />
                   </div>
-                  
-                  <h2 className="text-3xl md:text-4xl font-black mb-4 tracking-tight">Still need help?</h2>
-                  <p className="text-orange-50 mb-10 max-w-2xl mx-auto text-lg leading-relaxed">
-                    Can't find what you're looking for? Our support team is available from 7am to 10pm daily. 
-                    We're here to help you with any issues you might have.
-                  </p>
-                  
-                  <Link 
-                    href="/contact"
-                    className="group inline-flex items-center justify-center px-8 py-4 bg-white text-[#FF6B4A] rounded-xl font-bold text-lg hover:bg-orange-50 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
-                  >
-                    Contact Support
-                    <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                  </Link>
+                  <div>
+                    <h3 className="font-bold text-[#0B1220]">Call Us</h3>
+                    <p className="text-gray-500 text-sm">Mon-Fri, 8am-5pm</p>
+                  </div>
                 </div>
-             </div>
+                <p className="text-[#0B1220] font-medium text-lg mb-6">087 362 8000</p>
+                <button className="w-full bg-[#0B1220] text-white py-3 rounded-xl font-medium hover:bg-[#1a2537] transition-colors">
+                  Call Now
+                </button>
+              </div>
+
+              <div className="bg-gray-50 rounded-2xl p-8 border border-gray-100">
+                <div className="flex items-center space-x-4 mb-6">
+                  <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center border border-gray-100">
+                    <Mail className="w-6 h-6 text-[#0B1220]" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-[#0B1220]">Email Support</h3>
+                    <p className="text-gray-500 text-sm">Response within 24h</p>
+                  </div>
+                </div>
+                <p className="text-[#0B1220] font-medium text-lg mb-6">help@peboli.com</p>
+                <button className="w-full bg-white border-2 border-[#0B1220] text-[#0B1220] py-3 rounded-xl font-medium hover:bg-gray-50 transition-colors">
+                  Send Email
+                </button>
+              </div>
+
+              <div className="bg-gray-50 rounded-2xl p-8 border border-gray-100">
+                <div className="flex items-center space-x-4 mb-6">
+                  <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center border border-gray-100">
+                    <MessageCircle className="w-6 h-6 text-[#0B1220]" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-[#0B1220]">Live Chat</h3>
+                    <p className="text-gray-500 text-sm">Available 24/7</p>
+                  </div>
+                </div>
+                <p className="text-[#0B1220] font-medium text-lg mb-6">Average wait: 2 mins</p>
+                <button className="w-full bg-[#FF6B4A] text-white py-3 rounded-xl font-medium hover:bg-[#e55a3b] transition-colors">
+                  Start Chat
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </main>

@@ -92,13 +92,13 @@ export function HomepageSettings() {
         <p className="mt-1 text-sm text-gray-500">Update hero title, subtitle, and image.</p>
       </div>
 
-      <div className="rounded-2xl border border-gray-100 bg-white premium-shadow p-6">
+      <div className="rounded-2xl border border-gray-100 bg-white p-6">
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="font-black text-[#1A1D29]">Hero content</div>
             <div className="mt-1 text-sm text-[#8B95A5]">Controls the top hero section.</div>
           </div>
-          <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-[#0B1220]/10 via-[#FF6B4A]/10 to-[#00C48C]/10 flex items-center justify-center text-[#0B1220]">
+          <div className="h-11 w-11 rounded-2xl bg-gray-50 flex items-center justify-center text-[#0B1220]">
             <ImageIcon className="h-5 w-5" />
           </div>
         </div>
@@ -189,7 +189,7 @@ export function HomepageSettings() {
                     />
                   </a>
                   <button
-                    className="absolute top-2 right-2 h-8 w-8 rounded-full bg-white/95 backdrop-blur-md border border-gray-200 flex items-center justify-center hover:bg-white transition"
+                    className="absolute top-2 right-2 h-8 w-8 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition"
                     onClick={(e) => {
                       e.preventDefault();
                       const next = (hero.imageUrls || []).filter((u) => u !== img);
@@ -205,7 +205,7 @@ export function HomepageSettings() {
           </div>
         </div>
         <div className="mt-6 flex flex-wrap gap-3">
-          <Link href="/" className="inline-flex items-center justify-center rounded-xl premium-gradient px-5 py-2.5 text-sm font-semibold text-white">
+          <Link href="/" className="inline-flex items-center justify-center rounded-xl bg-[#0B1220] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#1A1D29] transition-colors">
             <Save className="h-4 w-4 mr-2" />
             View homepage
           </Link>
@@ -250,7 +250,7 @@ export function HomepageSettings() {
           </button>
         </div>
         {generated.length > 0 && (
-          <div className="mt-6 rounded-2xl border border-gray-100 bg-white premium-shadow p-6">
+          <div className="mt-6 rounded-2xl border border-gray-100 bg-white p-6">
             <div className="font-black text-[#1A1D29]">Generated header images</div>
             <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3">
               {generated.map((img, idx) => (

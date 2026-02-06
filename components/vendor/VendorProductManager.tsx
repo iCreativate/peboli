@@ -309,7 +309,7 @@ export function VendorProductManager() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-6">
+            <div className="bg-white p-6 rounded-2xl border border-gray-100 space-y-6">
               <div>
                 <h3 className="text-lg font-bold text-gray-900">Product Details</h3>
                 <p className="text-sm text-gray-500">Basic information about your product.</p>
@@ -464,7 +464,7 @@ export function VendorProductManager() {
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
+            <div className="bg-white p-6 rounded-2xl border border-gray-100 space-y-4">
               <div>
                 <h3 className="text-lg font-bold text-gray-900">Collections</h3>
                 <p className="text-sm text-gray-500">Select collections where this product should appear.</p>
@@ -494,7 +494,7 @@ export function VendorProductManager() {
           </div>
 
           <div className="space-y-6">
-            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm sticky top-6">
+            <div className="bg-white p-6 rounded-2xl border border-gray-100 sticky top-6">
               <h3 className="text-lg font-bold text-gray-900 mb-4">Preview</h3>
               <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
                 <div className="aspect-square bg-gray-50 relative">
@@ -528,7 +528,7 @@ export function VendorProductManager() {
 
               <div className="mt-6 space-y-3">
                 <Button 
-                  className="w-full h-11 bg-gradient-to-r from-gray-900 to-black text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all"
+                  className="w-full h-11 bg-gray-900 hover:bg-black text-white font-bold rounded-xl transition-all"
                   disabled={submitting || !name || !price}
                   onClick={(e) => handleSubmit(e as any)}
                 >
@@ -617,7 +617,7 @@ export function VendorProductManager() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead className="bg-gray-50 border-b border-gray-100">

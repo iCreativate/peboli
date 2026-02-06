@@ -52,6 +52,12 @@ enum VerificationTier {
   ELITE
 }
 
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
@@ -149,6 +155,7 @@ model Product {
   category          Category  @relation(fields: [categoryId], references: [id])
   subcategory       String?
   condition         Condition @default(NEW)
+  status            ProductStatus @default(DRAFT)
   stock             Int       @default(0)
   origin            String    @default("Local") // 'Local' or 'International'
   standardDeliveryPrice Decimal?

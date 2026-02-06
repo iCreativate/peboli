@@ -35,12 +35,12 @@ export function Modal({ isOpen, onClose, children, className = '' }: ModalProps)
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
       <div 
-        className="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" 
+        className="absolute inset-0 bg-black/40 transition-opacity" 
         onClick={onClose}
         aria-hidden="true"
       />
       <div 
-        className={`relative w-full transform overflow-hidden rounded-3xl bg-white text-left shadow-2xl transition-all sm:max-w-[480px] ${className}`}
+        className={`relative w-full transform overflow-hidden rounded-3xl bg-white text-left border border-gray-200 transition-all sm:max-w-[480px] ${className}`}
         role="dialog"
         aria-modal="true"
       >

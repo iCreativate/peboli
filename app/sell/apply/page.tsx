@@ -233,9 +233,9 @@ export default function VendorApplicationPage() {
 
       <main className="flex-1 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+          <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
             {/* Header */}
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-8 py-10 text-white">
+            <div className="bg-[#0B1220] px-8 py-10 text-white">
               <h1 className="text-3xl font-bold mb-2">Vendor Application</h1>
               <p className="text-blue-100 text-lg">
                 Join our marketplace and start selling to millions of customers.

@@ -21,7 +21,7 @@ export default function AnalyticsPage() {
         {ANALYTICS_STATS.map((stat) => {
           const Icon = stat.icon;
           return (
-            <div key={stat.label} className="p-6 bg-white rounded-2xl border border-gray-100 shadow-sm">
+            <div key={stat.label} className="p-6 bg-white rounded-2xl border border-gray-100">
               <div className="flex items-center justify-between pb-2">
                 <p className="text-sm font-medium text-gray-500">{stat.label}</p>
                 <Icon className="h-4 w-4 text-gray-400" />
@@ -38,13 +38,13 @@ export default function AnalyticsPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+        <div className="bg-white p-6 rounded-2xl border border-gray-100">
           <h3 className="font-semibold text-gray-900 mb-6">Revenue over time</h3>
           <div className="h-[300px] flex items-center justify-center border-2 border-dashed border-gray-100 rounded-xl bg-gray-50 text-gray-400 text-sm">
             Chart Visualization (Coming Soon)
           </div>
         </div>
-        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+        <div className="bg-white p-6 rounded-2xl border border-gray-100">
           <h3 className="font-semibold text-gray-900 mb-6">Top Products</h3>
           <div className="space-y-4">
              <div className="text-sm text-gray-500 text-center py-12">No sales data yet</div>

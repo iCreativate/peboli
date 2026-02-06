@@ -88,8 +88,8 @@ export default function VendorPricingPage() {
 
       <main className="flex-1">
         <div className="container mx-auto px-4 lg:px-6 py-10">
-          <div className="rounded-3xl border border-gray-100 bg-white premium-shadow overflow-hidden">
-            <div className="p-6 md:p-10 premium-gradient text-white">
+          <div className="rounded-3xl border border-gray-100 bg-white overflow-hidden">
+            <div className="p-6 md:p-10 bg-[#0B1220] text-white">
               <div className="max-w-3xl">
                 <div className="text-white/80 text-sm font-semibold">Vendor Portal</div>
                 <h1 className="mt-1 text-3xl md:text-4xl font-black tracking-tight">Transparent Pricing</h1>
@@ -109,7 +109,7 @@ export default function VendorPricingPage() {
                     className={cn(
                       "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all whitespace-nowrap md:whitespace-normal",
                       activeTab === tab.id
-                        ? "bg-white text-[#0B1220] shadow-sm ring-1 ring-gray-200"
+                        ? "bg-white text-[#0B1220] ring-1 ring-gray-200"
                         : "text-[#8B95A5] hover:bg-gray-100 hover:text-[#1A1D29]"
                     )}
                   >
@@ -195,9 +195,9 @@ export default function VendorPricingPage() {
 
                     <div className="grid grid-cols-1 gap-4">
                       {CONTENT.boosting.tiers.map((tier, idx) => (
-                        <div key={idx} className="flex items-center justify-between p-5 rounded-xl border border-gray-100 bg-white hover:border-blue-200 hover:shadow-sm transition-all group">
+                        <div key={idx} className="flex items-center justify-between p-5 rounded-xl border border-gray-100 bg-white hover:border-blue-200 transition-all group">
                           <div className="flex items-center gap-4">
-                            <div className="h-10 w-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <div className="h-10 w-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center transition-transform">
                                <Rocket className="h-5 w-5" />
                             </div>
                             <div>
@@ -232,7 +232,7 @@ export default function VendorPricingPage() {
 
                     <div className="grid grid-cols-1 gap-4">
                       {CONTENT.fulfillment.tiers.map((tier, idx) => (
-                        <div key={idx} className="flex items-center justify-between p-5 rounded-xl border border-gray-100 bg-white hover:border-blue-200 hover:shadow-sm transition-all">
+                        <div key={idx} className="flex items-center justify-between p-5 rounded-xl border border-gray-100 bg-white hover:border-blue-200 transition-all">
                           <div>
                             <div className="flex items-center gap-2">
                                <span className="font-bold text-[#1A1D29]">{tier.size}</span>
@@ -297,7 +297,7 @@ export default function VendorPricingPage() {
                     </Link>
                     <button
                       onClick={openRegister}
-                      className="inline-flex items-center justify-center rounded-xl premium-gradient px-5 py-2.5 text-sm font-semibold text-white shadow-sm"
+                      className="inline-flex items-center justify-center rounded-xl bg-[#0B1220] px-5 py-2.5 text-sm font-semibold text-white hover:bg-black transition-colors"
                     >
                       Apply Now
                     </button>

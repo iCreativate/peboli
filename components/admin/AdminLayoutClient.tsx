@@ -8,16 +8,16 @@ export function AdminLayoutClient({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
+    <div className="flex min-h-screen bg-gray-50">
       {/* Desktop Sidebar */}
       <div className="hidden lg:block w-64 flex-shrink-0">
         <AdminSidebar />
       </div>
 
       {/* Mobile Header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-white border-b border-gray-100 px-4 py-3 flex items-center justify-between shadow-sm h-16">
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-white border-b border-gray-100 px-4 py-3 flex items-center justify-between h-16">
         <div className="flex items-center gap-2">
-           <div className="h-8 w-8 bg-gradient-to-br from-red-600 to-orange-600 rounded-lg flex items-center justify-center text-white font-bold shadow-sm">A</div>
+           <div className="h-8 w-8 bg-gray-900 rounded-lg flex items-center justify-center text-white font-bold">A</div>
            <span className="font-bold text-lg text-gray-900">Admin Console</span>
         </div>
         <button 
@@ -32,12 +32,12 @@ export function AdminLayoutClient({ children }: { children: React.ReactNode }) {
       {isSidebarOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div 
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity" 
+            className="absolute inset-0 bg-black/50 transition-opacity" 
             onClick={() => setSidebarOpen(false)} 
           />
-          <div className="absolute top-0 bottom-0 left-0 w-64 bg-white shadow-2xl animate-in slide-in-from-left duration-300">
+          <div className="absolute top-0 bottom-0 left-0 w-64 bg-white border-r border-gray-100 animate-in slide-in-from-left duration-300">
              <AdminSidebar 
-                className="!relative !h-full !w-full border-r-0 shadow-none" 
+                className="!relative !h-full !w-full border-r-0" 
                 onClose={() => setSidebarOpen(false)}
              /> 
           </div>
