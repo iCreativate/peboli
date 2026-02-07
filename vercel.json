@@ -1,0 +1,4 @@
+{
+  "buildCommand": "node scripts/vercel-db-push.js && next build",
+  "installCommand": "npm install"
+}
