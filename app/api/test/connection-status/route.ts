@@ -17,7 +17,7 @@ export async function GET() {
     let departments: Array<{ name: string; slug: string }> = [];
     if (hasData) {
       if (Array.isArray(setting.value)) {
-        departments = setting.value;
+        departments = setting.value as unknown as Array<{ name: string; slug: string }>;
       } else if (typeof setting.value === 'string') {
         try {
           departments = JSON.parse(setting.value);
