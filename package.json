@@ -9,12 +9,12 @@
     "lint": "eslint",
     "postinstall": "prisma generate",
     "db:push": "prisma db push --skip-generate --accept-data-loss",
-    "db:seed": "npx ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts",
+    "db:seed": "node scripts/run-with-env.js prisma/seed.ts",
     "db:setup": "npm run db:push && npm run db:seed",
-    "create-admin": "npx ts-node --compiler-options {\"module\":\"CommonJS\"} scripts/create-admin.ts"
+    "create-admin": "node scripts/run-with-env.js scripts/create-admin.ts"
   },
   "prisma": {
-    "seed": "npx ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+    "seed": "node scripts/run-with-env.js prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.19.1",
