@@ -113,31 +113,37 @@ async function main() {
     console.log(`Created admin ${adminEmail} — set password via: npx ts-node scripts/create-admin.ts`);
   }
 
-  let vendor = await prisma.vendor.findFirst({ where: { email: adminEmail } });
+  const vendorEmail = 'local-shelf@peboli.store';
+  let vendor = await prisma.vendor.findFirst({
+    where: { OR: [{ email: vendorEmail }, { email: adminEmail }] },
+  });
+
   if (!vendor) {
     const vendorUser = await prisma.user.upsert({
-      where: { email: 'local-shelf@peboli.store' },
+      where: { email: vendorEmail },
       update: {},
       create: {
-        email: 'local-shelf@peboli.store',
+        email: vendorEmail,
         name: 'Peboli Local Shelf',
         role: UserRole.VENDOR,
       },
     });
 
-    vendor = await prisma.vendor.create({
-      data: {
-        userId: vendorUser.id,
-        name: 'Peboli Local Shelf — Gauteng',
-        email: 'local-shelf@peboli.store',
-        isVerified: true,
-        verificationTier: 'ELITE',
-        status: 'APPROVED',
-        rating: 5,
-        reviewCount: 0,
-        positiveRating: 100,
-      },
-    });
+    vendor =
+      (await prisma.vendor.findUnique({ where: { userId: vendorUser.id } })) ??
+      (await prisma.vendor.create({
+        data: {
+          userId: vendorUser.id,
+          name: 'Peboli Local Shelf — Gauteng',
+          email: vendorEmail,
+          isVerified: true,
+          verificationTier: 'ELITE',
+          status: 'APPROVED',
+          rating: 5,
+          reviewCount: 0,
+          positiveRating: 100,
+        },
+      }));
   }
 
   const gautengCollection = await (prisma as any).collection.findUnique({ where: { slug: 'gauteng-local' } });
