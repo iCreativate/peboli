@@ -51,16 +51,16 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <motion.div
       transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-      className="group relative bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-xl hover:border-gray-200 transition-all duration-300 h-full flex flex-col"
+      className="group relative storefront-card storefront-card-interactive"
     >
-      <Link href={`/products/${product.slug}`} className="flex flex-col h-full">
+      <Link href={`/products/${product.slug}`} className="flex flex-col h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B1220]/20 focus-visible:ring-offset-2 rounded-2xl">
         {/* Image Container */}
-        <div className="relative aspect-square overflow-hidden bg-white p-4">
+        <div className="storefront-card-image aspect-square p-4 md:p-5">
           <img
             src={product.images[0] || '/products/placeholder.svg'}
             alt={product.name}
             loading="lazy"
-            className="h-full w-full object-contain transition-transform duration-500 ease-out group-hover:scale-105"
+            className="h-full w-full object-contain transition-transform duration-500 ease-out group-hover:scale-[1.04]"
             onError={(e) => {
               e.currentTarget.src = '/products/placeholder.svg';
             }}
@@ -69,7 +69,7 @@ export function ProductCard({ product }: ProductCardProps) {
           {/* Savings Badge */}
           {savingsPercentage > 0 && (
             <div className="absolute top-3 left-3 z-10 flex flex-col gap-1">
-              <Badge className="bg-red-500 text-white font-bold text-[10px] px-2 py-1 shadow-sm border-0">
+              <Badge className="bg-[#FF6B4A] text-white font-bold text-[10px] px-2 py-1 shadow-sm border-0">
                 -{savingsPercentage}%
               </Badge>
             </div>
@@ -133,7 +133,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
 
         {/* Product Info */}
-        <div className="p-4 flex-1 flex flex-col gap-2">
+        <div className="p-4 md:p-5 flex-1 flex flex-col gap-2 border-t border-[rgba(11,18,32,0.05)]">
           {/* Brand & Rating Row */}
           <div className="flex items-center justify-between">
             <p className="text-[10px] font-bold text-[#8B95A5] uppercase tracking-wider">{product.brand}</p>
@@ -144,7 +144,7 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
 
           {/* Title */}
-          <h3 className="font-semibold text-[#1A1D29] text-sm leading-snug line-clamp-2 group-hover:text-blue-600 transition-colors">
+          <h3 className="font-semibold text-[#1A1D29] text-sm leading-snug line-clamp-2 group-hover:text-[#0B1220] transition-colors">
             {product.name}
           </h3>
 

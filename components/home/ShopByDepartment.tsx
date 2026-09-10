@@ -226,14 +226,13 @@ export function ShopByDepartment() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: index * 0.03 }}
-                whileHover={{ y: -4 }}
                 className="min-w-[160px] md:min-w-0"
               >
                 <Link
                   href={`/categories/${dept.slug}`}
-                  className="flex items-center gap-3 rounded-2xl border border-gray-100 bg-white px-4 py-3 hover:bg-gray-50 transition-all duration-200"
+                  className="storefront-tile storefront-tile-interactive flex items-center gap-3 px-4 py-3.5"
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-50">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#F7F8FA] to-white border border-[rgba(11,18,32,0.06)] shadow-sm">
                     {getDepartmentIcon(dept)}
                   </div>
                   <div className="flex-1 min-w-0">

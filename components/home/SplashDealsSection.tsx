@@ -119,23 +119,23 @@ export function SplashDealsSection() {
                       transition={{ duration: 0.5, delay: index * 0.1 }}
                     >
                       <Link href={`/products/${deal.product.slug}`} className="block">
-                        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-gray-300 transition-colors">
+                        <div className="storefront-card storefront-card-interactive group">
                           {deal.product.images && deal.product.images.length > 0 && (
-                            <div className="relative aspect-square">
+                            <div className="storefront-card-image relative aspect-square p-4">
                               <img
                                 src={deal.product.images[0].url}
                                 alt={deal.product.name}
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-[1.04]"
                               />
                               {deal.discountPercentage && (
-                                <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-lg text-sm font-bold">
+                                <div className="absolute top-3 right-3 bg-[#FF6B4A] text-white px-2 py-1 rounded-lg text-sm font-bold shadow-sm">
                                   -{deal.discountPercentage}%
                                 </div>
                               )}
                             </div>
                           )}
-                          <div className="p-4">
-                            <h3 className="font-semibold text-gray-900 line-clamp-2 mb-2">{deal.product.name}</h3>
+                          <div className="p-4 md:p-5 border-t border-[rgba(11,18,32,0.05)]">
+                            <h3 className="font-semibold text-[#1A1D29] line-clamp-2 mb-2 group-hover:text-[#0B1220] transition-colors">{deal.product.name}</h3>
                             <div className="flex items-center gap-2">
                               <span className="text-lg font-bold text-[#0B1220]">
                                 R{Number(deal.product.price).toFixed(2)}

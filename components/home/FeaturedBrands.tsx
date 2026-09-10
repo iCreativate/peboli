@@ -21,7 +21,7 @@ export function FeaturedBrands() {
             {brands.map((brand, index) => (
               <div
                 key={index}
-                className="flex-shrink-0 w-48 h-24 border border-gray-200 rounded-lg flex items-center justify-center bg-white hover:border-gray-400 transition-colors"
+                className="storefront-tile storefront-tile-interactive flex-shrink-0 w-48 h-24 flex items-center justify-center"
               >
                 <span className={`font-bold text-lg ${brand.color}`}>{brand.name}</span>
               </div>

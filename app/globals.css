@@ -138,46 +138,133 @@
   }
 }
 
-/* Premium Custom Styles - Flattened */
+/* Peboli storefront card surfaces */
 @layer utilities {
+  .storefront-card {
+    @apply bg-white rounded-2xl border overflow-hidden;
+    border-color: rgba(11, 18, 32, 0.08);
+    box-shadow:
+      0 1px 2px rgba(11, 18, 32, 0.04),
+      0 4px 16px rgba(11, 18, 32, 0.05);
+    transition:
+      transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .storefront-card-interactive {
+    @apply h-full flex flex-col;
+  }
+
+  @media (hover: hover) {
+    .storefront-card-interactive:hover {
+      transform: translateY(-4px);
+      border-color: rgba(11, 18, 32, 0.14);
+      box-shadow:
+        0 4px 8px rgba(11, 18, 32, 0.06),
+        0 16px 40px rgba(11, 18, 32, 0.1);
+    }
+  }
+
+  .storefront-card-image {
+    @apply relative overflow-hidden;
+    background: linear-gradient(180deg, var(--soft-gray) 0%, #ffffff 72%);
+  }
+
+  .storefront-tile {
+    @apply bg-white rounded-2xl border;
+    border-color: rgba(11, 18, 32, 0.08);
+    box-shadow: 0 1px 3px rgba(11, 18, 32, 0.05);
+    transition:
+      transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+      background-color 0.2s ease;
+  }
+
+  @media (hover: hover) {
+    .storefront-tile-interactive:hover {
+      transform: translateY(-3px);
+      border-color: rgba(11, 18, 32, 0.14);
+      box-shadow:
+        0 4px 10px rgba(11, 18, 32, 0.07),
+        0 12px 28px rgba(11, 18, 32, 0.08);
+    }
+  }
+
+  .storefront-section {
+    @apply bg-white rounded-3xl border overflow-hidden;
+    border-color: rgba(11, 18, 32, 0.07);
+    box-shadow:
+      0 2px 6px rgba(11, 18, 32, 0.04),
+      0 10px 32px rgba(11, 18, 32, 0.06);
+  }
+
+  .storefront-pill {
+    @apply inline-flex items-center rounded-full border bg-white transition-all duration-200;
+    border-color: rgba(11, 18, 32, 0.1);
+    box-shadow: 0 1px 2px rgba(11, 18, 32, 0.04);
+  }
+
+  @media (hover: hover) {
+    .storefront-pill:hover {
+      border-color: rgba(11, 18, 32, 0.16);
+      box-shadow: 0 2px 8px rgba(11, 18, 32, 0.07);
+      @apply bg-white;
+    }
+  }
+
   .premium-shadow {
-    @apply shadow-none;
+    box-shadow:
+      0 1px 2px rgba(11, 18, 32, 0.04),
+      0 4px 16px rgba(11, 18, 32, 0.05);
   }
-  
+
   .premium-shadow-lg {
-    @apply shadow-none;
+    box-shadow:
+      0 2px 6px rgba(11, 18, 32, 0.05),
+      0 10px 32px rgba(11, 18, 32, 0.08);
   }
-  
+
   .premium-shadow-xl {
-    @apply shadow-none;
+    box-shadow:
+      0 4px 8px rgba(11, 18, 32, 0.06),
+      0 16px 40px rgba(11, 18, 32, 0.1);
   }
-  
+
   .premium-gradient {
     @apply bg-[#0B1220];
   }
-  
+
   .premium-gradient-subtle {
     @apply bg-gray-50;
   }
-  
+
   .text-gradient {
     @apply text-[#0B1220] bg-none;
     -webkit-text-fill-color: initial;
     background-clip: border-box;
   }
-  
+
   .glass-effect {
-    @apply bg-white backdrop-blur-none;
+    @apply bg-white/90 backdrop-blur-sm;
   }
-  
+
   .hover-lift {
-    @apply transition-none transform-none shadow-none;
+    transition:
+      transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  
-  .hover-lift:hover {
-    @apply transform-none shadow-none;
+
+  @media (hover: hover) {
+    .hover-lift:hover {
+      transform: translateY(-3px);
+      box-shadow:
+        0 4px 10px rgba(11, 18, 32, 0.07),
+        0 12px 28px rgba(11, 18, 32, 0.08);
+    }
   }
-  
+
   .animate-gradient {
     background-size: auto;
     animation: none;

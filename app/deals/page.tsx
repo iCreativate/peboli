@@ -31,7 +31,7 @@ export default function DealsPage() {
 
       <main className="flex-1">
         <div className="container mx-auto px-4 lg:px-6 py-10">
-          <div className="rounded-3xl border border-gray-100 bg-white overflow-hidden">
+          <div className="storefront-section overflow-hidden">
             <div className="p-6 md:p-10 bg-[#0B1220]">
               <div className="max-w-3xl">
                 <div className="text-white/80 text-sm font-semibold">Deals</div>
@@ -63,11 +63,11 @@ export default function DealsPage() {
                   <Link
                     key={s.title}
                     href={s.href}
-                    className="group rounded-2xl border border-gray-100 bg-white hover:border-gray-300 transition-all duration-200 p-6"
+                    className="storefront-card storefront-card-interactive group p-6"
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <div className="font-black text-[#1A1D29] group-hover:text-blue-600 transition-colors">{s.title}</div>
+                        <div className="font-black text-[#1A1D29] group-hover:text-[#0B1220] transition-colors">{s.title}</div>
                         <div className="mt-2 text-sm text-[#8B95A5] leading-relaxed">{s.description}</div>
                         <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[#0B1220]">
                           Explore
