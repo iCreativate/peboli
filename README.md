@@ -1,178 +1,130 @@
-# Peboli - Next-Generation Ecommerce Marketplace
+# Peboli — Local Shelf (Gauteng/SA)
 
-**Core Brand Promise: "Best deals. Zero hassle."**
+**Brand promise: "Best deals. Zero hassle."**
 
-A modern, full-featured ecommerce marketplace platform built with Next.js 14+, TypeScript, and Tailwind CSS.
+Peboli is configured for **Local Shelf** — honest Gauteng/SA local-goods resale at **30–40% markup** (default **35%**). This is **not** an AliExpress multi-vendor dropship marketplace.
 
-## 🚀 Features
+- **Public site:** sell price only (no cost/markup visible)
+- **Checkout:** buy-after-pay via **Bank EFT** or **WhatsApp** (no live card gateway in P0)
+- **Admin:** cost + markup pricing, real order queue, SAMPLE Gauteng placeholders
 
-### ✅ Implemented
+## Tech stack
 
-- **Homepage**
-  - Hero section with CTA
-  - Today's Splash Deals section with splash sale timers
-  - Category grid with 8 main categories
-  - Trust signals footer
+- Next.js 16 (App Router) + TypeScript
+- PostgreSQL + Prisma
+- NextAuth (credentials + optional Google/Facebook)
+- Tailwind CSS v4 + shadcn/ui
+- Zustand (cart)
 
-- **Product Pages**
-  - Image gallery with thumbnail navigation
-  - Detailed product information
-  - Pricing with savings badges
-  - Splash sale countdown timers
-  - Vendor information
-  - Product specifications
-  - Shipping & returns information
+## Run locally (MacBook / dev)
 
-- **Category Pages**
-  - Product grid with filtering
-  - Price range slider
-  - Brand filters
-  - Sort options (price, newest, bestselling, etc.)
-  - Active filter badges
-  - Responsive mobile/desktop layouts
+### 1. Install
 
-- **Design System**
-  - Peboli brand colors (Splash Blue, Coral Accent, Success Green)
-  - Inter font family (400-900 weights)
-  - Consistent component styling
-  - Micro-interactions with Framer Motion
-  - Mobile-first responsive design
-
-- **Navigation**
-  - Sticky header with search bar
-  - Category navigation
-  - Shopping cart icon with badge
-  - User account access
-
-### 🚧 In Progress / Planned
-
-- Checkout flow (guest checkout, delivery, payment)
-- Vendor dashboard (product upload, orders, analytics)
-- Admin dashboard (user management, vendor approvals)
-- Authentication system (buyers and vendors)
-- Database schema and API routes
-- Payment gateway integration
-- Search functionality with Algolia
-- Reviews and ratings system
-- Splash sales engine
-- Referral system
-
-## 🛠️ Tech Stack
-
-- **Framework**: Next.js 14+ (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS v4
-- **UI Components**: shadcn/ui
-- **Animations**: Framer Motion
-- **State Management**: Zustand
-- **Data Fetching**: React Query (TanStack Query)
-- **Icons**: Lucide React
-
-## 📁 Project Structure
-
-```
-peboli/
-├── app/                    # Next.js App Router pages
-│   ├── page.tsx           # Homepage
-│   ├── products/[slug]/   # Product detail pages
-│   ├── categories/[slug]/ # Category pages
-│   └── layout.tsx         # Root layout
-├── components/
-│   ├── layout/            # Header, Footer
-│   ├── home/              # Homepage sections
-│   ├── product/           # Product components
-│   ├── category/          # Category components
-│   ├── deals/             # Splash sale components
-│   └── ui/                # shadcn/ui components
-├── lib/
-│   ├── constants/         # App constants
-│   └── utils/             # Utility functions
-└── types/                 # TypeScript types
+```bash
+npm install
 ```
 
-## 🎨 Brand Colors
+### 2. Environment variables
 
-- **Splash Blue**: `#0B1220` - Primary color, CTAs, links
-- **Coral Accent**: `#FF6B4A` - Deals, urgency, highlights
-- **Success Green**: `#00C48C` - Confirmations, savings badges
-- **Pure White**: `#FFFFFF` - Backgrounds
-- **Soft Gray**: `#F7F8FA` - Cards, sections
-- **Medium Gray**: `#8B95A5` - Secondary text
-- **Deep Charcoal**: `#1A1D29` - Headlines, primary text
+Create `.env.local` with these **key names** (never commit real values):
 
-## 🚀 Getting Started
+| Key | Purpose |
+|-----|---------|
+| `DATABASE_URL` | PostgreSQL connection string (local Docker, Neon, Supabase, etc.) |
+| `NEXTAUTH_URL` | e.g. `http://localhost:3000` |
+| `NEXTAUTH_SECRET` | Random secret — required in production |
+| `ADMIN_EMAIL` | Admin login email (default `admin@peboli.store`) |
+| `LOCAL_SHELF_MODE` | `true` (default) — Local Shelf behaviour |
+| `ENABLE_IMPORT_PRODUCT` | `false` (default in Local Shelf) — blocks URL scraping |
+| `ENABLE_LIQUOR` | `false` (default) — liquor collection off until licensed |
+| `PEBOLI_WHATSAPP_NUMBER` | WhatsApp number for pay-after-order (digits, e.g. `27821234567`) |
+| `PEBOLI_EFT_BANK_NAME` | Bank name shown on checkout confirmation |
+| `PEBOLI_EFT_ACCOUNT_NAME` | Account holder name |
+| `PEBOLI_EFT_ACCOUNT_NUMBER` | Account number |
+| `PEBOLI_EFT_BRANCH_CODE` | Optional branch code |
+| `PEBOLI_EFT_REFERENCE_PREFIX` | Reference prefix (default `PEB`) |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Optional OAuth |
+| `FACEBOOK_CLIENT_ID` / `FACEBOOK_CLIENT_SECRET` | Optional OAuth |
+| `BLOB_READ_WRITE_TOKEN` | Optional — Vercel Blob for image uploads |
 
-1. **Install dependencies**
-   ```bash
-   npm install
-   ```
+### 3. Database setup (separate from build)
 
-2. **Set up environment variables**
-   Create a `.env.local` file in the root directory with the following variables:
-   ```env
-   # NextAuth Configuration
-   NEXTAUTH_URL=http://localhost:3000
-   NEXTAUTH_SECRET=your-secret-key-here
+```bash
+npm run db:push    # sync schema — run manually, NOT during build
+npm run db:seed    # SAMPLE Gauteng-local products + collections
+npm run create-admin -- admin@peboli.store 'YourSecurePassword8+'
+```
 
-   # Database
-   DATABASE_URL=your-postgresql-connection-string
+Or one step: `npm run db:setup`
 
-   # Admin Security
-   ADMIN_PASSWORD=your-secure-admin-password
+**Local PostgreSQL (Docker example):**
 
-   # OAuth Providers (Optional - for Google/Facebook login)
-   GOOGLE_CLIENT_ID=your-google-client-id
-   GOOGLE_CLIENT_SECRET=your-google-client-secret
-   FACEBOOK_CLIENT_ID=your-facebook-app-id
-   FACEBOOK_CLIENT_SECRET=your-facebook-app-secret
+```bash
+docker run --name peboli-pg -e POSTGRES_PASSWORD=peboli -e POSTGRES_DB=peboli -p 5432:5432 -d postgres:16
+# DATABASE_URL=postgresql://postgres:peboli@localhost:5432/peboli
+```
 
-   # Vercel Blob Storage (Required for image uploads)
-   BLOB_READ_WRITE_TOKEN=your-vercel-blob-token
-   ```
+### 4. Dev server
 
-   **To get OAuth credentials:**
-   - **Google**: Go to [Google Cloud Console](https://console.cloud.google.com/), create a project, enable Google+ API, and create OAuth 2.0 credentials. Add authorized redirect URI: `http://localhost:3000/api/auth/callback/google`
-   - **Facebook**: Go to [Facebook Developers](https://developers.facebook.com/), create an app, add Facebook Login product, and get App ID and App Secret. Add valid OAuth redirect URI: `http://localhost:3000/api/auth/callback/facebook`
+```bash
+npm run dev
+```
 
-   **To set up Vercel Blob Storage (for image uploads):**
-   1. Go to your project in the [Vercel Dashboard](https://vercel.com/dashboard)
-   2. Navigate to the **Storage** tab
-   3. Click **Create Database** or **Add Storage**
-   4. Select **Blob** and click **Continue**
-   5. Give your Blob store a name (e.g., "peboli-images") and click **Create**
-   6. Vercel will automatically create the `BLOB_READ_WRITE_TOKEN` environment variable
-   7. For local development, run `vercel env pull` to download environment variables to your `.env.local` file
-   8. **Important**: Make sure the token is set for all environments (Production, Preview, Development) in Vercel Dashboard > Settings > Environment Variables
+Open [http://localhost:3000](http://localhost:3000)
 
-3. **Run development server**
-   ```bash
-   npm run dev
-   ```
+## Local Shelf pricing
 
-4. **Open browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
+| Field | Who sees it | Notes |
+|-------|-------------|-------|
+| `cost` / `landedCost` | Admin only | Your purchase/landed cost |
+| `markupPercent` | Admin only | Clamped **30–40%**, default **35%** |
+| `price` | Public | Auto: `round(baseCost × (1 + markup/100))` |
 
-## 📝 Development Notes
+Add products in **Admin → Catalog** with cost + markup, or push via `/api/admin/push-product`.
 
-- All components are built with TypeScript for type safety
-- Responsive design follows mobile-first approach
-- Components use shadcn/ui for consistent styling
-- Framer Motion provides smooth animations
-- Mock data is currently used; will be replaced with API calls
+## Sample vs real catalogue
 
-## 🔜 Next Steps
+- **`npm run db:seed`** creates **SAMPLE** Gauteng products (names prefixed `SAMPLE —`). Replace with real stock before going live.
+- **No China/import smartwatch defaults** — import-product scraping is **disabled** unless `ENABLE_IMPORT_PRODUCT=true`.
+- **No offline `live-products.json` fallback** — orders and products require a real database.
 
-1. Set up PostgreSQL database schema
-2. Create API routes for products, orders, users
-3. Implement authentication (NextAuth.js or similar)
-4. Integrate payment gateway (PayGate/Paystack)
-5. Set up Algolia for search
-6. Build vendor dashboard
-7. Build admin dashboard
-8. Implement splash sales engine
-9. Add reviews and ratings system
-10. Set up deployment (Vercel + Railway/AWS)
+## Checkout & payments (P0)
 
-## 📄 License
+1. Customer adds products to cart → checkout
+2. Order is **persisted** in PostgreSQL (`PEB-…` order numbers)
+3. Confirmation shows **EFT details** + optional **WhatsApp** link
+4. Admin sees orders at `/admin/orders`
 
-Private project - All rights reserved
+**Stubs (not live in P0):** Yoco, iKhokha, PayFast, Ozow card/Instant EFT — configuration UI may exist but no charge flow. Use EFT/WhatsApp handoff.
+
+## Auth
+
+- Passwords hashed with **bcrypt** (legacy SHA-256 hashes migrate on login)
+- **No mock-login fallback** when DB is down or user missing
+- Create admin: `npm run create-admin -- <email> <password>`
+
+## Build & deploy
+
+```bash
+npm run build   # prisma generate + next build only — safe, no db push
+```
+
+Run `npm run db:push` separately on each environment after deploy.
+
+**Vercel / Render:** build does **not** run `prisma db push`. Apply schema manually post-deploy.
+
+## Verify checklist (P0 PR)
+
+- [ ] `npm run db:setup` — schema + SAMPLE products
+- [ ] `npm run create-admin` — admin can log in (no mock user)
+- [ ] Add product with cost R100 → sell price R135 at 35% markup
+- [ ] Public product page shows sell price only
+- [ ] Checkout from cart → real `PEB-…` order → appears in `/admin/orders`
+- [ ] EFT reference + WhatsApp link on confirmation
+- [ ] `/api/import-product` returns 403 in Local Shelf mode
+- [ ] `/liquor` redirects home when `ENABLE_LIQUOR` unset
+- [ ] `npm run build` succeeds without database
+
+## License
+
+Private project — iCreativate / Peboli. All rights reserved.

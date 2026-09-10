@@ -83,7 +83,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     
-    const userEmail = session?.user?.email || 'admin@peboli.store';
+    const userEmail = String(session?.user?.email || 'admin@peboli.store');
 
     const body = await request.json();
     console.log('[API POST] Request Body:', JSON.stringify(body, null, 2));

@@ -1,24 +1,26 @@
 import { PrismaClient } from '@prisma/client';
-import crypto from 'crypto';
+import { hashPassword } from '../lib/password';
 
 const prisma = new PrismaClient();
 
-function hashPassword(password: string): string {
-  return crypto.createHash('sha256').update(password).digest('hex');
-}
-
 async function main() {
-  const email = process.argv[2];
+  const email = process.argv[2] || process.env.ADMIN_EMAIL || 'admin@peboli.store';
   const password = process.argv[3];
 
-  if (!email || !password) {
+  if (!password) {
     console.error('Usage: npx ts-node scripts/create-admin.ts <email> <password>');
+    console.error('Set ADMIN_EMAIL env var to override default admin email.');
+    process.exit(1);
+  }
+
+  if (password.length < 8) {
+    console.error('Password must be at least 8 characters.');
     process.exit(1);
   }
 
   console.log(`Creating admin user: ${email}`);
 
-  const hashedPassword = hashPassword(password);
+  const hashedPassword = await hashPassword(password);
 
   const user = await prisma.user.upsert({
     where: { email },
@@ -29,7 +31,7 @@ async function main() {
     create: {
       email,
       password: hashedPassword,
-      name: 'Admin User',
+      name: 'Peboli Admin',
       role: 'ADMIN',
     },
   });

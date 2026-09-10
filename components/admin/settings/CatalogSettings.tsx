@@ -5,6 +5,7 @@ import { Plus, Trash2, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAdminStore } from '@/lib/stores/admin';
+import { calculateSellPrice, clampMarkupPercent, MARKUP_DEFAULT, MARKUP_MIN, MARKUP_MAX } from '@/lib/pricing';
 
 type ImportedProduct = {
   title?: string;
@@ -43,8 +44,11 @@ export function CatalogSettings() {
   const [draftName, setDraftName] = useState('');
   const [draftBrand, setDraftBrand] = useState('');
   const [draftCategory, setDraftCategory] = useState('electronics');
+  const [draftCost, setDraftCost] = useState('');
+  const [draftMarkupPercent, setDraftMarkupPercent] = useState(String(MARKUP_DEFAULT));
   const [draftPrice, setDraftPrice] = useState('');
   const [draftStock, setDraftStock] = useState('');
+  const [importProductEnabled, setImportProductEnabled] = useState(false);
   const [draftCompareAt, setDraftCompareAt] = useState('');
   const [draftOrigin, setDraftOrigin] = useState<'Local' | 'International'>('Local');
   const [draftStandardDelivery, setDraftStandardDelivery] = useState('');
@@ -65,7 +69,17 @@ export function CatalogSettings() {
         if (Array.isArray(data)) setCategories(data);
       })
       .catch(console.error);
+    fetch('/api/shop-config')
+      .then((res) => res.json())
+      .then((data) => setImportProductEnabled(Boolean(data?.importProductEnabled)))
+      .catch(() => setImportProductEnabled(false));
   }, []);
+
+  const computedSellPrice = useMemo(() => {
+    const cost = Number(draftCost);
+    if (!Number.isFinite(cost) || cost <= 0) return 0;
+    return calculateSellPrice(cost, Number(draftMarkupPercent) || MARKUP_DEFAULT);
+  }, [draftCost, draftMarkupPercent]);
 
   const [previewId, setPreviewId] = useState<string | null>(null);
   const [previewName, setPreviewName] = useState('');
@@ -82,20 +96,27 @@ export function CatalogSettings() {
   const [previewDescription, setPreviewDescription] = useState('');
 
   const canAdd = useMemo(() => {
-    return draftName.trim() && draftBrand.trim() && draftCategory.trim() && Number(draftPrice) > 0;
-  }, [draftName, draftBrand, draftCategory, draftPrice]);
+    const hasCost = Number(draftCost) > 0;
+    const hasPrice = Number(draftPrice) > 0;
+    return draftName.trim() && draftBrand.trim() && draftCategory.trim() && (hasCost || hasPrice);
+  }, [draftName, draftBrand, draftCategory, draftCost, draftPrice]);
 
   const onAdd = () => {
     if (!canAdd) return;
     const id = crypto.randomUUID();
     const name = draftName.trim();
+    const cost = Number(draftCost) || undefined;
+    const markup = clampMarkupPercent(Number(draftMarkupPercent) || MARKUP_DEFAULT);
+    const sellPrice = cost ? calculateSellPrice(cost, markup) : Number(draftPrice);
     addProduct({
       id,
       name,
       slug: slugify(name),
       brand: draftBrand.trim(),
       category: draftCategory.trim(),
-      price: Number(draftPrice),
+      price: sellPrice,
+      cost,
+      markupPercent: markup,
       stock: draftStock ? Number(draftStock) : undefined,
       compareAtPrice: draftCompareAt ? Number(draftCompareAt) : undefined,
       origin: draftOrigin,
@@ -108,7 +129,9 @@ export function CatalogSettings() {
     });
     setDraftName('');
     setDraftBrand('');
-    setDraftCategory('electronics');
+    setDraftCategory('food');
+    setDraftCost('');
+    setDraftMarkupPercent(String(MARKUP_DEFAULT));
     setDraftPrice('');
     setDraftStock('');
     setDraftCompareAt('');
@@ -378,6 +401,13 @@ export function CatalogSettings() {
         <p className="mt-1 text-sm text-gray-500">Add, edit, and delete products.</p>
       </div>
 
+      {!importProductEnabled && (
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-900">
+          <strong>Local Shelf mode:</strong> URL import is disabled. Add Gauteng local goods manually with cost + {MARKUP_MIN}–{MARKUP_MAX}% markup (default {MARKUP_DEFAULT}%). Public site shows sell price only.
+        </div>
+      )}
+
+      {importProductEnabled && (
       <div className="rounded-2xl border border-gray-100 bg-white p-6">
         <div className="font-black text-[#1A1D29]">Import from URL</div>
         <div className="mt-2 text-sm text-[#8B95A5]">
@@ -557,9 +587,11 @@ export function CatalogSettings() {
           Some websites block automated requests. If import fails, try a different link or manually add images.
         </div>
       </div>
+      )}
 
       <div className="rounded-2xl border border-gray-100 bg-gray-50 p-6">
-        <div className="font-bold text-[#1A1D29]">Add new product</div>
+        <div className="font-bold text-[#1A1D29]">Add new product (Local Shelf)</div>
+        <p className="mt-1 text-sm text-[#8B95A5]">Enter your cost; sell price is calculated at {MARKUP_MIN}–{MARKUP_MAX}% markup. Customers see sell price only.</p>
         <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div>
             <label className="text-sm font-semibold text-[#1A1D29]">Name</label>
@@ -583,8 +615,29 @@ export function CatalogSettings() {
             </select>
           </div>
           <div>
-            <label className="text-sm font-semibold text-[#1A1D29]">Price</label>
-            <Input value={draftPrice} onChange={(e) => setDraftPrice(e.target.value)} className="mt-2 h-11 rounded-xl" inputMode="numeric" placeholder="1299" />
+            <label className="text-sm font-semibold text-[#1A1D29]">Your cost (R)</label>
+            <Input value={draftCost} onChange={(e) => setDraftCost(e.target.value)} className="mt-2 h-11 rounded-xl" inputMode="numeric" placeholder="100" />
+          </div>
+          <div>
+            <label className="text-sm font-semibold text-[#1A1D29]">Markup % ({MARKUP_MIN}–{MARKUP_MAX})</label>
+            <Input
+              value={draftMarkupPercent}
+              onChange={(e) => setDraftMarkupPercent(e.target.value)}
+              className="mt-2 h-11 rounded-xl"
+              inputMode="numeric"
+              placeholder={String(MARKUP_DEFAULT)}
+            />
+          </div>
+          <div>
+            <label className="text-sm font-semibold text-[#1A1D29]">Sell price (auto)</label>
+            <Input
+              value={computedSellPrice > 0 ? String(computedSellPrice) : draftPrice}
+              onChange={(e) => setDraftPrice(e.target.value)}
+              className="mt-2 h-11 rounded-xl bg-white"
+              inputMode="numeric"
+              placeholder={computedSellPrice > 0 ? String(computedSellPrice) : '1299'}
+              readOnly={computedSellPrice > 0}
+            />
           </div>
           <div>
             <label className="text-sm font-semibold text-[#1A1D29]">Compare at (optional)</label>

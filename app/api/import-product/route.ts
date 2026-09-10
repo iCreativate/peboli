@@ -336,6 +336,14 @@ function breadcrumbCategorySlug(breadcrumb: any) {
 
 export async function GET(request: Request) {
   try {
+    const { isImportProductEnabled } = await import('@/lib/local-shelf');
+    if (!isImportProductEnabled()) {
+      return NextResponse.json(
+        { error: 'Product import is disabled in Peboli Local Shelf mode. Add products manually with cost + markup.' },
+        { status: 403 }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const url = searchParams.get('url');
 

@@ -32,22 +32,9 @@ export function LoginModal() {
 
   const handleSocialLogin = async (provider: 'google' | 'facebook') => {
     if (submitting || socialLoading) return;
-    
     setSocialLoading(provider);
     try {
-      await new Promise((r) => setTimeout(r, 800));
-      
-      // Simulate successful social login
-      const mockUser = {
-        id: `${provider}-${Date.now()}`,
-        name: provider === 'google' ? 'Google User' : 'Facebook User',
-        email: `user@${provider}.com`,
-        role: 'BUYER',
-      };
-      
-      login(mockUser);
-      closeLogin();
-      router.push('/account');
+      await signIn(provider, { callbackUrl: '/account' });
     } finally {
       setSocialLoading(null);
     }

@@ -8,6 +8,9 @@ export type AdminProduct = {
   brand: string;
   category: string;
   price: number;
+  cost?: number;
+  landedCost?: number;
+  markupPercent?: number;
   compareAtPrice?: number;
   stock?: number;
   image?: string;
@@ -100,12 +103,11 @@ const DEFAULT_HERO: HeroSettings = {
 
 const DEFAULT_COLLECTIONS: Collection[] = [
   { id: 'new-arrivals', name: 'New Arrivals', href: '/new' },
-  { id: 'christmas', name: 'Christmas', href: '/christmas' },
+  { id: 'local-gauteng', name: 'Gauteng Local', href: '/search?q=gauteng' },
   { id: 'summer', name: 'Summer', href: '/summer' },
   { id: 'deals', name: 'Deals & Promotions', href: '/deals' },
-  { id: 'liquor', name: 'Festive Liquor', href: '/liquor' },
-  { id: 'brands', name: 'Brands Store', href: '/brands' },
-  { id: 'splash', name: 'PeboliSPLASH', href: '/more', color: '#db2777' }, // pink-600
+  { id: 'brands', name: 'Local Makers', href: '/brands' },
+  { id: 'splash', name: 'PeboliSPLASH', href: '/more', color: '#db2777' },
   { id: 'clearance', name: 'Clearance', href: '/clearance' },
 ];
 

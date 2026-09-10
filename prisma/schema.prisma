@@ -142,6 +142,12 @@ model Product {
   savings           Decimal?
   savingsPercentage Int?
 
+  // Local Shelf admin pricing (cost + markup → sell price; public sees price only)
+  cost              Decimal?
+  landedCost        Decimal?
+  markupPercent     Decimal   @default(35)
+  isSample          Boolean   @default(false)
+
   // Boosting
   isBoosted         Boolean   @default(false)
   boostExpiresAt    DateTime?

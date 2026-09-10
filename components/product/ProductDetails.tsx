@@ -390,6 +390,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                       name: product.name,
                       price: product.price,
                       qty: quantity,
+                      vendorId: product.vendorId,
                       vendor: product.vendor.name,
                       image: product.images[0],
                     })

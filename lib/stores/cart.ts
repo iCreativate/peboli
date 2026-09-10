@@ -6,6 +6,7 @@ export type CartItem = {
   name: string;
   price: number;
   qty: number;
+  vendorId?: string;
   vendor?: string;
   image?: string;
 };
@@ -46,7 +47,7 @@ export const useCartStore = create<CartState>()(
     }),
     {
       name: 'peboli_cart',
-      version: 1,
+      version: 2,
     }
   )
 );

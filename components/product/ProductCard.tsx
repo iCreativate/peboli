@@ -97,6 +97,7 @@ export function ProductCard({ product }: ProductCardProps) {
                   name: product.name,
                   price: product.price,
                   qty: 1,
+                  vendorId: product.vendorId,
                   vendor: product.vendor?.name,
                   image: product.images[0],
                 });
