@@ -80,12 +80,12 @@ export function CategoryGrid() {
             >
               <Link
                 href={`/categories/${category.slug}`}
-                className="block h-full bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-gray-400 transition-colors duration-200 group"
+                className="storefront-card storefront-card-interactive block group"
               >
-                <div className="aspect-square relative bg-gray-50 flex items-center justify-center group-hover:bg-gray-100 transition-all duration-300">
-                  <span className="text-6xl transition-transform duration-300">{category.icon}</span>
+                <div className="storefront-card-image aspect-square relative flex items-center justify-center">
+                  <span className="text-6xl transition-transform duration-300 group-hover:scale-105">{category.icon}</span>
                 </div>
-                <div className="p-5 text-center">
+                <div className="p-5 text-center border-t border-[rgba(11,18,32,0.05)]">
                   <h3 className="font-bold text-[#1A1D29] transition-all duration-200 text-base mb-1">
                     {category.name}
                   </h3>
