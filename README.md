@@ -99,7 +99,7 @@ Add products in **Admin → Catalog** with cost + markup, or push via `/api/admi
 
 ## Auth
 
-- Passwords hashed with **bcrypt** (legacy SHA-256 hashes migrate on login)
+- Passwords hashed with **Node scrypt** (legacy SHA-256 hashes migrate on login; re-run `create-admin` if you had a short-lived bcrypt build)
 - **No mock-login fallback** when DB is down or user missing
 - Create admin: `npm run create-admin -- <email> <password>`
 
