@@ -72,6 +72,16 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000)
 
+## AI Reseller Studio
+
+Programme for Local Shelf operators to **make money with AI marketing**:
+
+- Open **[/ai-reseller](/ai-reseller)** (public) or **Admin → AI Reseller Studio**
+- Enter product + landed cost → get 30–40% sell price, listing copy, WhatsApp/social posts, deal banners
+- **Sell packages** tab: Starter / Growth / Agency marketing packs you can resell to nearby shops
+- Optional `OPENAI_API_KEY` for LLM copy; otherwise the built-in Peboli engine generates full packs
+- API: `POST /api/ai-marketing/generate`
+
 ## Local Shelf pricing
 
 | Field | Who sees it | Notes |

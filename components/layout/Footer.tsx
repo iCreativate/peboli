@@ -182,6 +182,11 @@ export function Footer() {
                         Pricing
                       </Link>
                     </li>
+                    <li>
+                      <Link href="/ai-reseller" className="text-white/70 hover:text-white transition-colors font-medium">
+                        AI Reseller Studio
+                      </Link>
+                    </li>
                   </ul>
                 </div>
                 <div>
