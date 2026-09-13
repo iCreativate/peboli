@@ -72,9 +72,19 @@ export default function MarketingPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Marketing Center</h1>
-        <p className="text-gray-500">Track your campaign performance and boost reach</p>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Marketing Center</h1>
+          <p className="text-gray-500">Track your campaign performance and boost reach</p>
+        </div>
+        <button
+          type="button"
+          onClick={() => router.push('/ai-reseller')}
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-gray-800"
+        >
+          <Rocket className="h-4 w-4" />
+          Open AI Reseller Studio
+        </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

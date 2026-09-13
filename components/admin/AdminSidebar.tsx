@@ -15,12 +15,14 @@ import {
   CreditCard,
   LayoutList,
   ShoppingBag,
-  Share2
+  Share2,
+  Sparkles
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const LINKS = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+  { name: 'AI Reseller Studio', href: '/admin/ai-studio', icon: Sparkles },
   { name: 'User Management', href: '/admin/users', icon: Users },
   { name: 'Vendor Approvals', href: '/admin/vendors', icon: Store },
   { name: 'Notifications', href: '/admin/notifications', icon: Bell },

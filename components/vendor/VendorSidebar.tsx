@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Package, ShoppingBag, BarChart3, Settings, LogOut, Rocket, Wallet, Bell } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingBag, BarChart3, Settings, LogOut, Rocket, Wallet, Bell, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const LINKS = [
@@ -12,6 +12,7 @@ const LINKS = [
   { name: 'Notifications', href: '/vendor/dashboard/notifications', icon: Bell },
   { name: 'Analytics', href: '/vendor/dashboard/analytics', icon: BarChart3 },
   { name: 'Marketing', href: '/vendor/dashboard/marketing', icon: Rocket },
+  { name: 'AI Reseller Studio', href: '/ai-reseller', icon: Sparkles },
   { name: 'Wallet', href: '/vendor/dashboard/wallet', icon: Wallet },
   { name: 'Settings', href: '/vendor/dashboard/settings', icon: Settings },
 ];
