@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 
 const links = [
@@ -16,15 +16,31 @@ type AgencyNavProps = {
 
 export function AgencyNav({ variant = 'onLight' }: AgencyNavProps) {
   const [open, setOpen] = useState(false);
-  const onDark = variant === 'onDark';
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Over the dark hero: light text until the user scrolls, then solid bar + dark text
+  const lightText = variant === 'onDark' && !scrolled && !open;
 
   return (
-    <header className="absolute inset-x-0 top-0 z-50">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6 lg:px-10">
+    <header
+      className={`fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-300 ${
+        scrolled || open
+          ? 'border-b border-mesh-line/60 bg-mesh-paper/90 backdrop-blur-md'
+          : 'border-b border-transparent bg-transparent'
+      }`}
+    >
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-10">
         <Link
           href="/"
-          className={`font-display text-2xl font-bold tracking-tight transition-opacity hover:opacity-80 ${
-            onDark ? 'text-white' : 'text-mesh-ink'
+          className={`font-display text-2xl font-bold tracking-tight transition-colors hover:opacity-80 ${
+            lightText ? 'text-white' : 'text-mesh-ink'
           }`}
         >
           MESH
@@ -36,7 +52,7 @@ export function AgencyNav({ variant = 'onLight' }: AgencyNavProps) {
               key={link.href}
               href={link.href}
               className={`text-sm font-medium transition-colors ${
-                onDark
+                lightText
                   ? 'text-white/70 hover:text-white'
                   : 'text-mesh-muted hover:text-mesh-ink'
               }`}
@@ -54,7 +70,7 @@ export function AgencyNav({ variant = 'onLight' }: AgencyNavProps) {
 
         <button
           type="button"
-          className={onDark ? 'text-white md:hidden' : 'text-mesh-ink md:hidden'}
+          className={lightText ? 'text-white md:hidden' : 'text-mesh-ink md:hidden'}
           aria-label={open ? 'Close menu' : 'Open menu'}
           onClick={() => setOpen((v) => !v)}
         >
@@ -63,19 +79,13 @@ export function AgencyNav({ variant = 'onLight' }: AgencyNavProps) {
       </nav>
 
       {open && (
-        <div
-          className={`border-t px-6 py-6 backdrop-blur-md md:hidden ${
-            onDark
-              ? 'border-white/10 bg-mesh-ink/95'
-              : 'border-mesh-line/40 bg-mesh-paper/95'
-          }`}
-        >
+        <div className="border-t border-mesh-line/40 px-6 py-6 md:hidden">
           <div className="flex flex-col gap-4">
             {links.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-lg font-medium ${onDark ? 'text-white' : 'text-mesh-ink'}`}
+                className="text-lg font-medium text-mesh-ink"
                 onClick={() => setOpen(false)}
               >
                 {link.label}
