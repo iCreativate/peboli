@@ -5,10 +5,43 @@ import { motion } from 'framer-motion';
 
 export function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [pending, setPending] = useState(false);
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setSubmitted(true);
+    setError(null);
+    setPending(true);
+
+    const form = e.currentTarget;
+    const data = new FormData(form);
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: data.get('name'),
+          email: data.get('email'),
+          company: data.get('company'),
+          message: data.get('message'),
+        }),
+      });
+
+      const payload = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        setError(payload.error || 'Something went wrong. Please try again.');
+        return;
+      }
+
+      setSubmitted(true);
+      form.reset();
+    } catch {
+      setError('Network error. Please try again.');
+    } finally {
+      setPending(false);
+    }
   }
 
   if (submitted) {
@@ -20,7 +53,7 @@ export function ContactForm() {
       >
         <h2 className="font-display text-2xl font-bold text-mesh-ink">Message received</h2>
         <p className="mt-3 text-mesh-muted">
-          Thanks — we’ll review your brief and reply within one business day with next steps.
+          Thanks — we have your brief and will reply within one business day with next steps.
         </p>
       </motion.div>
     );
@@ -67,11 +100,13 @@ export function ContactForm() {
           placeholder="Lead qualification, support triage, reporting…"
         />
       </label>
+      {error && <p className="text-sm text-red-600">{error}</p>}
       <button
         type="submit"
-        className="rounded-sm bg-mesh-signal px-6 py-3.5 text-sm font-semibold text-mesh-ink transition-transform hover:scale-[1.02]"
+        disabled={pending}
+        className="rounded-sm bg-mesh-signal px-6 py-3.5 text-sm font-semibold text-mesh-ink transition-transform hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60"
       >
-        Send brief
+        {pending ? 'Sending…' : 'Send brief'}
       </button>
     </form>
   );
