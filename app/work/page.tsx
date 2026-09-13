@@ -4,7 +4,7 @@ import { AgencyFooter } from '@/components/agency/AgencyFooter';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Work | MESH',
+  title: 'Work',
   description: 'Selected AI automation outcomes from MESH engagements.',
 };
 

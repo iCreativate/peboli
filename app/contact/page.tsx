@@ -4,7 +4,7 @@ import { AgencyFooter } from '@/components/agency/AgencyFooter';
 import { ContactForm } from '@/components/agency/ContactForm';
 
 export const metadata: Metadata = {
-  title: 'Contact | MESH',
+  title: 'Contact',
   description: 'Book a discovery call with MESH — AI automation agency.',
 };
 
