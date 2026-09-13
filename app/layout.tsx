@@ -1,34 +1,33 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Syne, Manrope } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const syne = Syne({
+  variable: "--font-syne",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
+  weight: ["500", "600", "700", "800"],
+});
+
+const manrope = Manrope({
+  variable: "--font-manrope",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "Peboli - Best deals. Zero hassle.",
-  description: "Next-generation ecommerce marketplace. Best deals. Zero hassle.",
+  title: {
+    default: "MESH — AI Automation Agency",
+    template: "%s | MESH",
+  },
+  description:
+    "MESH builds custom AI agents, workflow automation, and integrations that remove busywork from growing companies.",
   icons: {
-    icon: '/icon',
-  },
-  manifest: '/manifest.json',
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: 'default',
-    title: 'Peboli',
-  },
-  formatDetection: {
-    telephone: false,
+    icon: "/icon",
   },
 };
 
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { AuthProvider } from "@/components/providers/AuthProvider";
-import { LoginModal } from "@/components/auth/LoginModal";
-import { RegisterModal } from "@/components/auth/RegisterModal";
 import { ErrorHandler } from "@/components/providers/ErrorHandler";
 
 export default function RootLayout({
@@ -38,16 +37,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-scroll-behavior="smooth">
-      <body
-        className={`${inter.variable} font-sans antialiased`}
-      >
+      <body className={`${syne.variable} ${manrope.variable} font-sans antialiased`}>
         <ErrorHandler />
         <AuthProvider>
-          <ThemeProvider>
-            {children}
-            <LoginModal />
-            <RegisterModal />
-          </ThemeProvider>
+          <ThemeProvider>{children}</ThemeProvider>
         </AuthProvider>
       </body>
     </html>
