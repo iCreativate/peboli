@@ -26,10 +26,6 @@ export const metadata: Metadata = {
   },
 };
 
-import { ThemeProvider } from "@/components/providers/ThemeProvider";
-import { AuthProvider } from "@/components/providers/AuthProvider";
-import { ErrorHandler } from "@/components/providers/ErrorHandler";
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -38,10 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <body className={`${syne.variable} ${manrope.variable} font-sans antialiased`}>
-        <ErrorHandler />
-        <AuthProvider>
-          <ThemeProvider>{children}</ThemeProvider>
-        </AuthProvider>
+        {children}
       </body>
     </html>
   );
